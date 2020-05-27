@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.Pane?>
+
+
+<Pane prefHeight="150.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ComboBox layoutX="50.0" layoutY="25.0" prefWidth="200.0" promptText="Select date and time" />
+      <Button alignment="CENTER" defaultButton="true" layoutX="87.5" layoutY="85.0" prefHeight="25.0" prefWidth="125.0" text="Go to payment" />
+   </children>
+</Pane>
