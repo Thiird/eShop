@@ -1,12 +1,17 @@
 package controllers;
 
 import java.net.URL;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.ResourceBundle;
-
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -32,10 +37,10 @@ import models.Product;
 import models.ShoppingCart;
 import models.Ward;
 
-public class ShoppingCartController extends Controller<Customer> implements Initializable
+public class ShoppingCartController extends Controller <Customer> implements Initializable
 {
-	HashMap<ImageView, Product> imageToProduct = new HashMap<ImageView, Product>();
-	HashMap<Product, ImageView> productToImage = new HashMap<Product, ImageView>();
+	HashMap <ImageView,Product> imageToProduct = new HashMap <ImageView,Product>();
+	HashMap <Product,ImageView> productToImage = new HashMap <Product,ImageView>();
 
 	int xShop = 0;
 	int yShop = 0;
@@ -90,19 +95,17 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 	GridPane cartGridPane;
 
 	@FXML
-	ComboBox<Ward> wardSelection;
+	ComboBox <Ward> wardSelection;
 
 	private ShoppingCart shoppingCart;
 
-	HashMap<ImageView, String> imageToProductName;
+	HashMap <ImageView,String> imageToProductName;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
 		initEventHandlers();
 		initGridPanes();
-
-		shoppingCart = new ShoppingCart(getCurrentUser(), getNextCartID());
 
 		wardSelection.getItems().setAll(Ward.values());
 		wardSelection.getSelectionModel().select(0);
@@ -113,25 +116,7 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 
 		searchInShop();// To initially fill the shop grid
 
-		Map<String, ArrayList<ShoppingCart>> shoppingCarts = getShoppingCarts();
-
-		//new Thread(new Clock()).start();
-	}
-
-	private int getNextCartID()
-	{
-		int lastID = 0;
-		Map<String, ArrayList<ShoppingCart>> shoppingCarts = getShoppingCarts();
-
-		for (String client : shoppingCarts.keySet())
-		{
-			for (ShoppingCart sc : shoppingCarts.get(client))
-			{
-				if (sc.getID() > lastID) lastID = sc.getID();
-			}
-		}
-
-		return lastID + 1;
+		// new Thread(new Clock()).start();
 	}
 
 	private void resetProductPanel()
@@ -147,11 +132,11 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 	private void loadProducts()
 	{
 		// Load imageToProdcut and productToImage
-		Map<String, Product> products = getProducts();
+		Map <String,Product> products = getProducts();
 
 		ImageView im;
 
-		for (String s : products.keySet())
+		for ( String s : products.keySet() )
 		{
 			im = new ImageView(new Image((products.get(s).getImage())));
 
@@ -162,16 +147,17 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 
 	private void initEventHandlers()
 	{
-		cartSearchbar.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>()
+		cartSearchbar.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler <KeyEvent>()
 		{
 			@Override
 			public void handle(KeyEvent event)
 			{
-				if (event.getCode() == KeyCode.ENTER) searchInCart();
+				if ( event.getCode() == KeyCode.ENTER )
+					searchInCart();
 			}
 		});
 
-		btnCartSearch.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>()
+		btnCartSearch.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
 		{
 			@Override
 			public void handle(Event event)
@@ -180,7 +166,7 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 			}
 		});
 
-		btnGoToPayment.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>()
+		btnGoToPayment.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
 		{
 			@Override
 			public void handle(Event event)
@@ -191,7 +177,7 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 		});
 
 		// Shop search button
-		btnShopSearch.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>()
+		btnShopSearch.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
 		{
 			@Override
 			public void handle(Event event)
@@ -200,17 +186,18 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 			}
 		});
 
-		btnShopSearch.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>()
+		btnShopSearch.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler <KeyEvent>()
 		{
 			@Override
 			public void handle(KeyEvent event)
 			{
-				if (event.getCode() == KeyCode.ENTER) searchInShop();
+				if ( event.getCode() == KeyCode.ENTER )
+					searchInShop();
 			}
 		});
 
 		// Add to cart button
-		btnAddToCart.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>()
+		btnAddToCart.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
 		{
 			@Override
 			public void handle(Event event)
@@ -219,51 +206,55 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 			}
 		});
 
-		btnAddToCart.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>()
+		btnAddToCart.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler <KeyEvent>()
 		{
 			@Override
 			public void handle(KeyEvent event)
 			{
-				if (event.getCode() == KeyCode.ENTER) addProductToCart();
+				if ( event.getCode() == KeyCode.ENTER )
+					addProductToCart();
 			}
 		});
 
-		//Go to payment button
-		btnGoToPayment.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>()
+		// Go to payment button
+		btnGoToPayment.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
 		{
 			@Override
 			public void handle(Event event)
 			{
-				buy();
+				goToPayment();
+				// switchToView("/view/Payment.fxml", "Pay", controllerType, user);
 			}
 		});
 
-		btnGoToPayment.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>()
+		btnGoToPayment.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler <KeyEvent>()
 		{
 			@Override
 			public void handle(KeyEvent event)
 			{
-				if (event.getCode() == KeyCode.ENTER) buy();
+				if ( event.getCode() == KeyCode.ENTER )
+					goToPayment();
+				// switchToView("/view/Payment.fxml", "Pay", controllerType, user);
 			}
 		});
 
 	}
 
 	private void addProductToCart()
-	{//Adds currently selected product to customer's cart
+	{// Adds currently selected product to customer's cart
 
 		int qtyToAdd = Integer.parseInt(txtFldQuantity.getText());
 
-		if (qtyToAdd <= imageToProduct.get(selectedShopProduct.getChildren().get(0)).getQtyAvailable())
+		if ( qtyToAdd <= imageToProduct.get(selectedShopProduct.getChildren().get(0)).getQtyAvailable() )
 		{
 			btnGoToPayment.setDisable(false);
 
 			Product currToAddToCart = imageToProduct.get(selectedShopProduct.getChildren().get(0));
 
-			//Add product to in gui list
+			// Add product to in gui list
 			addItemToCartGrid(currToAddToCart, qtyToAdd);
 
-			//Add product to cart obj
+			// Add product to cart obj
 			shoppingCart.addProduct(currToAddToCart, qtyToAdd);
 		}
 		else
@@ -274,24 +265,24 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 
 	public void addItemToCartGrid(Product p, int qtyToAdd)
 	{
-		if (!shoppingCart.containsProduct(p))
+		if ( !shoppingCart.containsProduct(p) )
 		{
-			//Product name label
+			// Product name label
 			Label l = new Label(p.getName());
 			l.setFont(new Font("Arial", 20));
 			addEventsToNode(l);
-			//setCartNodeEvents(l);
+			// setCartNodeEvents(l);
 
 			GridPane.setFillWidth(l, true);
 			GridPane.setFillHeight(l, true);
 			GridPane.setConstraints(l, 0, yCart);
 			cartGridPane.getChildren().add(l);
 
-			//Product qty label
+			// Product qty label
 			l = new Label("x" + qtyToAdd);
 			l.setFont(new Font("Arial", 20));
 			addEventsToNode(l);
-			//setCartNodeEvents(l);
+			// setCartNodeEvents(l);
 
 			GridPane.setFillWidth(l, true);
 			GridPane.setFillHeight(l, true);
@@ -301,26 +292,26 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 			yCart++;
 		}
 		else
-		{//Search the correct nodes and updated them
+		{// Search the correct nodes and updated them
 
 			Label lbl;
 			String qty;
 			int qtyLabelRow = -1;
 
-			//Find product's row index
-			for (Node node : cartGridPane.getChildren())
+			// Find product's row index
+			for ( Node node : cartGridPane.getChildren() )
 			{
-				if (((Label) node).getText().equals(p.getName()))
+				if ( ((Label) node).getText().equals(p.getName()) )
 				{
 					qtyLabelRow = GridPane.getRowIndex(node);
 					break;
 				}
 			}
 
-			//Reach qty label and add 1
-			for (Node node : cartGridPane.getChildren())
+			// Reach qty label and add 1
+			for ( Node node : cartGridPane.getChildren() )
 			{
-				if (GridPane.getRowIndex(node) == qtyLabelRow && GridPane.getColumnIndex(node) == 1)
+				if ( GridPane.getRowIndex(node) == qtyLabelRow && GridPane.getColumnIndex(node) == 1 )
 				{
 					lbl = (Label) node;
 					qty = lbl.getText();
@@ -332,22 +323,48 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 		shoppingCart.addProduct(p, qtyToAdd);
 	}
 
-	private void buy()
+	private void goToPayment()
 	{
-		Map<String, ArrayList<ShoppingCart>> shoppingCarts = getShoppingCarts();
+		Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts();
 
 		String email = shoppingCart.getCustomer().getEmail();
-		ArrayList<ShoppingCart> carts;
+		ArrayList <ShoppingCart> carts;
 
-		//Add cart to structure
-		if (shoppingCarts.containsKey(email)) carts = shoppingCarts.get(email);
-		else carts = new ArrayList<ShoppingCart>();
+		shoppingCart.setExpectedDate(randomDate());
+		// shoppingCart.getPaymentMethod();
+
+		// Add cart to structure
+		if ( shoppingCarts.containsKey(email) )
+			carts = shoppingCarts.get(email);
+		else
+			carts = new ArrayList <ShoppingCart>();
 
 		carts.add(shoppingCart);
 		shoppingCarts.put(email, carts);
 
-		//Write on file
+		// Write on file
 		setShoppingCarts(shoppingCarts);
+	}
+
+	private Date randomDate()
+	{
+		Random random = new Random();
+
+		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+		int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+		int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+
+		int minDay = (int) LocalDate.of(currentYear, currentMonth, 5).toEpochDay();
+		int maxDay = (int) LocalDate.of(currentYear, currentMonth, 5 + random.nextInt((10 - 1) + 1) + 1).toEpochDay();
+
+		long randomDay = minDay + random.nextInt(maxDay - minDay);
+
+		LocalDate randomBirthDate = LocalDate.ofEpochDay(randomDay);
+
+		Instant instant = Instant.from(randomBirthDate.atStartOfDay(ZoneId.of("GMT")));
+		Date date = Date.from(instant);
+
+		return date;
 	}
 
 	private void addEventsToNode(Node n)
@@ -355,7 +372,7 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 		n.setOnMouseEntered(e -> cartGridPane.getChildren().forEach(c ->
 		{
 			Integer targetIndex = GridPane.getRowIndex(n);
-			if (GridPane.getRowIndex(c) == targetIndex)
+			if ( GridPane.getRowIndex(c) == targetIndex )
 			{
 				c.setStyle("-fx-background-color:#f9f3c5;");
 			}
@@ -363,7 +380,7 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 		n.setOnMouseExited(e -> cartGridPane.getChildren().forEach(c ->
 		{
 			Integer targetIndex = GridPane.getRowIndex(n);
-			if (GridPane.getRowIndex(c) == targetIndex)
+			if ( GridPane.getRowIndex(c) == targetIndex )
 			{
 				c.setStyle("-fx-background-color:#ffffff;");
 			}
@@ -379,30 +396,34 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 		clearShopCart();
 		resetProductPanel();
 
-		if (toSearchWard != Ward.ALL && !toSearchProduct.isEmpty())
+		if ( toSearchWard != Ward.ALL && !toSearchProduct.isEmpty() )
 		{
-			for (Product p : productToImage.keySet())
+			for ( Product p : productToImage.keySet() )
 			{
-				if (((toSearchWard != Ward.ALL) && p.getWard() == toSearchWard) && ((!toSearchProduct.isEmpty()) && p.getName().toLowerCase().startsWith(toSearchProduct.toLowerCase())))
+				if ( ((toSearchWard != Ward.ALL) && p.getWard() == toSearchWard) && ((!toSearchProduct.isEmpty())
+						&& p.getName().toLowerCase().startsWith(toSearchProduct.toLowerCase())) )
 					addItemToShopGrid(p);
 			}
 		}
 		else
 		{// Load all products
 
-			if (toSearchWard == Ward.ALL && toSearchProduct.isEmpty())
+			if ( toSearchWard == Ward.ALL && toSearchProduct.isEmpty() )
 			{
-				for (Product p : productToImage.keySet())
+				for ( Product p : productToImage.keySet() )
 				{
 					addItemToShopGrid(p);
 				}
 			}
 			else
 			{
-				for (Product p : productToImage.keySet())
+				for ( Product p : productToImage.keySet() )
 				{
-					if (toSearchWard != Ward.ALL && p.getWard() == toSearchWard) addItemToShopGrid(p);
-					if (((!toSearchProduct.isEmpty()) && p.getName().toLowerCase().startsWith(toSearchProduct.toLowerCase()))) addItemToShopGrid(p);
+					if ( toSearchWard != Ward.ALL && p.getWard() == toSearchWard )
+						addItemToShopGrid(p);
+					if ( ((!toSearchProduct.isEmpty())
+							&& p.getName().toLowerCase().startsWith(toSearchProduct.toLowerCase())) )
+						addItemToShopGrid(p);
 				}
 			}
 		}
@@ -412,23 +433,23 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 
 	private void setGridNodesEvents()
 	{
-		for (Node node : shopGridPane.getChildren())
+		for ( Node node : shopGridPane.getChildren() )
 		{
-			if (node instanceof Pane)
+			if ( node instanceof Pane )
 			{
 				// Clicking in node event
-				node.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>()
+				node.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
 				{
 					@Override
 					public void handle(Event event)
 					{
-						if (selectedShopProduct == null)
+						if ( selectedShopProduct == null )
 						{
 							node.setStyle("-fx-background-color:#ed2850;");
 							selectedShopProduct = ((Pane) node);
 							loadHoveringProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
 						}
-						else if (selectedShopProduct == ((Pane) node))
+						else if ( selectedShopProduct == ((Pane) node) )
 						{
 							// node.setStyle("-fx-background-color:#b5c6f7;");
 							enableProductPanel(false);
@@ -447,12 +468,13 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 				});
 
 				// Entering in node event
-				node.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<Event>()
+				node.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler <Event>()
 				{
 					@Override
 					public void handle(Event event)
 					{
-						if (selectedShopProduct != ((Pane) node)) node.setStyle("-fx-background-color:#4d7af7;");
+						if ( selectedShopProduct != ((Pane) node) )
+							node.setStyle("-fx-background-color:#4d7af7;");
 
 						loadHoveringProductInfo((ImageView) (((Pane) node).getChildren().get(0)));
 
@@ -461,14 +483,16 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 				});
 
 				// Exiting from node event
-				node.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<Event>()
+				node.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler <Event>()
 				{
 					@Override
 					public void handle(Event event)
 					{
-						if (selectedShopProduct != ((Pane) node)) node.setStyle("-fx-background-color:#b5c6f7;");
+						if ( selectedShopProduct != ((Pane) node) )
+							node.setStyle("-fx-background-color:#b5c6f7;");
 
-						if (selectedShopProduct != null) loadHoveringProductInfo((ImageView) selectedShopProduct.getChildren().get(0));
+						if ( selectedShopProduct != null )
+							loadHoveringProductInfo((ImageView) selectedShopProduct.getChildren().get(0));
 						else
 						{
 							resetProductPanel();
@@ -523,7 +547,7 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 
 		// Update coords
 		xShop++;
-		if (xShop == 6)
+		if ( xShop == 6 )
 		{
 			xShop = 0;
 			yShop++;
@@ -538,10 +562,11 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 		currProdName.setText(pToLoad.getName());
 		currProdPrice.setText("Price: " + String.format(Locale.US, "%.2f", pToLoad.getPrice()) + " $");
 		currProdBrand.setText("Brand: " + pToLoad.getBrand().toString());
-		currProdQty.setText("Quantity per item: " + Float.toString(pToLoad.getQtyPerItem()) + " " + pToLoad.getMeasureUnit());
+		currProdQty.setText(
+				"Quantity per item: " + Float.toString(pToLoad.getQtyPerItem()) + " " + pToLoad.getMeasureUnit());
 		currProdQtyAvailable.setText("Items available: " + Integer.toString(pToLoad.getQtyAvailable()));
 
-		if (pToLoad.getQtyAvailable() == 0)
+		if ( pToLoad.getQtyAvailable() == 0 )
 		{
 			isPAvaialble.setText("Product not available");
 			isPAvaialble.setStyle("-fx-text-fill: red;");
@@ -559,7 +584,7 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 
 	private void enableProductPanel(boolean value)
 	{
-		if (value)
+		if ( value )
 		{
 			btnAddToCart.setDisable(false);
 
@@ -588,7 +613,28 @@ public class ShoppingCartController extends Controller<Customer> implements Init
 	{
 		email.setText(customer.getEmail());
 		setCurrentUser(customer);
-		shoppingCart = new ShoppingCart(customer, 0); // TODO put correct id
+		shoppingCart = new ShoppingCart(getCurrentUser(), getNextCartID());
+	}
+
+	private int getNextCartID()
+	{// Loads nextCartID as lastCartID + 1
+
+		int lastID = 0;
+
+		Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts();
+
+		for ( String client : shoppingCarts.keySet() )
+		{
+			for ( ShoppingCart sc : shoppingCarts.get(client) )
+			{
+				if ( sc.getID() > lastID )
+					lastID = sc.getID();
+			}
+		}
+
+		lastID++;
+
+		return lastID;
 	}
 
 	public ShoppingCart getShoppingCart()

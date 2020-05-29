@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -145,7 +144,7 @@ public class LoginController implements Serializable, Initializable
 		}
 	}
 
-	private final void switchToView(String view, String title, String controllerType, User user)
+	private final void switchToView(String view, String title, String controllerType, User user )
 	{
 		Parent parent = null;
 

@@ -17,15 +17,15 @@ public class ProductProperty
 	private SimpleFloatProperty price;
 	private SimpleIntegerProperty qtyAvailable;
 
-	public ProductProperty(Product p)
+	public ProductProperty(Product product)
 	{
-		imageView = new ImageView(new Image(getClass().getResourceAsStream(p.getImage())));
-		imagePath = new SimpleStringProperty(p.getImage());
-		ward = new SimpleObjectProperty<>(p.getWard());
-		name = new SimpleStringProperty(p.getName());
-		qtyPerItem = new SimpleFloatProperty(p.getQtyPerItem());
-		price = new SimpleFloatProperty(p.getPrice());
-		qtyAvailable = new SimpleIntegerProperty(p.getQtyAvailable());
+		imageView = new ImageView(new Image(getClass().getResourceAsStream(product.getImage())));
+		imagePath = new SimpleStringProperty(product.getImage());
+		ward = new SimpleObjectProperty<>(product.getWard());
+		name = new SimpleStringProperty(product.getName());
+		qtyPerItem = new SimpleFloatProperty(product.getQtyPerItem());
+		price = new SimpleFloatProperty(product.getPrice());
+		qtyAvailable = new SimpleIntegerProperty(product.getQtyAvailable());
 	}
 
 	public ImageView getImageView()

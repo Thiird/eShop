@@ -5,11 +5,21 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="container" prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
-   <children>
-      <TextField fx:id="email" layoutX="50.0" layoutY="30.0" prefHeight="25.0" prefWidth="200.0" promptText="Email" />
-      <PasswordField fx:id="password" layoutX="50.0" layoutY="85.0" prefHeight="25.0" prefWidth="200.0" promptText="Password" />
-      <Button fx:id="btnLogin" alignment="CENTER" defaultButton="true" layoutX="65.0" layoutY="140.0" prefHeight="25.0" prefWidth="70.0" text="Login" />
-      <Button fx:id="btnSignUp" alignment="CENTER" defaultButton="true" layoutX="165.0" layoutY="140.0" prefHeight="25.0" prefWidth="70.0" text="Sign up" />
-   </children>
+<Pane fx:id="container" prefHeight="200.0" prefWidth="300.0"
+	xmlns="http://javafx.com/javafx/8.0.171"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="controllers.LoginController">
+	<children>
+		<TextField fx:id="email" layoutX="50.0" layoutY="30.0"
+			prefHeight="25.0" prefWidth="200.0" promptText="Email" />
+		<PasswordField fx:id="password" layoutX="50.0"
+			layoutY="85.0" prefHeight="25.0" prefWidth="200.0"
+			promptText="Password" />
+		<Button fx:id="btnLogin" alignment="CENTER"
+			defaultButton="true" layoutX="65.0" layoutY="140.0" prefHeight="25.0"
+			prefWidth="70.0" text="Login" />
+		<Button fx:id="btnSignUp" alignment="CENTER"
+			defaultButton="true" layoutX="165.0" layoutY="140.0"
+			prefHeight="25.0" prefWidth="70.0" text="Sign up" />
+	</children>
 </Pane>

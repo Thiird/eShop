@@ -7,19 +7,38 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="container" prefHeight="600.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegistrationController">
-   <children>
-      <TextField fx:id="name" layoutX="50.0" layoutY="30.0" prefHeight="25.0" prefWidth="200.0" promptText="Name" />
-      <TextField fx:id="surname" layoutX="50.0" layoutY="80.0" prefHeight="25.0" prefWidth="200.0" promptText="Surname" />
-      <TextField fx:id="address" layoutX="50.0" layoutY="130.0" prefHeight="25.0" prefWidth="200.0" promptText="Address" />
-      <TextField fx:id="CAP" layoutX="50.0" layoutY="180.0" prefHeight="25.0" prefWidth="200.0" promptText="CAP" />
-      <TextField fx:id="city" layoutX="50.0" layoutY="230.0" prefHeight="25.0" prefWidth="200.0" promptText="City" />
-      <TextField fx:id="phone" layoutX="50.0" layoutY="280.0" prefHeight="25.0" prefWidth="200.0" promptText="Phone" />
-      <TextField fx:id="email" layoutX="50.0" layoutY="330.0" prefHeight="25.0" prefWidth="200.0" promptText="Email" />
-      <PasswordField fx:id="password" layoutX="50.0" layoutY="380.0" prefHeight="25.0" prefWidth="200.0" promptText="Password" />
-      <CheckBox fx:id="fidelityCard" layoutX="90.0" layoutY="425.0" prefHeight="20.0" prefWidth="120.0" text="Fidelity card" />
-      <ComboBox fx:id="paymentMethod" layoutX="50.0" layoutY="465.0" prefHeight="25.0" prefWidth="200.0" promptText="Pref Payment Method" />
-      <Button alignment="CENTER" defaultButton="true" layoutX="65.0" layoutY="520.0" onAction="#returnToLogin" prefHeight="25.0" prefWidth="70.0" text="Login" />
-      <Button alignment="CENTER" defaultButton="true" layoutX="165.0" layoutY="520.0" onAction="#checkInput" prefHeight="25.0" prefWidth="70.0" text="Sign up" />
-   </children>
+<Pane fx:id="container" prefHeight="600.0" prefWidth="300.0"
+	xmlns="http://javafx.com/javafx/8.0.171"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="controllers.RegistrationController">
+	<children>
+		<TextField fx:id="name" layoutX="50.0" layoutY="30.0"
+			prefHeight="25.0" prefWidth="200.0" promptText="Name" />
+		<TextField fx:id="surname" layoutX="50.0" layoutY="80.0"
+			prefHeight="25.0" prefWidth="200.0" promptText="Surname" />
+		<TextField fx:id="address" layoutX="50.0" layoutY="130.0"
+			prefHeight="25.0" prefWidth="200.0" promptText="Address" />
+		<TextField fx:id="CAP" layoutX="50.0" layoutY="180.0"
+			prefHeight="25.0" prefWidth="200.0" promptText="CAP" />
+		<TextField fx:id="city" layoutX="50.0" layoutY="230.0"
+			prefHeight="25.0" prefWidth="200.0" promptText="City" />
+		<TextField fx:id="phone" layoutX="50.0" layoutY="280.0"
+			prefHeight="25.0" prefWidth="200.0" promptText="Phone" />
+		<TextField fx:id="email" layoutX="50.0" layoutY="330.0"
+			prefHeight="25.0" prefWidth="200.0" promptText="Email" />
+		<PasswordField fx:id="password" layoutX="50.0"
+			layoutY="380.0" prefHeight="25.0" prefWidth="200.0"
+			promptText="Password" />
+		<CheckBox fx:id="fidelityCard" layoutX="90.0" layoutY="425.0"
+			prefHeight="20.0" prefWidth="120.0" text="Fidelity card" />
+		<ComboBox fx:id="paymentMethod" layoutX="50.0"
+			layoutY="465.0" prefHeight="25.0" prefWidth="200.0"
+			promptText="Pref Payment Method" />
+		<Button alignment="CENTER" defaultButton="true" layoutX="65.0"
+			layoutY="520.0" onAction="#returnToLogin" prefHeight="25.0"
+			prefWidth="70.0" text="Login" />
+		<Button alignment="CENTER" defaultButton="true" layoutX="165.0"
+			layoutY="520.0" onAction="#checkInput" prefHeight="25.0"
+			prefWidth="70.0" text="Sign up" />
+	</children>
 </Pane>

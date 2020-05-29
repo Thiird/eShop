@@ -1,7 +1,6 @@
 package models;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.Date;
 
 public class FidelityCard implements Serializable
@@ -10,12 +9,13 @@ public class FidelityCard implements Serializable
 
 	private final int ID;
 	private final Date releaseDate;
-	private int points = 0;
+	private int points;
 
 	public FidelityCard(int ID)
 	{
 		this.ID = ID;
 		releaseDate = new Date();
+		points = 0;
 	}
 
 	public int getID()
@@ -37,17 +37,5 @@ public class FidelityCard implements Serializable
 	public int hashCode()
 	{
 		return ID ^ releaseDate.hashCode() ^ points;
-	}
-
-	private static final Comparator<Customer> getComparatorByID()
-	{
-		return new Comparator<Customer>()
-		{
-			@Override
-			public int compare(Customer u1, Customer u2)
-			{
-				return u1.getFidelityCard().getID() - u2.getFidelityCard().getID();
-			}
-		};
 	}
 }

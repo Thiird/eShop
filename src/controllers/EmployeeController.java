@@ -4,14 +4,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-
 import javax.imageio.ImageIO;
-
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -50,12 +50,15 @@ import models.Brand;
 import models.Employee;
 import models.Feature;
 import models.MeasureUnit;
+import models.PaymentMethod;
 import models.Product;
 import models.ProductProperty;
+import models.ShoppingCart;
+import models.ShoppingCartProperty;
 import models.Type;
 import models.Ward;
 
-public class EmployeeController extends Controller<Employee> implements Initializable
+public class EmployeeController extends Controller <Employee> implements Initializable
 {
 	@FXML
 	private TabPane tabPane;
@@ -63,29 +66,34 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		initializeAPT();
-		tabPane.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>()
+		initializeAddProductTab();
+
+		tabPane.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener <Number>()
 		{
 			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+			public void changed(ObservableValue <? extends Number> observable, Number oldValue, Number newValue)
 			{
 				int selectedIndex = newValue.intValue();
 				// Where index of the first tab is 0, while that of the second tab is 1 and so on
-				if (selectedIndex == 0) initializeAPT();
-				else initializeMPT();
+				if ( selectedIndex == 0 )
+					initializeAddProductTab();
+				else if ( selectedIndex == 1 )
+					initializeModifyProductsTab();
+				else
+					initializeViewShoppingTab();
 			}
 		});
 	}
 
 	// Add product Tab
 	@FXML
-	private ComboBox<Ward> ward;
+	private ComboBox <Ward> ward;
 	@FXML
-	private ComboBox<Brand> brand;
+	private ComboBox <Brand> brand;
 	@FXML
-	private ComboBox<Type> type;
+	private ComboBox <Type> type;
 	@FXML
-	private ComboBox<MeasureUnit> measureUnit;
+	private ComboBox <MeasureUnit> measureUnit;
 	@FXML
 	private TextField name, qtyPerItem, qtyAvailable, price, searchBar;
 	@FXML
@@ -94,28 +102,28 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 	private ImageView imageView;
 	private String image;
 
-	private void initializeAPT()
+	private void initializeAddProductTab()
 	{
 		clearFields();
 		Platform.runLater(() -> tabPane.requestFocus());
-		initAPTEventHandlers();
+		initAddProductTabEventHandlers();
 
-		ObservableList<Ward> wards = FXCollections.observableArrayList(Ward.values());
+		ObservableList <Ward> wards = FXCollections.observableArrayList(Ward.values());
 		ward.setItems(wards);
 
-		ObservableList<Brand> brands = FXCollections.observableArrayList(Brand.values());
+		ObservableList <Brand> brands = FXCollections.observableArrayList(Brand.values());
 		brand.setItems(brands);
 
-		ObservableList<Type> types = FXCollections.observableArrayList(Type.values());
+		ObservableList <Type> types = FXCollections.observableArrayList(Type.values());
 		type.setItems(types);
 
-		ObservableList<MeasureUnit> measureUnits = FXCollections.observableArrayList(MeasureUnit.values());
+		ObservableList <MeasureUnit> measureUnits = FXCollections.observableArrayList(MeasureUnit.values());
 		measureUnit.setItems(measureUnits);
 	}
 
-	private void initAPTEventHandlers()
+	private void initAddProductTabEventHandlers()
 	{
-		imageView.setOnMouseEntered(new EventHandler<MouseEvent>()
+		imageView.setOnMouseEntered(new EventHandler <MouseEvent>()
 		{
 			@Override
 			public void handle(MouseEvent e)
@@ -125,7 +133,7 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 			}
 		});
 
-		imageView.setOnMouseExited(new EventHandler<MouseEvent>()
+		imageView.setOnMouseExited(new EventHandler <MouseEvent>()
 		{
 			@Override
 			public void handle(MouseEvent e)
@@ -157,7 +165,7 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 			imageView.setImage(imageSelected);
 			image = file.getPath();
 		}
-		catch (IOException e)
+		catch ( IOException e )
 		{
 			System.err.println("Image not found !");
 		}
@@ -166,26 +174,30 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 	@FXML
 	public void addProductToDatabase()
 	{
-		if (isAllCompiled())
+		if ( isAllCompiled() )
 		{
 			float qtyPerItemAsFloat = Float.parseFloat(qtyPerItem.getText());
 			float priceAsFloat = Float.parseFloat(price.getText());
 			int qtyAvailableAsInt = Integer.parseInt(qtyAvailable.getText());
 
-			Set<Feature> features = new HashSet<>();
+			Set <Feature> features = new HashSet <>();
 
-			if (glutenFree.isSelected()) features.add(Feature.GLUTEN_FREE);
+			if ( glutenFree.isSelected() )
+				features.add(Feature.GLUTEN_FREE);
 
-			if (milkFree.isSelected()) features.add(Feature.MILK_FREE);
+			if ( milkFree.isSelected() )
+				features.add(Feature.MILK_FREE);
 
-			if (bio.isSelected()) features.add(Feature.BIO);
+			if ( bio.isSelected() )
+				features.add(Feature.BIO);
 
-			if (madeInItaly.isSelected()) features.add(Feature.MADE_IN_ITALY);
+			if ( madeInItaly.isSelected() )
+				features.add(Feature.MADE_IN_ITALY);
 
-			Product product = new Product(ward.getValue(), name.getText(), brand.getValue(), qtyPerItemAsFloat, measureUnit.getValue(), priceAsFloat, image, type.getValue(), features,
-					qtyAvailableAsInt);
+			Product product = new Product(ward.getValue(), name.getText(), brand.getValue(), qtyPerItemAsFloat,
+					measureUnit.getValue(), priceAsFloat, image, type.getValue(), features, qtyAvailableAsInt);
 
-			if (alreadyExists(product))
+			if ( alreadyExists(product) )
 			{
 				clearFields();
 
@@ -193,49 +205,62 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 			}
 			else
 			{
-				//Insert product into DB
-				Map<String, Product> products = getProducts();
+				// Insert product into DB
+				Map <String,Product> products = getProducts();
 
-				if (products == null) products = new HashMap<String, Product>();
+				if ( products == null )
+					products = new HashMap <String,Product>();
 
 				products.put(product.getImage(), product);
 				setProducts(products);
 
-				if (alert(AlertType.INFORMATION, "Information", "Product added").get() == ButtonType.OK) clearFields();
+				if ( alert(AlertType.INFORMATION, "Information", "Product added").get() == ButtonType.OK )
+					clearFields();
 			}
 		}
-		else alert(AlertType.WARNING, "Warning", "Missing fields");
+		else
+			alert(AlertType.WARNING, "Warning", "Missing fields");
 
 	}
 
 	private final boolean isAllCompiled()
 	{
-		if (ward.getValue() == null) return false;
+		if ( ward.getValue() == null )
+			return false;
 
-		if (name.getText().isEmpty()) return false;
+		if ( name.getText().isEmpty() )
+			return false;
 
-		if (brand.getValue() == null) return false;
+		if ( brand.getValue() == null )
+			return false;
 
-		if (qtyPerItem.getText().isEmpty()) return false;
+		if ( qtyPerItem.getText().isEmpty() )
+			return false;
 
-		if (measureUnit.getSelectionModel().isEmpty()) return false;
+		if ( measureUnit.getSelectionModel().isEmpty() )
+			return false;
 
-		if (price.getText().isEmpty()) return false;
+		if ( price.getText().isEmpty() )
+			return false;
 
-		if (image == null) return false;
+		if ( image == null )
+			return false;
 
-		if (type.getValue() == null) return false;
+		if ( type.getValue() == null )
+			return false;
 
-		if (qtyAvailable.getText().isEmpty()) return false;
+		if ( qtyAvailable.getText().isEmpty() )
+			return false;
 
 		return true;
 	}
 
 	private final boolean alreadyExists(Product product)
 	{
-		Map<String, Product> products = getProducts();
+		Map <String,Product> products = getProducts();
 
-		if (products != null && products.get(product.getImage()) != null) return true;
+		if ( products != null && products.get(product.getImage()) != null )
+			return true;
 
 		return false;
 	}
@@ -259,32 +284,32 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 
 	// Modify product Tab
 	@FXML
-	private TableView<ProductProperty> tableView;
+	private TableView <ProductProperty> tableView;
 	@FXML
-	private TableColumn<ProductProperty, String> imageColumn;
+	private TableColumn <ProductProperty,String> imageColumn;
 	@FXML
-	private TableColumn<ProductProperty, String> imagePathColumn;
+	private TableColumn <ProductProperty,String> imagePathColumn;
 	@FXML
-	private TableColumn<ProductProperty, Ward> wardColumn;
+	private TableColumn <ProductProperty,Ward> wardColumn;
 	@FXML
-	private TableColumn<ProductProperty, String> nameColumn;
+	private TableColumn <ProductProperty,String> nameColumn;
 	@FXML
-	private TableColumn<ProductProperty, Float> qtyPerItemColumn;
+	private TableColumn <ProductProperty,Float> qtyPerItemColumn;
 	@FXML
-	private TableColumn<ProductProperty, Float> priceColumn;
+	private TableColumn <ProductProperty,Float> priceColumn;
 	@FXML
-	private TableColumn<ProductProperty, Integer> qtyAvailableColumn;
+	private TableColumn <ProductProperty,Integer> qtyAvailableColumn;
 	@FXML
 	private Button btnApplyChanges;
-	private ObservableList<ProductProperty> dataList;
+	private ObservableList <ProductProperty> dataList;
 
-	private Map<String, Product> newProducts;
+	private Map <String,Product> newProducts;
 
-	private void initializeMPT()
+	private void initializeModifyProductsTab()
 	{
 		newProducts = getProducts();
 		dataList = FXCollections.observableArrayList();
-		initMPTEventHandlers();
+		initModifyProductsTabEventHandlers();
 
 		setImageColumn();
 		setImagePathColumn();
@@ -295,13 +320,13 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 		setQtyAvailableColumn();
 
 		// Add all products to tableView
-		Map<String, Product> products = getProducts();
+		Map <String,Product> products = getProducts();
 
-		for (Product p : products.values())
+		for ( Product p : products.values() )
 			dataList.add(new ProductProperty(p));
 
 		// 1. Wrap the ObservableList in a FilteredList ( initially display all data )
-		FilteredList<ProductProperty> filteredData = new FilteredList<>(dataList, b -> true);
+		FilteredList <ProductProperty> filteredData = new FilteredList <>(dataList, b -> true);
 
 		// 2. Set the filter Predicate whenever the filter changes
 		searchBar.textProperty().addListener((observable, oldValue, newValue) ->
@@ -309,12 +334,13 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 			filteredData.setPredicate(product ->
 			{
 				// If filter text is empty, display all products
-				if (newValue == null || newValue.isEmpty()) return true;
+				if ( newValue == null || newValue.isEmpty() )
+					return true;
 
 				// Compare ... of every product with filter text
 				String lowerCaseFilter = newValue.toLowerCase();
 
-				if (product.getName().toLowerCase().indexOf(lowerCaseFilter) != -1)
+				if ( product.getName().toLowerCase().indexOf(lowerCaseFilter) != -1 )
 					// Filter matches brand
 					return true;
 				else
@@ -324,7 +350,7 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 		});
 
 		// 3. Wrap the FilteredList in a SortedList
-		SortedList<ProductProperty> sortedData = new SortedList<>(filteredData);
+		SortedList <ProductProperty> sortedData = new SortedList <>(filteredData);
 
 		// 4. Bind the SortedList comparator to the TableView comparator
 		sortedData.comparatorProperty().bind(tableView.comparatorProperty());
@@ -335,17 +361,17 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 
 	private void setImageColumn()
 	{
-		imageColumn.setCellValueFactory(new PropertyValueFactory<>("imageView"));
+		imageColumn.setCellValueFactory(new PropertyValueFactory <>("imageView"));
 	}
 
 	private void setImagePathColumn()
 	{
-		imagePathColumn.setCellValueFactory(new PropertyValueFactory<>("imagePath"));
+		imagePathColumn.setCellValueFactory(new PropertyValueFactory <>("imagePath"));
 	}
 
 	private void setWardColumn()
 	{
-		wardColumn.setCellValueFactory(new PropertyValueFactory<>("ward"));
+		wardColumn.setCellValueFactory(new PropertyValueFactory <>("ward"));
 		wardColumn.setCellFactory(ComboBoxTableCell.forTableColumn(Ward.values()));
 		wardColumn.setOnEditCommit(event ->
 		{
@@ -357,7 +383,7 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 
 	private void setNameColumn()
 	{
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+		nameColumn.setCellValueFactory(new PropertyValueFactory <>("name"));
 		nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		nameColumn.setOnEditCommit(event ->
 		{
@@ -370,7 +396,7 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 
 	private void setQtyPerItemColumn()
 	{
-		qtyPerItemColumn.setCellValueFactory(new PropertyValueFactory<>("qtyPerItem"));
+		qtyPerItemColumn.setCellValueFactory(new PropertyValueFactory <>("qtyPerItem"));
 		qtyPerItemColumn.setCellFactory(TextFieldTableCell.forTableColumn(new FloatStringConverter()
 		{
 			@Override
@@ -380,15 +406,16 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 				{
 					return super.fromString(value);
 				}
-				catch (NumberFormatException e)
+				catch ( NumberFormatException e )
 				{
 					return Float.NaN;
 				}
 			}
 		}));
+		
 		qtyPerItemColumn.setOnEditCommit(event ->
 		{
-			if (event.getNewValue() == null || event.getNewValue().isNaN() || event.getNewValue() <= 0)
+			if ( event.getNewValue() == null || event.getNewValue().isNaN() || event.getNewValue() <= 0 )
 			{
 				showWarningAlert();
 				event.getRowValue().setQtyPerItem(event.getOldValue());
@@ -406,7 +433,7 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 
 	private void setPriceColumn()
 	{
-		priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+		priceColumn.setCellValueFactory(new PropertyValueFactory <>("price"));
 		priceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new FloatStringConverter()
 		{
 			@Override
@@ -416,7 +443,7 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 				{
 					return super.fromString(value);
 				}
-				catch (NumberFormatException e)
+				catch ( NumberFormatException e )
 				{
 					return Float.NaN;
 				}
@@ -424,7 +451,7 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 		}));
 		priceColumn.setOnEditCommit(event ->
 		{
-			if (event.getNewValue() == null || event.getNewValue().isNaN() || event.getNewValue() <= 0)
+			if ( event.getNewValue() == null || event.getNewValue().isNaN() || event.getNewValue() <= 0 )
 			{
 				showWarningAlert();
 				event.getRowValue().setPrice(event.getOldValue());
@@ -442,7 +469,7 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 
 	private void setQtyAvailableColumn()
 	{
-		qtyAvailableColumn.setCellValueFactory(new PropertyValueFactory<>("qtyAvailable"));
+		qtyAvailableColumn.setCellValueFactory(new PropertyValueFactory <>("qtyAvailable"));
 		qtyAvailableColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()
 		{
 			@Override
@@ -452,7 +479,7 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 				{
 					return super.fromString(value);
 				}
-				catch (NumberFormatException e)
+				catch ( NumberFormatException e )
 				{
 					return Integer.MIN_VALUE;
 				}
@@ -460,7 +487,7 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 		}));
 		qtyAvailableColumn.setOnEditCommit(event ->
 		{
-			if (event.getNewValue() == null || event.getNewValue() == Integer.MIN_VALUE || event.getNewValue() <= 0)
+			if ( event.getNewValue() == null || event.getNewValue() == Integer.MIN_VALUE || event.getNewValue() <= 0 )
 			{
 				showWarningAlert();
 				event.getRowValue().setQtyAvailable(event.getOldValue());
@@ -476,9 +503,9 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 		});
 	}
 
-	private void initMPTEventHandlers()
+	private void initModifyProductsTabEventHandlers()
 	{
-		btnApplyChanges.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>()
+		btnApplyChanges.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
 		{
 			@Override
 			public void handle(Event event)
@@ -488,22 +515,120 @@ public class EmployeeController extends Controller<Employee> implements Initiali
 			}
 		});
 
-		btnApplyChanges.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>()
+		btnApplyChanges.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler <KeyEvent>()
 		{
 			@Override
 			public void handle(KeyEvent event)
 			{
-				if (event.getCode() == KeyCode.ENTER)
+				if ( event.getCode() == KeyCode.ENTER )
 				{
 					setProducts(newProducts);
-					alert(AlertType.INFORMATION, "Information", "The changes were applied to the database products.txt");
+					alert(AlertType.INFORMATION, "Information",
+							"The changes were applied to the database products.txt");
 				}
 			}
 		});
 	}
 
-	private static final void showWarningAlert()
+	private void showWarningAlert()
 	{
 		alert(AlertType.WARNING, "Warning", "The entered value is not correct !");
+	}
+
+	// View shopping Tab
+	@FXML
+	private TableView <ShoppingCartProperty> shoppingTableView;
+	@FXML
+	private TableColumn <ShoppingCartProperty,Integer> IDColumn;
+	@FXML
+	private TableColumn <ShoppingCartProperty,Date> expectedDateColumn;
+	@FXML
+	private TableColumn <ShoppingCartProperty,String> customerEmailColumn;
+	@FXML
+	private TableColumn <ShoppingCartProperty,Float> totalPriceColumn;
+	@FXML
+	private TableColumn <ShoppingCartProperty,PaymentMethod> paymentMethodColumn;
+	private ObservableList <ShoppingCartProperty> shoppingDataList;
+	
+	private void initializeViewShoppingTab()
+	{
+		shoppingDataList = FXCollections.observableArrayList();
+		
+		setIDColumn();
+		setExpectedDateColumn();
+		setCustomerEmailColumn();
+		setTotalPriceColumn();
+		setpaymentMethodColumn();
+
+		// Add all shoppingCarts to shoppingTableView
+		Map <String,ArrayList<ShoppingCart>> shoppingCarts = getShoppingCarts();
+
+		for ( String customer : shoppingCarts.keySet() )
+		{	
+			for ( ShoppingCart shoppingCart : shoppingCarts.get(customer) )
+				shoppingDataList.add(new ShoppingCartProperty ( shoppingCart ));
+		}
+
+		// 1. Wrap the ObservableList in a FilteredList ( initially display all data )
+		FilteredList <ShoppingCartProperty> shoppingFilteredData = new FilteredList <>(shoppingDataList, b -> true);
+
+		// 2. Set the filter Predicate whenever the filter changes
+		searchBar.textProperty().addListener((observable, oldValue, newValue) ->
+		{
+			shoppingFilteredData.setPredicate(shoppingCart ->
+			{
+				// If filter text is empty, display all products
+				if ( newValue == null || newValue.isEmpty() )
+					return true;
+
+				// Compare ... of every product with filter text
+				String lowerCaseFilter = newValue.toLowerCase();
+
+				if ( shoppingCart.getCustomerEmail().toLowerCase().indexOf(lowerCaseFilter) != -1 )
+					// Filter matches brand
+					return true;
+				else
+					// Does not match
+					return false;
+			});
+		});
+
+		// 3. Wrap the FilteredList in a SortedList
+		SortedList <ShoppingCartProperty> shoppingSortedData = new SortedList <>(shoppingFilteredData);
+
+		// 4. Bind the SortedList comparator to the TableView comparator
+		shoppingSortedData.comparatorProperty().bind(shoppingTableView.comparatorProperty());
+
+		// 5. Add sorted ( and filtered ) data to the table
+		shoppingTableView.setItems(shoppingSortedData);
+	}
+	
+	private void setIDColumn()
+	{
+		IDColumn.setCellValueFactory(new PropertyValueFactory <>("ID"));
+	}
+	
+	private void setExpectedDateColumn()
+	{
+		expectedDateColumn.setCellValueFactory(new PropertyValueFactory <>("expectedDate"));
+	}
+	
+	private void setCustomerEmailColumn()
+	{
+		customerEmailColumn.setCellValueFactory(new PropertyValueFactory <>("customerEmail"));
+	}
+	private void setTotalPriceColumn()
+	{
+		totalPriceColumn.setCellValueFactory(new PropertyValueFactory <>("totalPrice"));
+	}
+	
+	private void setpaymentMethodColumn()
+	{
+		paymentMethodColumn.setCellValueFactory(new PropertyValueFactory <>("paymentMethod"));
+	}
+	
+	public void viewProducts()
+	{
+		
 	}
 }

@@ -3,7 +3,6 @@ package controllers;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +21,7 @@ import models.FidelityCard;
 import models.PaymentMethod;
 import models.User;
 
-public class RegistrationController extends Controller<Customer> implements Initializable
+public class RegistrationController extends Controller <Customer> implements Initializable
 {
 	@FXML
 	private Pane container;
@@ -34,7 +33,7 @@ public class RegistrationController extends Controller<Customer> implements Init
 	private PasswordField password;
 
 	@FXML
-	private ComboBox<PaymentMethod> paymentMethod;
+	private ComboBox <PaymentMethod> paymentMethod;
 
 	@FXML
 	private CheckBox fidelityCard;
@@ -44,23 +43,24 @@ public class RegistrationController extends Controller<Customer> implements Init
 	{
 		Platform.runLater(() -> container.requestFocus());
 
-		ObservableList<PaymentMethod> paymentMethods = FXCollections.observableArrayList(PaymentMethod.values());
+		ObservableList <PaymentMethod> paymentMethods = FXCollections.observableArrayList(PaymentMethod.values());
 
 		paymentMethod.setItems(paymentMethods);
 	}
 
 	public void checkInput()
 	{
-		if (isAllCompiled())
+		if ( isAllCompiled() )
 		{
 			FidelityCard fC = null;
 
-			if (fidelityCard.isSelected()) fC = new FidelityCard(0);//TODO new correct ID
+			if ( fidelityCard.isSelected() )
+				fC = new FidelityCard ( getNextFidelityCardID() );
 
-			Customer customer = new Customer(name.getText(), surname.getText(), address.getText(), CAP.getText(), city.getText(), phone.getText(), email.getText(), password.getText(), fC,
-					paymentMethod.getValue());
+			Customer customer = new Customer(name.getText(), surname.getText(), address.getText(), CAP.getText(),
+					city.getText(), phone.getText(), email.getText(), password.getText(), fC, paymentMethod.getValue());
 
-			if (isAlreadyExists(customer))
+			if ( isAlreadyExists(customer) )
 			{
 				clearFields();
 
@@ -70,7 +70,7 @@ public class RegistrationController extends Controller<Customer> implements Init
 			{
 				insertCustomer(customer);
 
-				if (alert(AlertType.INFORMATION, "Information", "Registration completed").get() == ButtonType.OK)
+				if ( alert(AlertType.INFORMATION, "Information", "Registration completed").get() == ButtonType.OK )
 				{
 					((Stage) container.getScene().getWindow()).close();
 
@@ -78,7 +78,8 @@ public class RegistrationController extends Controller<Customer> implements Init
 				}
 			}
 		}
-		else alert(AlertType.WARNING, "Warning", "All fields must be completed");
+		else
+			alert(AlertType.WARNING, "Warning", "All fields must be completed");
 	}
 
 	public void returnToLogin()
@@ -90,37 +91,46 @@ public class RegistrationController extends Controller<Customer> implements Init
 
 	private boolean isAllCompiled()
 	{
-		if (name.getText().isEmpty()) return false;
+		if ( name.getText().isEmpty() )
+			return false;
 
-		if (surname.getText().isEmpty()) return false;
+		if ( surname.getText().isEmpty() )
+			return false;
 
-		if (address.getText().isEmpty()) return false;
+		if ( address.getText().isEmpty() )
+			return false;
 
-		if (CAP.getText().isEmpty()) return false;
+		if ( CAP.getText().isEmpty() )
+			return false;
 
-		if (city.getText().isEmpty()) return false;
+		if ( city.getText().isEmpty() )
+			return false;
 
-		if (phone.getText().isEmpty()) return false;
+		if ( phone.getText().isEmpty() )
+			return false;
 
-		if (email.getText().isEmpty()) return false;
+		if ( email.getText().isEmpty() )
+			return false;
 
-		if (password.getText().isEmpty()) return false;
+		if ( password.getText().isEmpty() )
+			return false;
 
 		return true;
 	}
 
-	private static final boolean isAlreadyExists(Customer customer)
+	private boolean isAlreadyExists(Customer customer)
 	{
-		Map<String, User> users = getUsers();
+		Map <String,User> users = getUsers();
 
-		if (users != null && users.get(customer.getEmail()) != null) return true;
+		if ( users != null && users.get(customer.getEmail()) != null )
+			return true;
 
 		return false;
 	}
 
-	private static final void insertCustomer(Customer customer)
+	private void insertCustomer(Customer customer)
 	{
-		Map<String, User> users = getUsers();
+		Map <String,User> users = getUsers();
 
 		users.put(customer.getEmail(), customer);
 
