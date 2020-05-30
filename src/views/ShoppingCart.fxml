@@ -20,7 +20,7 @@
 		<Pane prefHeight="800.0" prefWidth="300.0">
 			<children>
 				<Label fx:id="email" layoutX="137.0" layoutY="40.0" prefHeight="27.0" prefWidth="118.0" text="Mario Rossi" />
-				<Label layoutX="15.0" layoutY="758.0" prefHeight="27.0" prefWidth="147.0" text="Total: 0€">
+				<Label fx:id="lblTotToPay" layoutX="15.0" layoutY="758.0" prefHeight="27.0" prefWidth="147.0" text="Total: 0€">
 					<font>
 						<Font size="18.0" />
 					</font>

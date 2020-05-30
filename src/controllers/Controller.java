@@ -42,52 +42,56 @@ public class Controller <T>
 		this.currentUser = user;
 	}
 
-	public void switchToView(String view, String title, String controllerType, T user)
+	public void openView ( String viewPath, String viewTitle, User user, ShoppingCart shoppingCart )
 	{
 		Parent parent = null;
-
+		
 		try
 		{
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(view));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(viewPath));
 			parent = loader.load();
-
-			if ( controllerType != null )
-			{
-				switch ( controllerType )
-				{
-					case "CC":
-					{
-						CustomerController controller = loader.getController();
-						controller.initialize((Customer) user);
-						break;
-					}
-					case "SCC":
-					{
-						ShoppingCartController controller = loader.getController();
-						// controller.initialize(dafa, fdafa, dad);
-						controller.displayCustomer((Customer) user);
-
-						break;
-					}
-
-				}
-			}
+			sendDataToController ( loader, viewTitle, user, shoppingCart );
 		}
 		catch ( IOException e )
 		{
 			System.err.println("switchToView IOException");
 		}
-
+		
 		Scene scene = new Scene(parent);
 
 		Stage stage = new Stage();
 
 		stage.centerOnScreen();
 		stage.setResizable(false);
-		stage.setTitle(title);
+		stage.setTitle(viewTitle);
 		stage.setScene(scene);
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/generics/eShop.png")));
 		stage.show();
+	}
+	
+	private void sendDataToController ( FXMLLoader loader, String viewTitle, User user, ShoppingCart shoppingCart )
+	{
+		switch ( viewTitle )
+		{
+			case "Customer":
+			{
+				CustomerController controller = loader.getController();
+				controller.setData((Customer) user);
+				break;
+			}
+			case "Shopping Cart":
+			{
+				ShoppingCartController controller = loader.getController();
+				controller.setData((Customer) user);
+				break;
+			}
+			case "Shopping Cart Products":
+			{
+				ShoppingCartProductsController controller = loader.getController();
+				controller.setData(shoppingCart.getID(),shoppingCart.getCustomer());
+				break;
+			}
+		}
 	}
 
 	@SuppressWarnings ( "unchecked" )

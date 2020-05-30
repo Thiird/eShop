@@ -55,7 +55,7 @@ public class RegistrationController extends Controller <Customer> implements Ini
 			FidelityCard fC = null;
 
 			if ( fidelityCard.isSelected() )
-				fC = new FidelityCard ( getNextFidelityCardID() );
+				fC = new FidelityCard(getNextFidelityCardID());
 
 			Customer customer = new Customer(name.getText(), surname.getText(), address.getText(), CAP.getText(),
 					city.getText(), phone.getText(), email.getText(), password.getText(), fC, paymentMethod.getValue());
@@ -74,7 +74,7 @@ public class RegistrationController extends Controller <Customer> implements Ini
 				{
 					((Stage) container.getScene().getWindow()).close();
 
-					switchToView("../views/Login.fxml", "Login", null, null);
+					openView("../views/Login.fxml", "Login", null, null);
 				}
 			}
 		}
@@ -86,7 +86,7 @@ public class RegistrationController extends Controller <Customer> implements Ini
 	{
 		((Stage) container.getScene().getWindow()).close();
 
-		switchToView("../views/Login.fxml", "Login", null, null);
+		openView("../views/Login.fxml", "Login", null, null);
 	}
 
 	private boolean isAllCompiled()

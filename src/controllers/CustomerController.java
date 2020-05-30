@@ -47,7 +47,7 @@ public class CustomerController extends Controller<Customer>
 	@FXML
 	private Label ID, releaseDate, points;
 
-	public void initialize(Customer customer)
+	public void setData(Customer customer)
 	{
 		Platform.runLater(() -> container.requestFocus());
 
@@ -111,7 +111,7 @@ public class CustomerController extends Controller<Customer>
 
 				((Stage) container.getScene().getWindow()).close();
 
-				switchToView("../views/ShoppingCart.fxml", "Shopping Cart", "SCC", getCurrentUser());
+				openView("../views/ShoppingCart.fxml", "Shopping Cart", getCurrentUser(), null );
 			}
 		}
 		catch (NoSuchElementException e)
@@ -124,6 +124,6 @@ public class CustomerController extends Controller<Customer>
 	{
 		((Stage) container.getScene().getWindow()).close();
 
-		switchToView("../views/ShoppingCart.fxml", "Shopping Cart", "SCC", getCurrentUser());
+		openView("../views/ShoppingCart.fxml", "Shopping Cart", getCurrentUser(), null );
 	}
 }
