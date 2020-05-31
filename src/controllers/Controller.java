@@ -37,26 +37,31 @@ public class Controller <T>
 		return currentUser;
 	}
 
+	public static void closeApp()
+	{
+		System.out.println("AAa");
+	}
+
 	public void setCurrentUser(T user)
 	{
 		this.currentUser = user;
 	}
 
-	public void openView ( String viewPath, String viewTitle, User user, ShoppingCart shoppingCart )
+	public void openView(String viewPath, String viewTitle, User user, ShoppingCart shoppingCart)
 	{
 		Parent parent = null;
-		
+
 		try
 		{
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(viewPath));
 			parent = loader.load();
-			sendDataToController ( loader, viewTitle, user, shoppingCart );
+			sendDataToController(loader, viewTitle, user, shoppingCart);
 		}
 		catch ( IOException e )
 		{
 			System.err.println("switchToView IOException");
 		}
-		
+
 		Scene scene = new Scene(parent);
 
 		Stage stage = new Stage();
@@ -68,8 +73,8 @@ public class Controller <T>
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/generics/eShop.png")));
 		stage.show();
 	}
-	
-	private void sendDataToController ( FXMLLoader loader, String viewTitle, User user, ShoppingCart shoppingCart )
+
+	private void sendDataToController(FXMLLoader loader, String viewTitle, User user, ShoppingCart shoppingCart)
 	{
 		switch ( viewTitle )
 		{
@@ -88,7 +93,7 @@ public class Controller <T>
 			case "Shopping Cart Products":
 			{
 				ShoppingCartProductsController controller = loader.getController();
-				controller.setData(shoppingCart.getID(),shoppingCart.getCustomer());
+				controller.setData(shoppingCart.getID(), shoppingCart.getCustomer());
 				break;
 			}
 		}

@@ -63,7 +63,7 @@ public class LoginController implements Serializable, Initializable
 
 	public void initEventHandlers()
 	{
-		btnLogin.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>()
+		btnLogin.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
 		{
 			@Override
 			public void handle(Event event)
@@ -72,16 +72,17 @@ public class LoginController implements Serializable, Initializable
 			}
 		});
 
-		btnLogin.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>()
+		btnLogin.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler <KeyEvent>()
 		{
 			@Override
 			public void handle(KeyEvent event)
 			{
-				if (event.getCode() == KeyCode.ENTER) checkInput();
+				if ( event.getCode() == KeyCode.ENTER )
+					checkInput();
 			}
 		});
 
-		btnSignUp.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>()
+		btnSignUp.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
 		{
 			@Override
 			public void handle(Event event)
@@ -91,12 +92,13 @@ public class LoginController implements Serializable, Initializable
 
 		});
 
-		btnSignUp.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>()
+		btnSignUp.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler <KeyEvent>()
 		{
 			@Override
 			public void handle(KeyEvent event)
 			{
-				if (event.getCode() == KeyCode.ENTER) switchToRegistration();
+				if ( event.getCode() == KeyCode.ENTER )
+					switchToRegistration();
 			}
 		});
 	}
@@ -110,11 +112,11 @@ public class LoginController implements Serializable, Initializable
 
 	public void checkInput()
 	{
-		if (isAllCompiled())
+		if ( isAllCompiled() )
 		{
 			User user = getUser();
 
-			if (user == null)
+			if ( user == null )
 			{
 				clearFields();
 
@@ -122,13 +124,13 @@ public class LoginController implements Serializable, Initializable
 			}
 			else
 			{
-				if (user instanceof Customer)
+				if ( user instanceof Customer )
 				{
 					((Stage) container.getScene().getWindow()).close();
 
 					switchToView("/views/ShoppingCart.fxml", "Shopping Cart", "SCC", (Customer) user);
 				}
-				else if (user instanceof Employee)
+				else if ( user instanceof Employee )
 				{
 					((Stage) container.getScene().getWindow()).close();
 
@@ -144,7 +146,7 @@ public class LoginController implements Serializable, Initializable
 		}
 	}
 
-	private final void switchToView(String view, String title, String controllerType, User user )
+	private final void switchToView(String view, String title, String controllerType, User user)
 	{
 		Parent parent = null;
 
@@ -153,9 +155,9 @@ public class LoginController implements Serializable, Initializable
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(view));
 			parent = loader.load();
 
-			if (controllerType != null)
+			if ( controllerType != null )
 			{
-				switch (controllerType)
+				switch ( controllerType )
 				{
 					case "SCC":
 					{
@@ -166,7 +168,7 @@ public class LoginController implements Serializable, Initializable
 				}
 			}
 		}
-		catch (IOException e)
+		catch ( IOException e )
 		{
 			System.err.println(view + " not found !");
 		}
@@ -187,19 +189,21 @@ public class LoginController implements Serializable, Initializable
 	{
 		User user = null;
 
-		Map<String, User> users = getUsers();
+		Map <String,User> users = getUsers();
 
-		if (users != null) user = users.get(email.getText());
+		if ( users != null )
+			user = users.get(email.getText());
 
-		if (user == null) return null;
+		if ( user == null )
+			return null;
 
 		return (user.getPassword().equalsIgnoreCase(password.getText())) ? user : null;
 	}
 
-	@SuppressWarnings("unchecked")
-	private static final Map<String, User> getUsers()
+	@SuppressWarnings ( "unchecked" )
+	private static final Map <String,User> getUsers()
 	{
-		Map<String, User> users = null;
+		Map <String,User> users = null;
 
 		URL resource = LoginController.class.getClass().getResource("/databases/users.txt");
 		File file = null;
@@ -207,20 +211,20 @@ public class LoginController implements Serializable, Initializable
 		{
 			file = new File(resource.toURI());
 		}
-		catch (URISyntaxException e1)
+		catch ( URISyntaxException e1 )
 		{
 			e1.printStackTrace();
 		}
 
-		try (FileInputStream fis = new FileInputStream(file); ObjectInputStream ois = new ObjectInputStream(fis);)
+		try ( FileInputStream fis = new FileInputStream(file); ObjectInputStream ois = new ObjectInputStream(fis); )
 		{
-			users = (HashMap<String, User>) ois.readObject();
+			users = (HashMap <String,User>) ois.readObject();
 		}
-		catch (IOException e)
+		catch ( IOException e )
 		{
 			return null;
 		}
-		catch (ClassNotFoundException e)
+		catch ( ClassNotFoundException e )
 		{
 			System.err.println("ClassNotFoundException !");
 		}
@@ -228,7 +232,7 @@ public class LoginController implements Serializable, Initializable
 		return users;
 	}
 
-	private static final Optional<ButtonType> alert(AlertType type, String title, String header)
+	private static final Optional <ButtonType> alert(AlertType type, String title, String header)
 	{
 		Alert alert = new Alert(type);
 

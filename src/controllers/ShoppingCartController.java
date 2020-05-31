@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -32,6 +33,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import models.Customer;
 import models.Product;
 import models.ShoppingCart;
@@ -42,13 +44,16 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 	HashMap <ImageView,Product> imageToProduct = new HashMap <ImageView,Product>();
 	HashMap <Product,ImageView> productToImage = new HashMap <Product,ImageView>();
 	Map <String,Product> nameToProduct = new HashMap <String,Product>();
+	HashMap <Label,Label> prodNameToQty = new HashMap <Label,Label>();
 	Map <String,Product> products = new HashMap <String,Product>();
 
 	int xShop = 0;
 	int yShop = 0;
 
-	Pane selectedShopProduct;
-	Label selectedCartProduct;
+	public Pane selectedShopProduct;
+	public Pane hoveringShopProduct;
+	public Label selectedCartProduct;
+	public Label hoveringCartProduct;
 
 	int xCart = 0;
 	int yCart = 0;
@@ -104,14 +109,20 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 
 	HashMap <ImageView,String> imageToProductName;
 
-	String selectedColor = "#ed2850";
-	String hoveringColor = "#b5c6f7";
+	Selector clock;
+
+	public static String selectedColor = "#f23366";
+	public static String hoveringColor = "#688efc";
+	public static String backgroundColor = "#a2b9fa";
+	public static String diocan = "#ff0000";
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		initEventHandlers();
+		Platform.runLater(() -> setCloseEvent());
+
 		initGridPanes();
+		initEventHandlers();
 
 		wardSelection.getItems().setAll(Ward.values());
 		wardSelection.getSelectionModel().select(0);
@@ -122,35 +133,8 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 
 		searchInShop();// To initially fill the shop grid
 
-		// new Thread(new Clock()).start();
-	}
-
-	private void resetProductPanel()
-	{
-		currProdImage.setImage(noProductImage);
-		currProdName.setText("-");
-		currProdPrice.setText("Price: - $");
-		currProdBrand.setText("Brand: -");
-		currProdQty.setText("Quantity per item: -");
-		currProdQtyAvailable.setText("Items available: -");
-	}
-
-	private void loadProducts()
-	{
-		// Load imageToProdcut and productToImage
-		products = getProducts();
-
-		ImageView im;
-
-		for ( String s : products.keySet() )
-		{
-			im = new ImageView(new Image((products.get(s).getImage())));
-
-			imageToProduct.put(im, products.get(s));
-			productToImage.put(products.get(s), im);
-
-			nameToProduct.put(s.split("/")[3].split("\\.")[0], products.get(s));
-		}
+		clock = new Selector();
+		new Thread(clock).start();
 	}
 
 	private void initEventHandlers()
@@ -245,7 +229,34 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 				// switchToView("/view/Payment.fxml", "Pay", controllerType, user);
 			}
 		});
+	}
 
+	private void resetProductPanel()
+	{
+		currProdImage.setImage(noProductImage);
+		currProdName.setText("-");
+		currProdPrice.setText("Price: - $");
+		currProdBrand.setText("Brand: -");
+		currProdQty.setText("Quantity per item: -");
+		currProdQtyAvailable.setText("Items available: -");
+	}
+
+	private void loadProducts()
+	{
+		// Load imageToProdcut and productToImage
+		products = getProducts();
+
+		ImageView im;
+
+		for ( String s : products.keySet() )
+		{
+			im = new ImageView(new Image((products.get(s).getImage())));
+
+			imageToProduct.put(im, products.get(s));
+			productToImage.put(products.get(s), im);
+
+			nameToProduct.put(s.split("/")[3].split("\\.")[0], products.get(s));
+		}
 	}
 
 	private void addProductToCart()
@@ -267,6 +278,15 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 			// Add product to cart obj
 			shoppingCart.addProduct(prodToAddToCart, qtyToAdd);
 			lblTotToPay.setText("Total: " + shoppingCart.getTotalPrice() + "$");
+
+			// No more items available
+			if ( prodToAddToCart.getQtyAvailable() == 0 )
+			{
+				isPAvaialble.setText("Product not available");
+				isPAvaialble.setStyle("-fx-text-fill: red;");
+
+				enableProductPanel(false);
+			}
 		}
 		else
 		{
@@ -280,24 +300,26 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 		if ( !shoppingCart.containsProduct(p) )
 		{
 			// Product name label
-			Label l = new Label(p.getName());
-			l.setFont(new Font("Arial", 20));
-			setCartNodeEvents(l);
+			Label lblName = new Label(p.getName());
+			lblName.setFont(new Font("Arial", 20));
+			setCartNodeEvents(lblName);
 
-			GridPane.setFillWidth(l, true);
-			GridPane.setFillHeight(l, true);
-			GridPane.setConstraints(l, 0, yCart);
-			cartGridPane.getChildren().add(l);
+			GridPane.setFillWidth(lblName, true);
+			GridPane.setFillHeight(lblName, true);
+			GridPane.setConstraints(lblName, 0, yCart);
+			cartGridPane.getChildren().add(lblName);
 
 			// Product qty label
-			l = new Label("x" + qtyToAdd);
-			l.setFont(new Font("Arial", 20));
-			setCartNodeEvents(l);
+			Label lblQty = new Label("x" + qtyToAdd);
+			lblQty.setFont(new Font("Arial", 20));
+			setCartNodeEvents(lblQty);
 
-			GridPane.setFillWidth(l, true);
-			GridPane.setFillHeight(l, true);
-			GridPane.setConstraints(l, 1, yCart);
-			cartGridPane.getChildren().add(l);
+			GridPane.setFillWidth(lblQty, true);
+			GridPane.setFillHeight(lblQty, true);
+			GridPane.setConstraints(lblQty, 1, yCart);
+			cartGridPane.getChildren().add(lblQty);
+
+			prodNameToQty.put(lblName, lblQty);
 
 			yCart++;
 		}
@@ -376,114 +398,126 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 		return date;
 	}
 
-	private void setCartNodeEvents(Node node)
+	private void highlightShopProduct(Node node, boolean highlight, boolean saveRef, boolean selectOrHover)
 	{
-		// Clicking in node event
-		node.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
+		// Apply actions
+		if ( selectOrHover )
 		{
-			@Override
-			public void handle(Event event)
+			if ( highlight )
 			{
-				if ( selectedCartProduct == null )
-				{
-					selectedShopProduct = null;
+				Selector.clearSelectionList(false);
+				Selector.addNodeToSelection(node);
 
-					highlightCartProduct(node, true, true);
-					enableProductPanel(true);
+				node.setStyle("-fx-background-color:" + ShoppingCartController.selectedColor + ";");
+			}
+			else
+			{
+				System.out.println("AA");
+				node.setStyle("-fx-background-color:" + ShoppingCartController.diocan + ";");
+				System.out.println("VVV");
+			}
 
-					loadHoveringProductInfo((ImageView) productToImage
-							.get(nameToProduct.get(selectedCartProduct.getText().toLowerCase().replace(" ", "_"))));
-				}
-				else if ( GridPane.getRowIndex(node) == GridPane.getRowIndex(selectedCartProduct) )
+			if ( saveRef )
+			{
+				selectedShopProduct = (Pane) node;
+				if ( selectedCartProduct != null )
 				{
+					selectedCartProduct
+							.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
 					selectedCartProduct = null;
-					enableProductPanel(false);
-				}
-				else
-				{
-					selectedShopProduct = null;
-
-					highlightCartProduct(selectedCartProduct, false, false);
-					highlightCartProduct(node, true, true);
-
-					node.setStyle("-fx-background-color:#ed2850;");
-					selectedCartProduct = ((Label) node);
-
-					loadHoveringProductInfo((ImageView) productToImage
-							.get(nameToProduct.get(selectedCartProduct.getText().toLowerCase().replace(" ", "_"))));
 				}
 			}
-		});
 
-		// Entering in node event
-		node.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler <Event>()
+		}
+		else
 		{
-			@Override
-			public void handle(Event event)
+			if ( highlight )
 			{
-				if ( selectedCartProduct == null )
-					highlightCartProduct(node, false, false);
-
-				loadHoveringProductInfo((ImageView) productToImage
-						.get(nameToProduct.get(((Label) node).getText().toLowerCase().replace(" ", "_"))));
-
-				enableProductPanel(true);
+				node.setStyle("-fx-background-color:" + ShoppingCartController.hoveringColor + ";");
 			}
-		});
-
-		// Exiting from node event
-		node.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler <Event>()
-		{
-			@Override
-			public void handle(Event event)
+			else
 			{
-				if ( selectedCartProduct == null )
-				{
-					highlightCartProduct(node, false, false);
-				}
+				node.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
 			}
-		});
+
+			if ( saveRef )
+				hoveringShopProduct = (Pane) node;
+		}
 	}
 
-	private void highlightCartProduct(Node node, boolean highlight, boolean saveRef)
-	{// Given either the product name or product label, this method highlights or
-		// dis-highlights both in the cart grid
-		// Also saves the correct reference for selectedCartProduct, see below
+	private void highlightCartProduct(Node node, boolean highlight, boolean saveRef, boolean selectOrHover)
+	{
+		Label lblName = null;
+		Label lblQty = null;
+		Label currLabel = (Label) node;
 
-		Label lbl = (Label) node;
-
-		int targetRowIndex = GridPane.getRowIndex(node);
-		int targetColumnsIndex = GridPane.getColumnIndex(node);
-
-		for ( Node child : cartGridPane.getChildren() )
+		// Find correct nodes references
+		if ( currLabel.getText().contains("x") )
 		{
-			if ( GridPane.getRowIndex(child) == targetRowIndex )
+			lblQty = currLabel;
+
+			for ( Label lbl : prodNameToQty.keySet() )
 			{
-				if ( GridPane.getColumnIndex(child) != targetColumnsIndex )
+				if ( prodNameToQty.get(lbl) == lblQty )
+					lblName = lbl;
+			}
+		}
+		else
+		{
+			lblName = currLabel;
+
+			for ( Label lbl : prodNameToQty.keySet() )
+			{
+				if ( lbl.getText().equals(lblName.getText()) )
+					lblQty = prodNameToQty.get(lbl);
+			}
+		}
+
+		// Apply actions
+		if ( selectOrHover )
+		{
+			if ( highlight )
+			{
+				Selector.clearSelectionList(false);
+				Selector.addNodeToSelection(lblName);
+				Selector.addNodeToSelection(lblQty);
+
+				lblName.setStyle("-fx-background-color:" + ShoppingCartController.selectedColor + ";");
+				lblQty.setStyle("-fx-background-color:" + ShoppingCartController.selectedColor + ";");
+			}
+			else
+			{
+				lblName.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
+				lblQty.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
+			}
+
+			if ( saveRef )
+			{
+				selectedCartProduct = lblName;
+				if ( selectedShopProduct != null )
 				{
-					if ( highlight )
-					{
-						child.setStyle("-fx-background-color:" + selectedColor + ";");
-						lbl.setStyle("-fx-background-color:" + selectedColor + ";");
-					}
-					else
-					{
-						child.setStyle("-fx-background-color:" + hoveringColor + ";");
-						lbl.setStyle("-fx-background-color:" + hoveringColor + ";");
-					}
-
-					// Save as selectedCartProduct the name label, not the quantity one
-					if ( saveRef )
-					{
-						if ( !lbl.getText().contains("X") )
-							selectedCartProduct = lbl;
-						else
-							selectedCartProduct = (Label) node;
-					}
-
-					break;
+					selectedShopProduct
+							.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
+					selectedShopProduct = null;
 				}
 			}
+
+		}
+		else
+		{
+			if ( highlight )
+			{
+				lblName.setStyle("-fx-background-color:" + ShoppingCartController.hoveringColor + ";");
+				lblQty.setStyle("-fx-background-color:" + ShoppingCartController.hoveringColor + ";");
+			}
+			else
+			{
+				lblName.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
+				lblQty.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
+			}
+
+			if ( saveRef )
+				hoveringCartProduct = lblName;
 		}
 	}
 
@@ -529,87 +563,180 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 				}
 			}
 		}
-
-		setGridNodesEvents();
 	}
 
-	private void setGridNodesEvents()
+	private void setCartNodeEvents(Node node)
 	{
-		for ( Node node : shopGridPane.getChildren() )
+		// Clicking in node event
+		node.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
 		{
-			if ( node instanceof Pane )
+			@Override
+			public void handle(Event event)
 			{
-				// Clicking in node event
-				node.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
+				if ( selectedCartProduct == null )
 				{
-					@Override
-					public void handle(Event event)
-					{
-						if ( selectedShopProduct == null )
-						{
-							node.setStyle("-fx-background-color:#ed2850;");
-							selectedShopProduct = ((Pane) node);
-							loadHoveringProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
-						}
-						else if ( selectedShopProduct == ((Pane) node) )
-						{
-							// node.setStyle("-fx-background-color:#b5c6f7;");
-							enableProductPanel(false);
-							selectedShopProduct = null;
-						}
-						else
-						{
-							selectedShopProduct.setStyle("-fx-background-color:#b5c6f7;");
+					highlightCartProduct(node, true, true, true);
 
-							node.setStyle("-fx-background-color:#ed2850;");
-							selectedShopProduct = ((Pane) node);
-
-							loadHoveringProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
-						}
-					}
-				});
-
-				// Entering in node event
-				node.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler <Event>()
+					loadHoveringProductInfo((ImageView) productToImage
+							.get(nameToProduct.get(selectedCartProduct.getText().toLowerCase().replace(" ", "_"))));
+				}
+				else
 				{
-					@Override
-					public void handle(Event event)
+					if ( GridPane.getRowIndex(node) == GridPane.getRowIndex(selectedCartProduct) )
 					{
-						if ( selectedShopProduct != ((Pane) node) )
-							node.setStyle("-fx-background-color:#4d7af7;");
-
-						loadHoveringProductInfo((ImageView) (((Pane) node).getChildren().get(0)));
-
-						enableProductPanel(true);
+						Selector.clearSelectionList(true);
+						enableProductPanel(false);
+						selectedCartProduct = null;
 					}
-				});
-
-				// Exiting from node event
-				node.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler <Event>()
-				{
-					@Override
-					public void handle(Event event)
+					else
 					{
+						highlightCartProduct(selectedCartProduct, false, false, true);
+						highlightCartProduct(node, true, true, true);
 
-						if ( selectedShopProduct != null )
-							loadHoveringProductInfo((ImageView) selectedShopProduct.getChildren().get(0));
-						else
-						{
-							if ( selectedShopProduct != ((Pane) node) )
-							{
-								node.setStyle("-fx-background-color:#b5c6f7;");
-							}
-							else
-							{
-								resetProductPanel();
-								enableProductPanel(false);
-							}
-						}
-
+						loadHoveringProductInfo((ImageView) productToImage
+								.get(nameToProduct.get(selectedCartProduct.getText().toLowerCase().replace(" ", "_"))));
 					}
-				});
+				}
 			}
-		}
+		});
+
+		// Entering in node event
+		node.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler <Event>()
+		{
+			@Override
+			public void handle(Event event)
+			{
+				if ( selectedCartProduct == null )
+				{// Select current node
+
+					highlightCartProduct(node, true, true, false);
+
+				}
+				else if ( GridPane.getRowIndex(node) != GridPane.getRowIndex(selectedCartProduct) )
+				{
+					highlightCartProduct(node, true, true, false);
+				}
+
+				loadHoveringProductInfo((ImageView) productToImage
+						.get(nameToProduct.get((hoveringCartProduct).getText().toLowerCase().replace(" ", "_"))));
+
+			}
+		});
+
+		// Exiting from node event
+		node.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler <Event>()
+		{
+			@Override
+			public void handle(Event event)
+			{
+				if ( selectedCartProduct == null )
+				{
+					highlightCartProduct(node, false, false, false);
+
+					if ( selectedShopProduct == null )
+						resetProductPanel();
+					else
+					{
+						loadHoveringProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
+					}
+				}
+				else if ( GridPane.getRowIndex(node) != GridPane.getRowIndex(selectedCartProduct) )
+				{
+					highlightCartProduct(node, false, false, false);
+					loadHoveringProductInfo((ImageView) productToImage
+							.get(nameToProduct.get((selectedCartProduct).getText().toLowerCase().replace(" ", "_"))));
+				}
+			}
+		});
+	}
+
+	private void setShopNodeEvents(Node node)
+	{
+		node.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
+		{
+			@Override
+			public void handle(Event event)
+			{
+				if ( selectedShopProduct == null )
+				{
+					highlightShopProduct(node, true, true, true);
+
+					loadHoveringProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
+				}
+				else
+				{
+					if ( selectedShopProduct == ((Pane) node) )
+					{
+						Selector.clearSelectionList(true);
+						enableProductPanel(false);
+						selectedShopProduct = null;
+					}
+					else
+					{
+
+						highlightShopProduct(selectedShopProduct, false, false, false);
+						highlightShopProduct(node, true, true, true);
+
+						loadHoveringProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
+					}
+				}
+			}
+		});
+
+		// Entering in node event
+		node.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler <Event>()
+		{
+			@Override
+			public void handle(Event event)
+			{
+				if ( selectedShopProduct == null )
+				{// Select current node
+
+					highlightShopProduct(node, true, true, false);
+
+				}
+				else if ( selectedShopProduct != ((Pane) node) )
+				{
+					highlightShopProduct(node, true, true, false);
+				}
+
+				loadHoveringProductInfo((ImageView) (((Pane) node).getChildren().get(0)));
+			}
+		});
+
+		// Exiting from node event
+		node.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler <Event>()
+		{
+			@Override
+			public void handle(Event event)
+			{
+				if ( selectedShopProduct != null )
+				{
+					highlightShopProduct(node, false, false, false);
+					loadHoveringProductInfo((ImageView) selectedShopProduct.getChildren().get(0));
+				}
+				else
+				{
+					if ( selectedShopProduct == null )
+					{
+						highlightShopProduct(node, false, false, false);
+
+						if ( selectedCartProduct == null )
+							resetProductPanel();
+						else
+						{
+							loadHoveringProductInfo((ImageView) productToImage.get(nameToProduct
+									.get((selectedCartProduct).getText().toLowerCase().replace(" ", "_"))));
+						}
+					}
+					else if ( GridPane.getRowIndex(node) != GridPane.getRowIndex(selectedCartProduct) )
+					{
+						highlightShopProduct(node, false, false, false);
+						loadHoveringProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
+					}
+				}
+			}
+		});
 	}
 
 	private void searchInCart()
@@ -643,6 +770,7 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 		Pane r = new Pane();
 		r.getChildren().add(b);
 		r.styleProperty().set("-fx-background-color:#f9f3c5;");
+		setShopNodeEvents(r);
 
 		// r.getChildren().add(b);
 		// BorderPane.setMargin(b, new Insets(10, 10, 10, 10));
@@ -689,9 +817,9 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 		}
 	}
 
-	private void enableProductPanel(boolean value)
+	private void enableProductPanel(boolean activate)
 	{
-		if ( value )
+		if ( activate )
 		{
 			btnAddToCart.setDisable(false);
 
@@ -790,5 +918,10 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 		cartPane.setFitToWidth(true);
 		cartPane.setFitToHeight(true);
 		cartPane.setPannable(true);
+	}
+
+	public void setCloseEvent()
+	{
+		((Stage) container.getScene().getWindow()).setOnCloseRequest(e -> clock.quit());
 	}
 }

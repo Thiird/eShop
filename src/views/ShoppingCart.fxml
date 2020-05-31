@@ -97,6 +97,11 @@
 		<Button fx:id="btnShopSearch" layoutX="856.0" layoutY="56.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Search" />
 		<MenuBar layoutY="1.0" prefHeight="4.0" prefWidth="1280.0">
 			<menus>
+            <Menu mnemonicParsing="false" text="User">
+              <items>
+                  <MenuItem mnemonicParsing="false" text="Logout" />
+              </items>
+            </Menu>
 				<Menu mnemonicParsing="false" text="Help">
 					<items>
 						<MenuItem mnemonicParsing="false" text="App Infos" />
