@@ -39,7 +39,7 @@ import models.Product;
 import models.ShoppingCart;
 import models.Ward;
 
-public class ShoppingCartController extends Controller <Customer> implements Initializable
+public class ShopController extends Controller <Customer> implements Initializable
 {
 	HashMap <ImageView,Product> imageToProduct = new HashMap <ImageView,Product>();
 	HashMap <Product,ImageView> productToImage = new HashMap <Product,ImageView>();
@@ -229,6 +229,11 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 				// switchToView("/view/Payment.fxml", "Pay", controllerType, user);
 			}
 		});
+
+		wardSelection.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) ->
+		{
+			searchInShop();
+		});
 	}
 
 	private void resetProductPanel()
@@ -408,13 +413,12 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 				Selector.clearSelectionList(false);
 				Selector.addNodeToSelection(node);
 
-				node.setStyle("-fx-background-color:" + ShoppingCartController.selectedColor + ";");
+				node.setStyle("-fx-background-color:" + ShopController.selectedColor + ";");
 			}
 			else
 			{
-				System.out.println("AA");
-				node.setStyle("-fx-background-color:" + ShoppingCartController.diocan + ";");
-				System.out.println("VVV");
+				node.setStyle("-fx-background-color:" + ShopController.backgroundColor + ";");
+
 			}
 
 			if ( saveRef )
@@ -423,7 +427,7 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 				if ( selectedCartProduct != null )
 				{
 					selectedCartProduct
-							.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
+							.setStyle("-fx-background-color:" + ShopController.backgroundColor + ";");
 					selectedCartProduct = null;
 				}
 			}
@@ -433,11 +437,11 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 		{
 			if ( highlight )
 			{
-				node.setStyle("-fx-background-color:" + ShoppingCartController.hoveringColor + ";");
+				node.setStyle("-fx-background-color:" + ShopController.hoveringColor + ";");
 			}
 			else
 			{
-				node.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
+				node.setStyle("-fx-background-color:" + ShopController.backgroundColor + ";");
 			}
 
 			if ( saveRef )
@@ -482,13 +486,13 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 				Selector.addNodeToSelection(lblName);
 				Selector.addNodeToSelection(lblQty);
 
-				lblName.setStyle("-fx-background-color:" + ShoppingCartController.selectedColor + ";");
-				lblQty.setStyle("-fx-background-color:" + ShoppingCartController.selectedColor + ";");
+				lblName.setStyle("-fx-background-color:" + ShopController.selectedColor + ";");
+				lblQty.setStyle("-fx-background-color:" + ShopController.selectedColor + ";");
 			}
 			else
 			{
-				lblName.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
-				lblQty.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
+				lblName.setStyle("-fx-background-color:" + ShopController.backgroundColor + ";");
+				lblQty.setStyle("-fx-background-color:" + ShopController.backgroundColor + ";");
 			}
 
 			if ( saveRef )
@@ -497,7 +501,7 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 				if ( selectedShopProduct != null )
 				{
 					selectedShopProduct
-							.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
+							.setStyle("-fx-background-color:" + ShopController.backgroundColor + ";");
 					selectedShopProduct = null;
 				}
 			}
@@ -507,13 +511,13 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 		{
 			if ( highlight )
 			{
-				lblName.setStyle("-fx-background-color:" + ShoppingCartController.hoveringColor + ";");
-				lblQty.setStyle("-fx-background-color:" + ShoppingCartController.hoveringColor + ";");
+				lblName.setStyle("-fx-background-color:" + ShopController.hoveringColor + ";");
+				lblQty.setStyle("-fx-background-color:" + ShopController.hoveringColor + ";");
 			}
 			else
 			{
-				lblName.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
-				lblQty.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
+				lblName.setStyle("-fx-background-color:" + ShopController.backgroundColor + ";");
+				lblQty.setStyle("-fx-background-color:" + ShopController.backgroundColor + ";");
 			}
 
 			if ( saveRef )
@@ -769,7 +773,7 @@ public class ShoppingCartController extends Controller <Customer> implements Ini
 		ImageView b = productToImage.get(p);
 		Pane r = new Pane();
 		r.getChildren().add(b);
-		r.styleProperty().set("-fx-background-color:#f9f3c5;");
+		r.styleProperty().set("-fx-background-color:" + backgroundColor + ";");
 		setShopNodeEvents(r);
 
 		// r.getChildren().add(b);

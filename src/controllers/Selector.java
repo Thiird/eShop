@@ -40,7 +40,7 @@ public class Selector implements Runnable
 					goUpOrDown = true;
 				}
 
-				Color c = Color.decode(ShoppingCartController.selectedColor);
+				Color c = Color.decode(ShopController.selectedColor);
 
 				// Highlight nodes
 				for ( Node node : nodesToHighlight )
@@ -65,7 +65,7 @@ public class Selector implements Runnable
 		{
 			for ( Node node : nodesToHighlight )
 			{
-				node.setStyle("-fx-background-color:" + ShoppingCartController.backgroundColor + ";");
+				node.setStyle("-fx-background-color:" + ShopController.backgroundColor + ";");
 			}
 		}
 

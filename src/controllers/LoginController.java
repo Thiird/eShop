@@ -128,7 +128,7 @@ public class LoginController implements Serializable, Initializable
 				{
 					((Stage) container.getScene().getWindow()).close();
 
-					switchToView("/views/ShoppingCart.fxml", "Shopping Cart", "SCC", (Customer) user);
+					switchToView("/views/Shop.fxml", "Shopping Cart", "SCC", (Customer) user);
 				}
 				else if ( user instanceof Employee )
 				{
@@ -161,7 +161,7 @@ public class LoginController implements Serializable, Initializable
 				{
 					case "SCC":
 					{
-						ShoppingCartController controller = loader.getController();
+						ShopController controller = loader.getController();
 						controller.displayCustomer((Customer) user);
 						break;
 					}

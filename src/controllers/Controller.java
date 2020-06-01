@@ -86,7 +86,7 @@ public class Controller <T>
 			}
 			case "Shopping Cart":
 			{
-				ShoppingCartController controller = loader.getController();
+				ShopController controller = loader.getController();
 				controller.setData((Customer) user);
 				break;
 			}
