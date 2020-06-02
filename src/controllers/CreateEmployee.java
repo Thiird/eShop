@@ -5,7 +5,7 @@ import java.util.Map;
 import models.Employee;
 import models.User;
 
-public class CreateEmployee extends Controller <Employee>
+public class CreateEmployee extends Controller
 {
 	public static void main(String[] args)
 	{

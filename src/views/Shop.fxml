@@ -19,8 +19,8 @@
 	<children>
 		<Pane prefHeight="800.0" prefWidth="300.0">
 			<children>
-				<Label fx:id="email" layoutX="137.0" layoutY="40.0" prefHeight="27.0" prefWidth="118.0" text="Mario Rossi" />
-				<Label fx:id="lblTotToPay" layoutX="15.0" layoutY="758.0" prefHeight="27.0" prefWidth="147.0" text="Total: 0€">
+				<Label fx:id="email" layoutX="117.0" layoutY="40.0" prefHeight="27.0" prefWidth="175.0" text="Mario Rossi" />
+				<Label fx:id="lblTotToPay" layoutX="10.0" layoutY="758.0" prefHeight="27.0" prefWidth="147.0" text="Total: 0€">
 					<font>
 						<Font size="18.0" />
 					</font>
@@ -30,81 +30,80 @@
 						<Font size="13.0" />
 					</font>
 				</Button>
-				<Button layoutX="136.0" layoutY="82.0" mnemonicParsing="false" onAction="#switchToCustomer" text="User infos" />
+				<Button layoutX="116.0" layoutY="82.0" mnemonicParsing="false" onAction="#switchToCustomer" text="User infos" />
 				<ImageView fitHeight="62.0" fitWidth="94.0" layoutX="41.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
 					<image>
 						<Image url="@../../bin/icons/generics/user.png" />
 					</image>
 				</ImageView>
-				<Label layoutX="134.0" layoutY="126.0" text="Cart">
+				<Label layoutX="25.0" layoutY="136.0" text="Cart">
 					<font>
 						<Font size="18.0" />
 					</font>
 				</Label>
-				<TextField fx:id="cartSearchbar" layoutX="61.0" layoutY="159.0" prefHeight="25.0" prefWidth="153.0" promptText="Search in cart" />
-				<ScrollPane fx:id="cartPane" fitToHeight="true" fitToWidth="true" focusTraversable="false" layoutX="15.0" layoutY="188.0" prefHeight="561.0" prefWidth="271.0" />
-				<Button fx:id="btnCartSearch" layoutX="224.0" layoutY="159.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Search" />
+				<ScrollPane fx:id="cartPane" fitToHeight="true" fitToWidth="true" focusTraversable="false" layoutX="10.0" layoutY="188.0" prefHeight="561.0" prefWidth="281.0" />
+            <Button layoutX="150.0" layoutY="137.0" mnemonicParsing="false" onAction="#openShoppingCartView" text="Open cart" />
 			</children>
 		</Pane>
-		<Separator layoutX="300.0" layoutY="30.0" orientation="VERTICAL" prefHeight="770.0" prefWidth="6.0" />
+		<Separator layoutX="299.0" layoutY="19.0" orientation="VERTICAL" prefHeight="781.0" prefWidth="6.0" />
 		<Pane layoutX="982.0" prefHeight="800.0" prefWidth="298.0">
 			<children>
-				<ImageView fx:id="currProdImage" fitHeight="136.0" fitWidth="195.0" layoutX="81.0" layoutY="136.0" pickOnBounds="true" preserveRatio="true">
+				<ImageView fx:id="currProdImage" fitHeight="136.0" fitWidth="195.0" layoutX="82.0" layoutY="137.0" pickOnBounds="true" preserveRatio="true">
 					<image>
-						<Image url="@../../bin/res/icons/products/noProduct.png" />
+						<Image url="@../../res/icons/products/noProduct.png" />
 					</image>
 				</ImageView>
-				<Label fx:id="currProdName" alignment="CENTER" layoutX="55.0" layoutY="50.0" prefHeight="35.0" prefWidth="189.0" text="-">
+				<Label fx:id="currProdName" alignment="CENTER" layoutX="55.0" layoutY="55.0" prefHeight="35.0" prefWidth="189.0" text="-">
 					<font>
 						<Font size="24.0" />
 					</font>
 				</Label>
-				<Label fx:id="currProdPrice" layoutX="33.0" layoutY="420.0" prefHeight="13.0" prefWidth="147.0" text="Price:">
+				<Label fx:id="currProdPrice" layoutX="25.0" layoutY="420.0" prefHeight="13.0" prefWidth="147.0" text="Price:">
 					<font>
 						<Font size="15.0" />
 					</font>
 				</Label>
-				<Label fx:id="currProdQty" layoutX="33.0" layoutY="449.0" prefHeight="17.0" prefWidth="195.0" text="Quantity: ">
+				<Label fx:id="currProdQty" layoutX="25.0" layoutY="449.0" prefHeight="17.0" prefWidth="195.0" text="Quantity: ">
 					<font>
 						<Font size="15.0" />
 					</font>
 				</Label>
-				<Label fx:id="currProdBrand" layoutX="33.0" layoutY="390.0" prefHeight="17.0" prefWidth="195.0" text="Brand:">
+				<Label fx:id="currProdBrand" layoutX="25.0" layoutY="390.0" prefHeight="21.0" prefWidth="248.0" text="Brand:">
 					<font>
 						<Font size="15.0" />
 					</font>
 				</Label>
-				<Label fx:id="isPAvaialble" layoutX="92.0" layoutY="286.0" text="Product is available" textFill="#00a46b" />
-				<Button fx:id="btnAddToCart" disable="true" layoutX="178.0" layoutY="746.0" mnemonicParsing="false" text="Add to Cart">
+				<Label fx:id="isPAvaialble" layoutX="98.0" layoutY="286.0" text="Product is available" textFill="#00a46b" />
+				<Button fx:id="btnAddToCart" disable="true" layoutX="174.0" layoutY="759.0" mnemonicParsing="false" text="Add to Cart">
 					<font>
 						<Font size="14.0" />
 					</font>
 				</Button>
-				<TextField fx:id="txtFldQuantity" disable="true" layoutX="79.0" layoutY="748.0" prefHeight="25.0" prefWidth="36.0" />
-				<Label fx:id="lblQuantity" layoutX="19.0" layoutY="752.0" text="Quantity:" />
-				<Label fx:id="currProdQtyAvailable" layoutX="33.0" layoutY="482.0" prefHeight="17.0" prefWidth="195.0" text="Availability: ">
+				<TextField fx:id="txtFldQuantity" disable="true" layoutX="80.0" layoutY="761.0" prefHeight="25.0" prefWidth="36.0" />
+				<Label fx:id="lblQuantity" layoutX="14.0" layoutY="765.0" text="Quantity:" />
+				<Label fx:id="currProdQtyAvailable" layoutX="25.0" layoutY="483.0" prefHeight="17.0" prefWidth="195.0" text="Availability: ">
 					<font>
 						<Font size="15.0" />
 					</font>
 				</Label>
 			</children>
 		</Pane>
-		<Separator layoutX="980.0" layoutY="8.0" orientation="VERTICAL" prefHeight="794.0" prefWidth="6.0" />
-		<ComboBox fx:id="wardSelection" layoutX="362.0" layoutY="56.0" prefHeight="25.0" prefWidth="136.0" />
+		<Separator layoutX="991.0" layoutY="8.0" orientation="VERTICAL" prefHeight="794.0" prefWidth="6.0" />
+		<ComboBox fx:id="wardSelection" layoutX="345.0" layoutY="57.0" prefHeight="25.0" prefWidth="175.0" />
 		<Separator layoutY="115.0" prefHeight="4.0" prefWidth="1280.0" />
-		<TextField fx:id="shopSearchbar" layoutX="498.0" layoutY="56.0" prefHeight="25.0" prefWidth="350.0" promptText="Search product" />
-		<ScrollPane fx:id="shopPane" fitToHeight="true" fitToWidth="true" focusTraversable="false" layoutX="306.0" layoutY="131.0" pannable="true" prefHeight="619.0" prefWidth="671.0" style="-fx-background-color: b5c6f7;" />
-		<Button fx:id="btnShopSearch" layoutX="856.0" layoutY="56.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Search" />
+		<TextField fx:id="shopSearchbar" layoutX="527.0" layoutY="57.0" prefHeight="25.0" prefWidth="350.0" promptText="Search product" />
+		<ScrollPane fx:id="shopPane" fitToHeight="true" fitToWidth="true" focusTraversable="false" layoutX="311.0" layoutY="187.0" pannable="true" prefHeight="561.0" prefWidth="671.0" style="-fx-background-color: b5c6f7;" />
+		<Button fx:id="btnShopSearch" layoutX="886.0" layoutY="57.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="Search" />
 		<MenuBar layoutY="1.0" prefHeight="4.0" prefWidth="1280.0">
 			<menus>
             <Menu mnemonicParsing="false" text="User">
               <items>
-                  <MenuItem mnemonicParsing="false" text="Logout" />
+                <MenuItem fx:id="btnLogOut" mnemonicParsing="false" onAction="#showLogOutPrompt" text="Logout" />
               </items>
             </Menu>
 				<Menu mnemonicParsing="false" text="Help">
 					<items>
-						<MenuItem mnemonicParsing="false" text="App Infos" />
+						<MenuItem fx:id="btnAppInfos" mnemonicParsing="false" text="App Infos" />
 					</items>
 				</Menu>
 			</menus>

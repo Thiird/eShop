@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -30,7 +31,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
-import models.Employee;
 import models.PaymentMethod;
 import models.Product;
 import models.ProductProperty;
@@ -38,7 +38,7 @@ import models.ShoppingCart;
 import models.ShoppingCartProperty;
 import models.Ward;
 
-public class EmployeeController extends Controller <Employee> implements Initializable
+public class EmployeeController extends Controller implements Initializable
 {
 	@FXML
 	private TabPane tabPane;
@@ -55,7 +55,8 @@ public class EmployeeController extends Controller <Employee> implements Initial
 			public void changed(ObservableValue <? extends Number> observable, Number oldValue, Number newValue)
 			{
 				int selectedIndex = newValue.intValue();
-				// Where index of the first tab is 0, while that of the second tab is 1 and so on
+				// Where index of the first tab is 0, while that of the second tab is 1 and so
+				// on
 				if ( selectedIndex == 0 )
 					initializeModifyProductsTab();
 				else
@@ -63,7 +64,7 @@ public class EmployeeController extends Controller <Employee> implements Initial
 			}
 		});
 	}
-	
+
 	// Modify product Tab
 	@FXML
 	private TextField searchBar;
@@ -91,6 +92,7 @@ public class EmployeeController extends Controller <Employee> implements Initial
 
 	private void initializeModifyProductsTab()
 	{
+		Platform.runLater(() -> tabPane.requestFocus());
 		newProducts = getProducts();
 		dataList = FXCollections.observableArrayList();
 		initModifyProductsTabEventHandlers();
@@ -107,7 +109,7 @@ public class EmployeeController extends Controller <Employee> implements Initial
 		Map <String,Product> products = getProducts();
 
 		for ( Product p : products.values() )
-			dataList.add(new ProductProperty(p));
+			dataList.add(new ProductProperty(p, 0));
 
 		// 1. Wrap the ObservableList in a FilteredList ( initially display all data )
 		FilteredList <ProductProperty> filteredData = new FilteredList <>(dataList, b -> true);
@@ -196,7 +198,7 @@ public class EmployeeController extends Controller <Employee> implements Initial
 				}
 			}
 		}));
-		
+
 		qtyPerItemColumn.setOnEditCommit(event ->
 		{
 			if ( event.getNewValue() == null || event.getNewValue().isNaN() || event.getNewValue() <= 0 )
@@ -295,7 +297,7 @@ public class EmployeeController extends Controller <Employee> implements Initial
 			public void handle(Event event)
 			{
 				setProducts(newProducts);
-				alert(AlertType.INFORMATION, "Information", "The changes were applied to the database products.txt");
+				alertWarning(AlertType.INFORMATION, "Information", "The changes were applied to the database products.txt");
 			}
 		});
 
@@ -307,7 +309,7 @@ public class EmployeeController extends Controller <Employee> implements Initial
 				if ( event.getCode() == KeyCode.ENTER )
 				{
 					setProducts(newProducts);
-					alert(AlertType.INFORMATION, "Information",
+					alertWarning(AlertType.INFORMATION, "Information",
 							"The changes were applied to the database products.txt");
 				}
 			}
@@ -316,7 +318,7 @@ public class EmployeeController extends Controller <Employee> implements Initial
 
 	private void showWarningAlert()
 	{
-		alert(AlertType.WARNING, "Warning", "The entered value is not correct !");
+		alertWarning(AlertType.WARNING, "Warning", "The entered value is not correct !");
 	}
 
 	// View shopping Tab
@@ -334,26 +336,26 @@ public class EmployeeController extends Controller <Employee> implements Initial
 	private TableColumn <ShoppingCartProperty,PaymentMethod> paymentMethodColumn;
 	@FXML
 	private Button btnViewProducts;
-	
+
 	private ObservableList <ShoppingCartProperty> shoppingDataList;
-	
+
 	private void initializeViewShoppingTab()
 	{
 		shoppingDataList = FXCollections.observableArrayList();
-		
+
 		setIDColumn();
 		setExpectedDateColumn();
 		setCustomerEmailColumn();
 		setTotalPriceColumn();
-		setpaymentMethodColumn();
+		setPaymentMethodColumn();
 
 		// Add all shoppingCarts to shoppingTableView
-		Map <String,ArrayList<ShoppingCart>> shoppingCarts = getShoppingCarts();
+		Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts(null);
 
 		for ( String customer : shoppingCarts.keySet() )
-		{	
+		{
 			for ( ShoppingCart shoppingCart : shoppingCarts.get(customer) )
-				shoppingDataList.add(new ShoppingCartProperty ( shoppingCart ));
+				shoppingDataList.add(new ShoppingCartProperty(shoppingCart));
 		}
 
 		// 1. Wrap the ObservableList in a FilteredList ( initially display all data )
@@ -389,50 +391,54 @@ public class EmployeeController extends Controller <Employee> implements Initial
 		// 5. Add sorted ( and filtered ) data to the table
 		shoppingTableView.setItems(shoppingSortedData);
 	}
-	
+
 	private void setIDColumn()
 	{
 		IDColumn.setCellValueFactory(new PropertyValueFactory <>("ID"));
 	}
-	
+
 	private void setExpectedDateColumn()
 	{
 		expectedDateColumn.setCellValueFactory(new PropertyValueFactory <>("expectedDate"));
 	}
-	
+
 	private void setCustomerEmailColumn()
 	{
 		customerEmailColumn.setCellValueFactory(new PropertyValueFactory <>("customerEmail"));
 	}
+
 	private void setTotalPriceColumn()
 	{
 		totalPriceColumn.setCellValueFactory(new PropertyValueFactory <>("totalPrice"));
 	}
-	
-	private void setpaymentMethodColumn()
+
+	private void setPaymentMethodColumn()
 	{
 		paymentMethodColumn.setCellValueFactory(new PropertyValueFactory <>("paymentMethod"));
 	}
-	
+
 	public void viewProducts()
 	{
 		ShoppingCartProperty shoppingCartProperty = shoppingTableView.getSelectionModel().getSelectedItem();
-		
+
 		if ( shoppingCartProperty != null )
 		{
-			ArrayList <ShoppingCart> customerShoppingCarts = getShoppingCarts().get(shoppingCartProperty.getCustomerEmail());
-		
+			ArrayList <ShoppingCart> customerShoppingCarts = getShoppingCarts(null)
+					.get(shoppingCartProperty.getCustomerEmail());
+
 			for ( ShoppingCart shoppingCart : customerShoppingCarts )
 			{
 				if ( shoppingCart.getID() == shoppingCartProperty.getID() )
-					openView ( "/views/ShoppingCartProducts.fxml", "Shopping Cart Products", shoppingCart.getCustomer(), shoppingCart );
+
+					((ViewProductsController) openView("/views/ViewProducts.fxml", "View Products"))
+							.setData(shoppingCart.getID(), shoppingCart.getCustomer());
 			}
 		}
 	}
-	
+
 	public void switchToAddProduct()
 	{
 		((Stage) tabPane.getScene().getWindow()).close();
-		openView ( "/views/AddProduct.fxml", "Add Product", getCurrentUser(), null);
+		openView("/views/AddProduct.fxml", "Add Product");
 	}
 }

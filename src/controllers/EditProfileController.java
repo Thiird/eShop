@@ -1,0 +1,109 @@
+package controllers;
+
+import java.net.URL;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import models.Customer;
+import models.FidelityCard;
+import models.User;
+
+public class EditProfileController extends Controller implements Initializable
+{
+	@FXML
+	private Pane pane;
+	@FXML
+	private TextField name, surname, address, CAP, city, phone, password;
+	@FXML
+	private CheckBox fidelityCard;
+	@FXML
+	private Button save;
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources)
+	{
+		Platform.runLater(() -> pane.requestFocus());
+	}
+
+	public void setData(Customer customer)
+	{
+		setCurrentUser(customer);
+		setFields(customer);
+	}
+
+	private void setFields(Customer customer)
+	{
+		name.setPromptText(customer.getName());
+		surname.setPromptText(customer.getSurname());
+		address.setPromptText(customer.getAddress());
+		CAP.setPromptText(customer.getCAP());
+		city.setPromptText(customer.getCity());
+		phone.setPromptText(customer.getPhone());
+		password.setPromptText(customer.getPassword());
+		fidelityCard.setSelected(customer.getFidelityCard().getEnabled());
+
+		if ( customer.getFidelityCard().getEnabled() )
+			fidelityCard.setVisible(false);
+	}
+
+	@FXML
+	public void updateUser()
+	{
+		Optional <ButtonType> alert = alertWarning(AlertType.INFORMATION, "Information", "Are you sure about the changes ?");
+
+		try
+		{
+			if ( alert.get() == ButtonType.OK )
+			{
+				if ( name.getText().length() != 0 )
+					getCurrentUser().setName(name.getText());
+
+				if ( surname.getText().length() != 0 )
+					getCurrentUser().setSurname(surname.getText());
+
+				if ( address.getText().length() != 0 )
+					getCurrentUser().setAddress(address.getText());
+
+				if ( CAP.getText().length() != 0 )
+					getCurrentUser().setCAP(CAP.getText());
+
+				if ( city.getText().length() != 0 )
+					getCurrentUser().setCity(city.getText());
+
+				if ( phone.getText().length() != 0 )
+					getCurrentUser().setPhone(phone.getText());
+
+				if ( password.getText().length() != 0 )
+					getCurrentUser().setPassword(password.getText());
+
+				if ( fidelityCard.isSelected() )
+					((Customer) getCurrentUser()).setFidelityCard(new FidelityCard(getNextFidelityCardID(), true));
+
+				Map <String,User> users = getUsers();
+
+				users.replace(getCurrentUser().getEmail(), getCurrentUser());
+
+				setUsers(users);
+
+				((Stage) pane.getScene().getWindow()).close();
+
+				((ShopController) openView("/views/Shop.fxml", "Shop")).setData((Customer) getCurrentUser());
+			}
+		}
+		catch ( NoSuchElementException e )
+		{
+
+		}
+	}
+}

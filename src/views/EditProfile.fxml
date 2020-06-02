@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane fx:id="pane" prefHeight="600.0" prefWidth="400.0"
+	xmlns="http://javafx.com/javafx/8.0.171"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="controllers.EditProfileController">
+	<children>
+		<TextField fx:id="name" layoutX="100.0" layoutY="30.0"
+			prefHeight="25.0" prefWidth="200.0" />
+		<TextField fx:id="surname" layoutX="100.0" layoutY="90.0"
+			prefHeight="25.0" prefWidth="200.0" />
+		<TextField fx:id="address" layoutX="100.0" layoutY="150.0"
+			prefHeight="25.0" prefWidth="200.0" />
+		<TextField fx:id="CAP" layoutX="100.0" layoutY="210.0"
+			prefHeight="25.0" prefWidth="200.0" />
+		<TextField fx:id="city" layoutX="100.0" layoutY="270.0"
+			prefHeight="25.0" prefWidth="200.0" />
+		<TextField fx:id="phone" layoutX="100.0" layoutY="330.0"
+			prefHeight="25.0" prefWidth="200.0" />
+		<TextField fx:id="password" layoutX="100.0" layoutY="390.0"
+			prefHeight="25.0" prefWidth="200.0" />
+		<CheckBox fx:id="fidelityCard" layoutX="140.0"
+			layoutY="450.0" prefHeight="20.0" prefWidth="120.0"
+			text="Fidelity card" />
+		<Button fx:id="save" alignment="CENTER" defaultButton="true"
+			layoutX="140.0" layoutY="500.0" onAction="#updateUser"
+			prefHeight="25.0" prefWidth="120.0" text="Save" />
+		<Label layoutX="10.0" layoutY="35.0" prefHeight="16.0"
+			prefWidth="82.0" text="Name" />
+		<Label layoutX="10.0" layoutY="95.0" prefHeight="16.0"
+			prefWidth="82.0" text="Surname" />
+		<Label layoutX="10.0" layoutY="155.0" prefHeight="16.0"
+			prefWidth="82.0" text="Address" />
+		<Label layoutX="10.0" layoutY="215.0" prefHeight="16.0"
+			prefWidth="82.0" text="CAP" />
+		<Label layoutX="10.0" layoutY="275.0" prefHeight="16.0"
+			prefWidth="82.0" text="City" />
+		<Label layoutX="10.0" layoutY="335.0" prefHeight="16.0"
+			prefWidth="82.0" text="Phone" />
+		<Label layoutX="10.0" layoutY="395.0" prefHeight="16.0"
+			prefWidth="82.0" text="Password" />
+	</children>
+</Pane>

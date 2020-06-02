@@ -1,60 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<TabPane fx:id="container" prefHeight="600.0" prefWidth="400.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CustomerController">
-	<tabs>
-		<Tab closable="false" text="User information">
-			<content>
-				<Pane prefHeight="600.0" prefWidth="400.0">
-					<children>
-						<TextField fx:id="name" layoutX="100.0" layoutY="30.0" prefHeight="25.0" prefWidth="200.0" />
-						<TextField fx:id="surname" layoutX="100.0" layoutY="90.0" prefHeight="25.0" prefWidth="200.0" />
-						<TextField fx:id="address" layoutX="100.0" layoutY="150.0" prefHeight="25.0" prefWidth="200.0" />
-						<TextField fx:id="CAP" layoutX="100.0" layoutY="210.0" prefHeight="25.0" prefWidth="200.0" />
-						<TextField fx:id="city" layoutX="100.0" layoutY="270.0" prefHeight="25.0" prefWidth="200.0" />
-						<TextField fx:id="phone" layoutX="100.0" layoutY="330.0" prefHeight="25.0" prefWidth="200.0" />
-						<TextField fx:id="password" layoutX="100.0" layoutY="390.0" prefHeight="25.0" prefWidth="200.0" />
-						<CheckBox fx:id="fidelityCard" layoutX="140.0" layoutY="450.0" prefHeight="20.0" prefWidth="120.0" text="Fidelity card" />
-						<Button fx:id="save" alignment="CENTER" defaultButton="true" layoutX="140.0" layoutY="500.0" onAction="#updateUser" prefHeight="25.0" prefWidth="120.0" text="Save" />
-						<Label layoutX="10.0" layoutY="35.0" prefHeight="16.0" prefWidth="82.0" text="Name" />
-						<Label layoutX="10.0" layoutY="95.0" prefHeight="16.0" prefWidth="82.0" text="Surname" />
-						<Label layoutX="10.0" layoutY="155.0" prefHeight="16.0" prefWidth="82.0" text="Address" />
-						<Label layoutX="10.0" layoutY="215.0" prefHeight="16.0" prefWidth="82.0" text="CAP" />
-						<Label layoutX="10.0" layoutY="275.0" prefHeight="16.0" prefWidth="82.0" text="City" />
-						<Label layoutX="10.0" layoutY="335.0" prefHeight="16.0" prefWidth="82.0" text="Phone" />
-						<Label layoutX="10.0" layoutY="395.0" prefHeight="16.0" prefWidth="82.0" text="Password" />
-					</children>
-				</Pane>
-			</content>
-		</Tab>
-		<Tab fx:id="fidelityCardTab" closable="true" text="Fidelity card">
-			<content>
-				<Pane prefHeight="600.0" prefWidth="400.0">
-					<children>
-						<ImageView fx:id="fidelityCardFc" fitHeight="240.0" fitWidth="240.0" layoutX="80.0">
-							<image>
-								<Image url="@../../res/icons/generics/fidelity_card.png" />
-							</image>
-						</ImageView>
-						<Label layoutX="80.0" layoutY="250.0" prefHeight="13.0" prefWidth="85.0" text="ID" />
-						<Label layoutX="80.0" layoutY="280.0" prefHeight="13.0" prefWidth="85.0" text="Release date" />
-						<Label layoutX="80.0" layoutY="310.0" prefHeight="13.0" prefWidth="85.0" text="Points" />
-						<Label fx:id="ID" layoutX="200.0" layoutY="250.0" prefHeight="13.0" prefWidth="85.0" />
-						<Label fx:id="releaseDate" layoutX="200.0" layoutY="280.0" prefHeight="13.0" prefWidth="85.0" />
-						<Label fx:id="points" layoutX="200.0" layoutY="310.0" prefHeight="13.0" prefWidth="85.0" />
-					</children>
-				</Pane>
-			</content>
-		</Tab>
-		<Tab closable="false" text="Shopping history" />
-	</tabs>
-</TabPane>
+<Pane fx:id="pane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CustomerController">
+	<children>
+		<TextField fx:id="searchBar" layoutX="500.0" layoutY="30.0" prefWidth="200.0" promptText="Search" />
+		<TableView fx:id="tableView" editable="true" layoutX="50.0" layoutY="80.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
+			<columns>
+				<TableColumn fx:id="expectedDateColumn" editable="false" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Expected date" />
+				<TableColumn fx:id="totalPriceColumn" minWidth="150.0" prefWidth="150.0" resizable="false" text="Total price" />
+				<TableColumn fx:id="paymentMethodColumn" minWidth="200.0" prefWidth="200.0" resizable="false" text="Payment method" />
+				<TableColumn fx:id="stateColumn" minWidth="205.0" prefWidth="205.0" resizable="false" text="State" />
+			</columns>
+		</TableView>
+		<Button fx:id="btnViewProducts" alignment="CENTER" defaultButton="true" layoutX="265.0" layoutY="605.0" onAction="#openViewProductsView" prefWidth="150.0" text="View products" />
+		<Button fx:id="btnFidelityCard" alignment="CENTER" defaultButton="true" layoutX="515.0" layoutY="605.0" onAction="#openFidelityCardView" prefWidth="150.0" text="Fidelity card" />
+		<Button fx:id="btnEditProfile" alignment="CENTER" defaultButton="true" layoutX="765.0" layoutY="605.0" onAction="#openEditProfileView" prefWidth="150.0" text="Edit profile" />
+	</children>
+</Pane>

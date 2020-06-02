@@ -107,7 +107,7 @@ public class LoginController implements Serializable, Initializable
 	{
 		((Stage) container.getScene().getWindow()).close();
 
-		switchToView("/views/Registration.fxml", "Registration", null, null);
+		openView("/views/Registration.fxml", "Registration");
 	}
 
 	public void checkInput()
@@ -128,13 +128,14 @@ public class LoginController implements Serializable, Initializable
 				{
 					((Stage) container.getScene().getWindow()).close();
 
-					switchToView("/views/Shop.fxml", "Shopping Cart", "SCC", (Customer) user);
+					openView("/views/Shop.fxml", "Shop");
+
 				}
 				else if ( user instanceof Employee )
 				{
 					((Stage) container.getScene().getWindow()).close();
 
-					switchToView("/views/Employee.fxml", "Employee", null, (Employee) user);
+					openView("/views/Employee.fxml", "Employee");
 				}
 			}
 		}
@@ -146,31 +147,21 @@ public class LoginController implements Serializable, Initializable
 		}
 	}
 
-	private final void switchToView(String view, String title, String controllerType, User user)
+	public void openView(String viewPath, String viewTitle)
 	{
 		Parent parent = null;
 
 		try
 		{
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(view));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(viewPath));
 			parent = loader.load();
 
-			if ( controllerType != null )
-			{
-				switch ( controllerType )
-				{
-					case "SCC":
-					{
-						ShopController controller = loader.getController();
-						controller.displayCustomer((Customer) user);
-						break;
-					}
-				}
-			}
+			if ( viewTitle.equalsIgnoreCase("Shop") )
+				sendDataToShoppingCartController(loader, (Customer) getUser());
 		}
 		catch ( IOException e )
 		{
-			System.err.println(view + " not found !");
+			System.err.println("switchToView IOException");
 		}
 
 		Scene scene = new Scene(parent);
@@ -179,10 +170,16 @@ public class LoginController implements Serializable, Initializable
 
 		stage.centerOnScreen();
 		stage.setResizable(false);
-		stage.setTitle(title);
+		stage.setTitle(viewTitle);
 		stage.setScene(scene);
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/generics/eShop.png")));
 		stage.show();
+	}
+
+	private void sendDataToShoppingCartController(FXMLLoader loader, Customer customer)
+	{
+		ShopController controller = loader.getController();
+		controller.setData(customer);
 	}
 
 	private User getUser()

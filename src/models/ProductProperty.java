@@ -1,5 +1,6 @@
 package models;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -9,25 +10,48 @@ import javafx.scene.image.ImageView;
 
 public class ProductProperty
 {
+	private Product product;
 	private ImageView imageView;
 	private SimpleStringProperty imagePath;
 	private SimpleObjectProperty<Ward> ward;
 	private SimpleStringProperty name;
+	private SimpleObjectProperty <Brand> brand;
 	private SimpleFloatProperty qtyPerItem;
 	private SimpleFloatProperty price;
+	private SimpleObjectProperty <Type> type;
+	private SimpleBooleanProperty madeInItaly;
 	private SimpleIntegerProperty qtyAvailable;
-
-	public ProductProperty(Product product)
+	private SimpleIntegerProperty cartQuantity;
+	
+	public ProductProperty(Product product, Integer cartQuantity)
 	{
+		this.product = product;
 		imageView = new ImageView(new Image(getClass().getResourceAsStream(product.getImage())));
 		imagePath = new SimpleStringProperty(product.getImage());
 		ward = new SimpleObjectProperty<>(product.getWard());
 		name = new SimpleStringProperty(product.getName());
+		brand = new SimpleObjectProperty <> (product.getBrand());
 		qtyPerItem = new SimpleFloatProperty(product.getQtyPerItem());
 		price = new SimpleFloatProperty(product.getPrice());
 		qtyAvailable = new SimpleIntegerProperty(product.getQtyAvailable());
+		type = new SimpleObjectProperty <>(product.getType());
+		this.cartQuantity = new SimpleIntegerProperty(cartQuantity);
+		if ( product.getFeatures().contains(Feature.MADE_IN_ITALY))
+			madeInItaly = new SimpleBooleanProperty(Boolean.TRUE);
+		else
+			madeInItaly = new SimpleBooleanProperty(Boolean.FALSE);
 	}
 
+	public Product getProduct()
+	{
+		return product;
+	}
+	
+	public void setProduct(Product product)
+	{
+		this.product = product;
+	}
+	
 	public ImageView getImageView()
 	{
 		return imageView;
@@ -67,6 +91,26 @@ public class ProductProperty
 	{
 		this.name.set(name);
 	}
+	
+	public Brand getBrand()
+	{
+		return brand.get();
+	}
+
+	public void setBrand(Brand brand)
+	{
+		this.brand.set(brand);
+	}
+	
+	public Type getType()
+	{
+		return type.get();
+	}
+
+	public void setType(Type type)
+	{
+		this.type.set(type);
+	}
 
 	public float getQtyPerItem()
 	{
@@ -96,5 +140,25 @@ public class ProductProperty
 	public void setQtyAvailable(int qtyAvailable)
 	{
 		this.qtyAvailable.set(qtyAvailable);
+	}
+	
+	public Boolean getMadeInItaly()
+	{
+		return madeInItaly.get();
+	}
+	
+	public void setMadeInItaly ( Boolean madeInItaly )
+	{
+		this.madeInItaly.set(madeInItaly);
+	}
+	
+	public int getCartQuantity()
+	{
+		return cartQuantity.get();
+	}
+
+	public void setCartQuantity(int cartQuantity)
+	{
+		this.cartQuantity.set(cartQuantity);
 	}
 }

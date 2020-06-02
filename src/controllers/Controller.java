@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,34 +29,21 @@ import models.Product;
 import models.ShoppingCart;
 import models.User;
 
-public class Controller <T>
+public class Controller
 {
-	private T currentUser;
+	private User currentUser;
 
-	public T getCurrentUser()
-	{
-		return currentUser;
-	}
-
-	public static void closeApp()
-	{
-		System.out.println("AAa");
-	}
-
-	public void setCurrentUser(T user)
-	{
-		this.currentUser = user;
-	}
-
-	public void openView(String viewPath, String viewTitle, User user, ShoppingCart shoppingCart)
+	public Controller openView(String viewPath, String viewTitle)
 	{
 		Parent parent = null;
+		FXMLLoader loader = null;
 
 		try
 		{
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(viewPath));
+			loader = new FXMLLoader(getClass().getResource(viewPath));
 			parent = loader.load();
-			sendDataToController(loader, viewTitle, user, shoppingCart);
+
+			// sendDataToController(loader, viewTitle, user, shoppingCart, products);
 		}
 		catch ( IOException e )
 		{
@@ -63,7 +51,6 @@ public class Controller <T>
 		}
 
 		Scene scene = new Scene(parent);
-
 		Stage stage = new Stage();
 
 		stage.centerOnScreen();
@@ -72,68 +59,18 @@ public class Controller <T>
 		stage.setScene(scene);
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/generics/eShop.png")));
 		stage.show();
+
+		return loader.getController();
 	}
 
-	private void sendDataToController(FXMLLoader loader, String viewTitle, User user, ShoppingCart shoppingCart)
+	public User getCurrentUser()
 	{
-		switch ( viewTitle )
-		{
-			case "Customer":
-			{
-				CustomerController controller = loader.getController();
-				controller.setData((Customer) user);
-				break;
-			}
-			case "Shopping Cart":
-			{
-				ShopController controller = loader.getController();
-				controller.setData((Customer) user);
-				break;
-			}
-			case "Shopping Cart Products":
-			{
-				ShoppingCartProductsController controller = loader.getController();
-				controller.setData(shoppingCart.getID(), shoppingCart.getCustomer());
-				break;
-			}
-		}
+		return currentUser;
 	}
 
-	@SuppressWarnings ( "unchecked" )
-	public static final Map <String,User> getUsers()
+	public void setCurrentUser(User user)
 	{
-		Map <String,User> users = null;
-
-		URL resource = Class.class.getClass().getResource("/databases/users.txt");
-		File file = null;
-
-		try
-		{
-			file = new File(resource.toURI());
-		}
-		catch ( URISyntaxException e )
-		{
-			System.err.println("getUsers URISyntaxException");
-		}
-
-		try ( FileInputStream fis = new FileInputStream(file); ObjectInputStream ois = new ObjectInputStream(fis); )
-		{
-			users = (HashMap <String,User>) ois.readObject();
-		}
-		catch ( IOException e )
-		{
-			System.err.println("getUsers IOException");
-		}
-		catch ( ClassNotFoundException e )
-		{
-			System.err.println("getUsers ClassNotFoundException");
-		}
-
-		// File is empty, return an empty database
-		if ( users == null )
-			return new HashMap <String,User>();
-
-		return users;
+		this.currentUser = user;
 	}
 
 	@SuppressWarnings ( "unchecked" )
@@ -175,6 +112,43 @@ public class Controller <T>
 		}
 
 		return customers;
+	}
+
+	@SuppressWarnings ( "unchecked" )
+	public static final Map <String,User> getUsers()
+	{
+		Map <String,User> users = null;
+
+		URL resource = Class.class.getClass().getResource("/databases/users.txt");
+		File file = null;
+
+		try
+		{
+			file = new File(resource.toURI());
+		}
+		catch ( URISyntaxException e )
+		{
+			System.err.println("getUsers URISyntaxException");
+		}
+
+		try ( FileInputStream fis = new FileInputStream(file); ObjectInputStream ois = new ObjectInputStream(fis); )
+		{
+			users = (HashMap <String,User>) ois.readObject();
+		}
+		catch ( IOException e )
+		{
+			System.err.println("getUsers IOException");
+		}
+		catch ( ClassNotFoundException e )
+		{
+			System.err.println("getUsers ClassNotFoundException");
+		}
+
+		// File is empty, return an empty database
+		if ( users == null )
+			return new HashMap <String,User>();
+
+		return users;
 	}
 
 	public static final void setUsers(Map <String,User> users)
@@ -241,21 +215,6 @@ public class Controller <T>
 		return newProducts;
 	}
 
-	private static final Map <String,Product> adjustPath(Map <String,Product> products)
-	{
-		Map <String,Product> newProducts = new HashMap <String,Product>();
-
-		for ( String key : products.keySet() )
-		{
-			if ( key.contains("bin") )
-				newProducts.put(key.split("bin")[1].replace("\\", "/"), products.get(key));
-			else
-				newProducts.put(key.replace("\\", "/"), products.get(key));
-		}
-
-		return newProducts;
-	}
-
 	public static final void setProducts(Map <String,Product> products)
 	{
 
@@ -282,9 +241,9 @@ public class Controller <T>
 	}
 
 	@SuppressWarnings ( "unchecked" )
-	public Map <String,ArrayList <ShoppingCart>> getShoppingCarts()
+	public Map <String,ArrayList <ShoppingCart>> getShoppingCarts(Customer customer)
 	{
-		Map <String,ArrayList <ShoppingCart>> shoppingCarts = null;
+		Map <String,ArrayList <ShoppingCart>> allShoppingCarts = null;
 
 		URL resource = getClass().getResource("/databases/shoppingCarts.txt");
 		File file = null;
@@ -300,7 +259,7 @@ public class Controller <T>
 
 		try ( FileInputStream fis = new FileInputStream(file); ObjectInputStream ois = new ObjectInputStream(fis); )
 		{
-			shoppingCarts = (HashMap <String,ArrayList <ShoppingCart>>) ois.readObject();
+			allShoppingCarts = (HashMap <String,ArrayList <ShoppingCart>>) ois.readObject();
 		}
 		catch ( IOException e )
 		{
@@ -313,10 +272,26 @@ public class Controller <T>
 			System.err.println("getShoppingCarts ClassNotFoundException");
 		}
 
-		if ( shoppingCarts == null )
+		if ( allShoppingCarts == null )
 			return new HashMap <String,ArrayList <ShoppingCart>>();
 
-		return shoppingCarts;
+		if ( Objects.nonNull(customer) )
+		{
+			Map <String,ArrayList <ShoppingCart>> customerShoppingCarts = new HashMap <>();
+			ArrayList <ShoppingCart> shoppingCarts = new ArrayList <>();
+
+			for ( String s : allShoppingCarts.keySet() )
+			{
+				for ( ShoppingCart shoppingCart : allShoppingCarts.get(s) )
+					shoppingCarts.add(shoppingCart);
+			}
+
+			customerShoppingCarts.put(customer.getEmail(), shoppingCarts);
+
+			return customerShoppingCarts;
+		}
+
+		return allShoppingCarts;
 	}
 
 	public void setShoppingCarts(Map <String,ArrayList <ShoppingCart>> shoppingCarts)
@@ -364,13 +339,16 @@ public class Controller <T>
 			Collection <Customer> customersAsCollection = customers.values();
 			List <Customer> customersAsList = new ArrayList <>(customersAsCollection);
 			customersAsList.sort(getComparatorByID());
+			if ( customersAsList.size() == 0 )
+				return 0;
+
 			return customersAsList.get(customersAsList.size() - 1).getFidelityCard().getID() + 1;
 		}
 
 		return 0;
 	}
 
-	public static final Optional <ButtonType> alert(AlertType type, String title, String header)
+	public static final Optional <ButtonType> alertWarning(AlertType type, String title, String header)
 	{
 		Alert alert = new Alert(type);
 
@@ -379,4 +357,32 @@ public class Controller <T>
 
 		return alert.showAndWait();
 	}
+
+	public static boolean alertPrompt(AlertType type, String title, String content)
+	{
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle(title);
+		alert.setContentText(content);
+
+		if ( alert.showAndWait().get() == ButtonType.OK )
+			return true;
+		else
+			return false;
+	}
+
+	private static final Map <String,Product> adjustPath(Map <String,Product> products)
+	{
+		Map <String,Product> newProducts = new HashMap <String,Product>();
+
+		for ( String key : products.keySet() )
+		{
+			if ( key.contains("bin") )
+				newProducts.put(key.split("bin")[1].replace("\\", "/"), products.get(key));
+			else
+				newProducts.put(key.replace("\\", "/"), products.get(key));
+		}
+
+		return newProducts;
+	}
+
 }

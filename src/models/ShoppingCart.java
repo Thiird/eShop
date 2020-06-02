@@ -11,7 +11,7 @@ public class ShoppingCart implements Serializable
 	private Date expectedDate;
 	private HashMap <Product,Integer> products;
 	private final Customer customer;
-	private float totalPrice = 0;
+	private float totalPrice;
 	private PaymentMethod paymentMethod;
 
 	public ShoppingCart( Customer customer, int ID )
@@ -32,8 +32,6 @@ public class ShoppingCart implements Serializable
 		{
 			products.put(p, products.get(p) + qtyToAdd);
 		}
-		
-		totalPrice += p.getPrice() * qtyToAdd;
 	}
 
 	public void setTotalPrice(int totalPrice)
@@ -84,5 +82,10 @@ public class ShoppingCart implements Serializable
 	public HashMap <Product,Integer> getProducts()
 	{
 		return products;
+	}
+	
+	public void setProducts ( HashMap <Product,Integer> products )
+	{
+		this.products = products;
 	}
 }

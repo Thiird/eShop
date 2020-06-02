@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane prefHeight="600.0" prefWidth="400.0"
+	xmlns="http://javafx.com/javafx/8.0.171"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="controllers.FidelityCardController">
+	<children>
+		<ImageView fx:id="fidelityCardFc" fitHeight="240.0"
+			fitWidth="240.0" layoutX="80.0">
+			<image>
+				<Image url="@../../res/icons/generics/fidelity_card.png" />
+			</image>
+		</ImageView>
+		<Label layoutX="80.0" layoutY="250.0" prefHeight="13.0"
+			prefWidth="85.0" text="ID" />
+		<Label layoutX="80.0" layoutY="280.0" prefHeight="13.0"
+			prefWidth="85.0" text="Release date" />
+		<Label layoutX="80.0" layoutY="310.0" prefHeight="13.0"
+			prefWidth="85.0" text="Points" />
+		<Label fx:id="ID" layoutX="200.0" layoutY="250.0"
+			prefHeight="13.0" prefWidth="85.0" />
+		<Label fx:id="releaseDate" layoutX="200.0" layoutY="280.0"
+			prefHeight="13.0" prefWidth="85.0" />
+		<Label fx:id="points" layoutX="200.0" layoutY="310.0"
+			prefHeight="13.0" prefWidth="85.0" />
+	</children>
+</Pane>

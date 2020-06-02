@@ -1,129 +1,161 @@
 package controllers;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
+import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert.AlertType;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import models.Customer;
-import models.FidelityCard;
-import models.User;
+import models.PaymentMethod;
+import models.ShoppingCart;
+import models.ShoppingCartProperty;
 
-public class CustomerController extends Controller<Customer>
+public class CustomerController extends Controller implements Initializable
 {
 	@FXML
-	private TabPane container;
-
+	private Pane pane;
 	@FXML
-	private Tab fidelityCardTab;
-
-	// User information fields
+	private TextField searchBar;
 	@FXML
-	private TextField name, surname, address, CAP, city, phone, password;
-
+	private TableView <ShoppingCartProperty> tableView;
 	@FXML
-	private CheckBox fidelityCard;
-
+	private TableColumn <ShoppingCartProperty,Date> expectedDateColumn;
 	@FXML
-	private Button save;
-
-	// Fidelity Card fields
+	private TableColumn <ShoppingCartProperty,Float> totalPriceColumn;
 	@FXML
-	private ImageView fidelityCardFc;
-
+	private TableColumn <ShoppingCartProperty,PaymentMethod> paymentMethodColumn;
 	@FXML
-	private Label ID, releaseDate, points;
+	private Button btnViewProducts, btnEditProfile, btnFidelityCard;
+
+	private ObservableList <ShoppingCartProperty> dataList;
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources)
+	{
+		Platform.runLater(() -> pane.requestFocus());
+
+		dataList = FXCollections.observableArrayList();
+
+		setExpectedDateColumn();
+		setTotalPriceColumn();
+		setPaymentMethodColumn();
+
+		// Add all shoppingCarts to tableView
+		Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts((Customer) getCurrentUser());
+
+		for ( String customer : shoppingCarts.keySet() )
+		{
+			for ( ShoppingCart shoppingCart : shoppingCarts.get(customer) )
+				dataList.add(new ShoppingCartProperty(shoppingCart));
+		}
+
+		// 1. Wrap the ObservableList in a FilteredList ( initially display all data )
+		FilteredList <ShoppingCartProperty> shoppingFilteredData = new FilteredList <>(dataList, b -> true);
+
+		// 2. Set the filter Predicate whenever the filter changes
+		searchBar.textProperty().addListener((observable, oldValue, newValue) ->
+		{
+			shoppingFilteredData.setPredicate(shoppingCart ->
+			{
+				// If filter text is empty, display all products
+				if ( newValue == null || newValue.isEmpty() )
+					return true;
+
+				// Compare ... of every product with filter text
+				String lowerCaseFilter = newValue.toLowerCase();
+
+				if ( shoppingCart.getCustomerEmail().toLowerCase().indexOf(lowerCaseFilter) != -1 )
+					// Filter matches brand
+					return true;
+				else
+					// Does not match
+					return false;
+			});
+		});
+
+		// 3. Wrap the FilteredList in a SortedList
+		SortedList <ShoppingCartProperty> shoppingSortedData = new SortedList <>(shoppingFilteredData);
+
+		// 4. Bind the SortedList comparator to the TableView comparator
+		shoppingSortedData.comparatorProperty().bind(tableView.comparatorProperty());
+
+		// 5. Add sorted ( and filtered ) data to the table
+		tableView.setItems(shoppingSortedData);
+
+	}
 
 	public void setData(Customer customer)
 	{
-		Platform.runLater(() -> container.requestFocus());
-
-		// Initialize User information Tab
 		setCurrentUser(customer);
 
-		name.setPromptText(customer.getName());
-		surname.setPromptText(customer.getSurname());
-		address.setPromptText(customer.getAddress());
-		CAP.setPromptText(customer.getCAP());
-		city.setPromptText(customer.getCity());
-		phone.setPromptText(customer.getPhone());
-		password.setPromptText(customer.getPassword());
-		fidelityCard.setSelected(customer.getFidelityCard() != null);
-
-		if (customer.getFidelityCard() != null)
-		{
-			fidelityCard.setVisible(false);
-			ID.setText(String.valueOf(getCurrentUser().getFidelityCard().getID()));
-			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-			releaseDate.setText(dateFormat.format(getCurrentUser().getFidelityCard().getReleaseDate()));
-			points.setText(String.valueOf(getCurrentUser().getFidelityCard().getPoints()));
-		}
-		else
-		{
-			fidelityCardFc.setVisible(false);
-			container.getTabs().remove(fidelityCardTab);
-		}
+		if ( customer.getFidelityCard().getEnabled() == false )
+			btnFidelityCard.setVisible(false);
 	}
 
-	@FXML
-	public void updateUser()
+	public void openFidelityCardView()
 	{
-		Optional<ButtonType> alert = alert(AlertType.INFORMATION, "Information", "Are you sure about the changes ?");
+		((FidelityCardController) openView("/views/FidelityCard.fxml", "Fidelity Card"))
+				.setData((Customer) getCurrentUser());
+	}
 
-		try
+	public void openViewProductsView()
+	{
+		ShoppingCartProperty shoppingCartProperty = tableView.getSelectionModel().getSelectedItem();
+
+		if ( shoppingCartProperty != null )
 		{
-			if (alert.get() == ButtonType.OK)
+			ArrayList <ShoppingCart> customerShoppingCarts = getShoppingCarts((Customer) getCurrentUser())
+					.get(shoppingCartProperty.getCustomerEmail());
+
+			for ( ShoppingCart shoppingCart : customerShoppingCarts )
 			{
-				if (name.getText().length() != 0) getCurrentUser().setName(name.getText());
+				if ( shoppingCart.getID() == shoppingCartProperty.getID() )
 
-				if (surname.getText().length() != 0) getCurrentUser().setSurname(surname.getText());
-
-				if (address.getText().length() != 0) getCurrentUser().setAddress(address.getText());
-
-				if (CAP.getText().length() != 0) getCurrentUser().setCAP(CAP.getText());
-
-				if (city.getText().length() != 0) getCurrentUser().setCity(city.getText());
-
-				if (phone.getText().length() != 0) getCurrentUser().setPhone(phone.getText());
-
-				if (password.getText().length() != 0) getCurrentUser().setPassword(password.getText());
-
-				if ((getCurrentUser().getFidelityCard() != null) == false && fidelityCard.isSelected()) getCurrentUser().setFidelityCard(new FidelityCard(0));//TODO put correct id
-
-				Map<String, User> users = getUsers();
-
-				users.replace(getCurrentUser().getEmail(), getCurrentUser());
-
-				setUsers(users);
-
-				((Stage) container.getScene().getWindow()).close();
-
-				openView("../views/ShoppingCart.fxml", "Shopping Cart", getCurrentUser(), null );
+					((ViewProductsController) openView("/views/ViewProducts.fxml", "View Products"))
+							.setData(shoppingCart.getID(), (Customer) getCurrentUser());
 			}
 		}
-		catch (NoSuchElementException e)
-		{
-
-		}
 	}
 
-	public void switchToShopping()
+	public void openEditProfileView()
 	{
-		((Stage) container.getScene().getWindow()).close();
+		((EditProfileController) openView("/views/EditProfile.fxml", "Edit Profile"))
+				.setData((Customer) getCurrentUser());
+	}
 
-		openView("../views/ShoppingCart.fxml", "Shopping Cart", getCurrentUser(), null );
+	public void switchToShop()
+	{
+		((Stage) pane.getScene().getWindow()).close();
+
+		((EditProfileController) openView("/views/Shop.fxml", "Shop")).setData((Customer) getCurrentUser());
+	}
+
+	private void setExpectedDateColumn()
+	{
+		expectedDateColumn.setCellValueFactory(new PropertyValueFactory <>("expectedDate"));
+	}
+
+	private void setTotalPriceColumn()
+	{
+		totalPriceColumn.setCellValueFactory(new PropertyValueFactory <>("totalPrice"));
+	}
+
+	private void setPaymentMethodColumn()
+	{
+		paymentMethodColumn.setCellValueFactory(new PropertyValueFactory <>("paymentMethod"));
 	}
 }

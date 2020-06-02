@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -14,15 +15,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 import models.Customer;
-import models.Employee;
 import models.Product;
 import models.ProductProperty;
 import models.ShoppingCart;
 import models.Ward;
 
-public class ShoppingCartProductsController extends Controller <Employee> implements Initializable
+public class ViewProductsController extends Controller implements Initializable
 {
+	@FXML
+	private Pane pane;
 	@FXML
 	private TextField searchBar;
 	@FXML
@@ -35,35 +38,43 @@ public class ShoppingCartProductsController extends Controller <Employee> implem
 	private TableColumn <ProductProperty,String> nameColumn;
 	@FXML
 	private TableColumn <ProductProperty,Float> priceColumn;
+	@FXML
+	private TableColumn <ProductProperty,Integer> quantityColumn;
+
 	private ObservableList <ProductProperty> dataList;
 	@SuppressWarnings ( "unused" )
 	private ShoppingCart shoppingCart;
 	private Map <Product,Integer> products;
-	public void setData ( int shoppingCartID, Customer customer )
+
+	public void setData(int shoppingCartID, Customer customer)
 	{
-		ArrayList <ShoppingCart> shoppingCarts = getShoppingCarts().get(customer.getEmail());
-		
+		ArrayList <ShoppingCart> shoppingCarts = getShoppingCarts(null).get(customer.getEmail());
+
 		for ( ShoppingCart shoppingCart : shoppingCarts )
 		{
 			if ( shoppingCart.getID() == shoppingCartID )
 			{
 				this.shoppingCart = shoppingCart;
+
 				products = shoppingCart.getProducts();
 				for ( Product p : products.keySet() )
-					dataList.add(new ProductProperty(p));
+					dataList.add(new ProductProperty(p, products.get(p)));
 			}
 		}
 	}
-	
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
+		Platform.runLater(() -> pane.requestFocus());
+
 		dataList = FXCollections.observableArrayList();
 		setImageColumn();
+		setQuantityColumn();
 		setWardColumn();
 		setNameColumn();
 		setPriceColumn();
-		
+
 		// 1. Wrap the ObservableList in a FilteredList ( initially display all data )
 		FilteredList <ProductProperty> filteredData = new FilteredList <>(dataList, b -> true);
 
@@ -97,22 +108,27 @@ public class ShoppingCartProductsController extends Controller <Employee> implem
 		// 5. Add sorted ( and filtered ) data to the table
 		tableView.setItems(sortedData);
 	}
-	
+
 	private void setImageColumn()
 	{
 		imageColumn.setCellValueFactory(new PropertyValueFactory <>("imageView"));
 	}
-	
+
+	private void setQuantityColumn()
+	{
+		quantityColumn.setCellValueFactory(new PropertyValueFactory <>("cartQuantity"));
+	}
+
 	private void setWardColumn()
 	{
 		wardColumn.setCellValueFactory(new PropertyValueFactory <>("ward"));
 	}
-	
+
 	private void setNameColumn()
 	{
 		nameColumn.setCellValueFactory(new PropertyValueFactory <>("name"));
 	}
-	
+
 	private void setPriceColumn()
 	{
 		priceColumn.setCellValueFactory(new PropertyValueFactory <>("price"));

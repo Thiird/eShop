@@ -8,8 +8,8 @@ public class Selector implements Runnable
 {
 	private volatile boolean quit = false;
 	private static long start = System.currentTimeMillis();
-	private static float upperOverlayLimit = 0.6f;
-	private static float lowerOverlayLimit = 0.2f;
+	private static float upperAlphaLimit = 0.6f;
+	private static float lowerALphaLimit = 0.2f;
 	private static boolean goUpOrDown = true;
 	private static float transparencyValue = 0f;
 	private static float step = 0.02f;
@@ -29,14 +29,14 @@ public class Selector implements Runnable
 					transparencyValue -= step;
 
 				// Clamp value and invert effect
-				if ( transparencyValue > upperOverlayLimit )
+				if ( transparencyValue > upperAlphaLimit )
 				{
-					transparencyValue = upperOverlayLimit;
+					transparencyValue = upperAlphaLimit;
 					goUpOrDown = false;
 				}
-				else if ( transparencyValue < lowerOverlayLimit )
+				else if ( transparencyValue < lowerALphaLimit )
 				{
-					transparencyValue = lowerOverlayLimit;
+					transparencyValue = lowerALphaLimit;
 					goUpOrDown = true;
 				}
 

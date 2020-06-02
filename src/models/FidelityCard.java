@@ -10,12 +10,14 @@ public class FidelityCard implements Serializable
 	private final int ID;
 	private final Date releaseDate;
 	private int points;
+	private boolean enabled;
 
-	public FidelityCard(int ID)
+	public FidelityCard(int ID, boolean enabled)
 	{
 		this.ID = ID;
 		releaseDate = new Date();
 		points = 0;
+		this.enabled = enabled;
 	}
 
 	public int getID()
@@ -31,6 +33,11 @@ public class FidelityCard implements Serializable
 	public int getPoints()
 	{
 		return points;
+	}
+	
+	public boolean getEnabled()
+	{
+		return enabled;
 	}
 
 	@Override

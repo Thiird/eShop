@@ -21,7 +21,7 @@ import models.FidelityCard;
 import models.PaymentMethod;
 import models.User;
 
-public class RegistrationController extends Controller <Customer> implements Initializable
+public class RegistrationController extends Controller implements Initializable
 {
 	@FXML
 	private Pane container;
@@ -55,7 +55,9 @@ public class RegistrationController extends Controller <Customer> implements Ini
 			FidelityCard fC = null;
 
 			if ( fidelityCard.isSelected() )
-				fC = new FidelityCard(getNextFidelityCardID());
+				fC = new FidelityCard(getNextFidelityCardID(), true);
+			else
+				fC = new FidelityCard(getNextFidelityCardID(), false);
 
 			Customer customer = new Customer(name.getText(), surname.getText(), address.getText(), CAP.getText(),
 					city.getText(), phone.getText(), email.getText(), password.getText(), fC, paymentMethod.getValue());
@@ -64,29 +66,29 @@ public class RegistrationController extends Controller <Customer> implements Ini
 			{
 				clearFields();
 
-				alert(AlertType.WARNING, "Warning", "User already exists");
+				alertWarning(AlertType.WARNING, "Warning", "User already exists");
 			}
 			else
 			{
 				insertCustomer(customer);
 
-				if ( alert(AlertType.INFORMATION, "Information", "Registration completed").get() == ButtonType.OK )
+				if ( alertWarning(AlertType.INFORMATION, "Information", "Registration completed").get() == ButtonType.OK )
 				{
 					((Stage) container.getScene().getWindow()).close();
 
-					openView("../views/Login.fxml", "Login", null, null);
+					openView("../views/Login.fxml", "Login");
 				}
 			}
 		}
 		else
-			alert(AlertType.WARNING, "Warning", "All fields must be completed");
+			alertWarning(AlertType.WARNING, "Warning", "All fields must be completed");
 	}
 
 	public void returnToLogin()
 	{
 		((Stage) container.getScene().getWindow()).close();
 
-		openView("../views/Login.fxml", "Login", null, null);
+		openView("../views/Login.fxml", "Login");
 	}
 
 	private boolean isAllCompiled()

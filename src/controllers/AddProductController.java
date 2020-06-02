@@ -31,14 +31,13 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.Brand;
-import models.Employee;
 import models.Feature;
 import models.MeasureUnit;
 import models.Product;
 import models.Type;
 import models.Ward;
 
-public class AddProductController extends Controller <Employee> implements Initializable
+public class AddProductController extends Controller implements Initializable
 {
 	@FXML
 	private Pane pane;
@@ -151,13 +150,14 @@ public class AddProductController extends Controller <Employee> implements Initi
 			if ( madeInItaly.isSelected() )
 				features.add(Feature.MADE_IN_ITALY);
 
-			Product product = new Product(ward.getValue(), name.getText(), brand.getValue(), qtyPerItemAsFloat, measureUnit.getValue(), priceAsFloat, image, type.getValue(), features, qtyAvailableAsInt);
+			Product product = new Product(ward.getValue(), name.getText(), brand.getValue(), qtyPerItemAsFloat,
+					measureUnit.getValue(), priceAsFloat, image, type.getValue(), features, qtyAvailableAsInt);
 
 			if ( alreadyExists(product) )
 			{
 				clearFields();
 
-				alert(AlertType.WARNING, "Warning", "Product already exists");
+				alertWarning(AlertType.WARNING, "Warning", "Product already exists");
 			}
 			else
 			{
@@ -170,15 +170,16 @@ public class AddProductController extends Controller <Employee> implements Initi
 				products.put(product.getImage(), product);
 				setProducts(products);
 
-				if ( alert(AlertType.INFORMATION, "Information", "Product added").get() == ButtonType.OK )
+				if ( alertWarning(AlertType.INFORMATION, "Information", "Product added").get() == ButtonType.OK )
 					clearFields();
-				
+
 				((Stage) pane.getScene().getWindow()).close();
-				openView("/views/Employee.fxml", "Employee", getCurrentUser(), null);
+
+				openView("/views/Employee.fxml", "Employee");
 			}
 		}
 		else
-			alert(AlertType.WARNING, "Warning", "Missing fields");
+			alertWarning(AlertType.WARNING, "Warning", "Missing fields");
 
 	}
 
