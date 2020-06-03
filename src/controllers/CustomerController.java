@@ -27,7 +27,7 @@ import models.ShoppingCartProperty;
 public class CustomerController extends Controller implements Initializable
 {
 	@FXML
-	private Pane pane;
+	private Pane container;
 	@FXML
 	private TextField searchBar;
 	@FXML
@@ -46,7 +46,7 @@ public class CustomerController extends Controller implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		Platform.runLater(() -> pane.requestFocus());
+		Platform.runLater(() -> container.requestFocus());
 
 		dataList = FXCollections.observableArrayList();
 
@@ -95,15 +95,6 @@ public class CustomerController extends Controller implements Initializable
 
 		// 5. Add sorted ( and filtered ) data to the table
 		tableView.setItems(shoppingSortedData);
-
-	}
-
-	public void setData(Customer customer)
-	{
-		setCurrentUser(customer);
-
-		if ( customer.getFidelityCard().getEnabled() == false )
-			btnFidelityCard.setVisible(false);
 	}
 
 	public void openFidelityCardView()
@@ -112,6 +103,7 @@ public class CustomerController extends Controller implements Initializable
 				.setData((Customer) getCurrentUser());
 	}
 
+	@FXML
 	public void openViewProductsView()
 	{
 		ShoppingCartProperty shoppingCartProperty = tableView.getSelectionModel().getSelectedItem();
@@ -124,9 +116,11 @@ public class CustomerController extends Controller implements Initializable
 			for ( ShoppingCart shoppingCart : customerShoppingCarts )
 			{
 				if ( shoppingCart.getID() == shoppingCartProperty.getID() )
-
+				{
 					((ViewProductsController) openView("/views/ViewProducts.fxml", "View Products"))
 							.setData(shoppingCart.getID(), (Customer) getCurrentUser());
+					break;
+				}
 			}
 		}
 	}
@@ -139,9 +133,9 @@ public class CustomerController extends Controller implements Initializable
 
 	public void switchToShop()
 	{
-		((Stage) pane.getScene().getWindow()).close();
+		((Stage) container.getScene().getWindow()).close();
 
-		((EditProfileController) openView("/views/Shop.fxml", "Shop")).setData((Customer) getCurrentUser());
+		((ShopController) openView("/views/Shop.fxml", "Shop")).setData((Customer) getCurrentUser());
 	}
 
 	private void setExpectedDateColumn()
@@ -157,5 +151,13 @@ public class CustomerController extends Controller implements Initializable
 	private void setPaymentMethodColumn()
 	{
 		paymentMethodColumn.setCellValueFactory(new PropertyValueFactory <>("paymentMethod"));
+	}
+
+	public void setData(Customer customer)
+	{
+		setCurrentUser(customer);
+
+		if ( customer.getFidelityCard().getEnabled() == false )
+			btnFidelityCard.setVisible(false);
 	}
 }

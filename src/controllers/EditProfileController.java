@@ -22,7 +22,7 @@ import models.User;
 public class EditProfileController extends Controller implements Initializable
 {
 	@FXML
-	private Pane pane;
+	private Pane container;
 	@FXML
 	private TextField name, surname, address, CAP, city, phone, password;
 	@FXML
@@ -33,7 +33,7 @@ public class EditProfileController extends Controller implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		Platform.runLater(() -> pane.requestFocus());
+		Platform.runLater(() -> container.requestFocus());
 	}
 
 	public void setData(Customer customer)
@@ -60,11 +60,12 @@ public class EditProfileController extends Controller implements Initializable
 	@FXML
 	public void updateUser()
 	{
-		Optional <ButtonType> alert = alertWarning(AlertType.INFORMATION, "Information", "Are you sure about the changes ?");
+		Optional <ButtonType> alert = alertWarning(AlertType.INFORMATION, "Information",
+				"Are you sure about the changes ?");
 
-		try
+		if ( alert.get() == ButtonType.OK )
 		{
-			if ( alert.get() == ButtonType.OK )
+			try
 			{
 				if ( name.getText().length() != 0 )
 					getCurrentUser().setName(name.getText());
@@ -90,20 +91,18 @@ public class EditProfileController extends Controller implements Initializable
 				if ( fidelityCard.isSelected() )
 					((Customer) getCurrentUser()).setFidelityCard(new FidelityCard(getNextFidelityCardID(), true));
 
+				// Update user info on file
 				Map <String,User> users = getUsers();
-
 				users.replace(getCurrentUser().getEmail(), getCurrentUser());
-
 				setUsers(users);
 
-				((Stage) pane.getScene().getWindow()).close();
-
+				((Stage) container.getScene().getWindow()).close();
 				((ShopController) openView("/views/Shop.fxml", "Shop")).setData((Customer) getCurrentUser());
 			}
-		}
-		catch ( NoSuchElementException e )
-		{
-
+			catch ( NoSuchElementException e )
+			{
+				System.err.println("NoSuchElementException");
+			}
 		}
 	}
 }

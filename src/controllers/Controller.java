@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,17 +32,15 @@ public class Controller
 {
 	private User currentUser;
 
-	public Controller openView(String viewPath, String viewTitle)
+	public static Controller openView(String viewPath, String viewTitle)
 	{
 		Parent parent = null;
 		FXMLLoader loader = null;
 
 		try
 		{
-			loader = new FXMLLoader(getClass().getResource(viewPath));
+			loader = new FXMLLoader(Controller.class.getClass().getResource(viewPath));
 			parent = loader.load();
-
-			// sendDataToController(loader, viewTitle, user, shoppingCart, products);
 		}
 		catch ( IOException e )
 		{
@@ -57,7 +54,7 @@ public class Controller
 		stage.setResizable(false);
 		stage.setTitle(viewTitle);
 		stage.setScene(scene);
-		stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/generics/eShop.png")));
+		stage.getIcons().add(new Image(Controller.class.getResourceAsStream("/icons/generics/eShop.png")));
 		stage.show();
 
 		return loader.getController();
@@ -263,9 +260,9 @@ public class Controller
 		}
 		catch ( IOException e )
 		{
-			return new HashMap <String,ArrayList <ShoppingCart>>();
+			System.err.println("getShoppingCarts IOException");
 
-			// System.err.println("getShoppingCarts IOException");
+			return new HashMap <String,ArrayList <ShoppingCart>>();
 		}
 		catch ( ClassNotFoundException e )
 		{
@@ -275,7 +272,7 @@ public class Controller
 		if ( allShoppingCarts == null )
 			return new HashMap <String,ArrayList <ShoppingCart>>();
 
-		if ( Objects.nonNull(customer) )
+		if ( customer != null )
 		{
 			Map <String,ArrayList <ShoppingCart>> customerShoppingCarts = new HashMap <>();
 			ArrayList <ShoppingCart> shoppingCarts = new ArrayList <>();
@@ -339,6 +336,7 @@ public class Controller
 			Collection <Customer> customersAsCollection = customers.values();
 			List <Customer> customersAsList = new ArrayList <>(customersAsCollection);
 			customersAsList.sort(getComparatorByID());
+
 			if ( customersAsList.size() == 0 )
 				return 0;
 
@@ -348,11 +346,12 @@ public class Controller
 		return 0;
 	}
 
-	public static final Optional <ButtonType> alertWarning(AlertType type, String title, String header)
+	public static Optional <ButtonType> alertWarning(AlertType type, String title, String header)
 	{
 		Alert alert = new Alert(type);
 
 		alert.setTitle(title);
+		alert.setHeaderText("");
 		alert.setHeaderText(header);
 
 		return alert.showAndWait();
@@ -362,15 +361,16 @@ public class Controller
 	{
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle(title);
+		alert.setHeaderText("");
 		alert.setContentText(content);
 
-		if ( alert.showAndWait().get() == ButtonType.OK )
+		if ( alert.showAndWait().get() == ButtonType.OK )// TODO
 			return true;
 		else
 			return false;
 	}
 
-	private static final Map <String,Product> adjustPath(Map <String,Product> products)
+	private static Map <String,Product> adjustPath(Map <String,Product> products)
 	{
 		Map <String,Product> newProducts = new HashMap <String,Product>();
 
@@ -384,5 +384,4 @@ public class Controller
 
 		return newProducts;
 	}
-
 }

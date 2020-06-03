@@ -30,6 +30,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import models.Customer;
 import models.Product;
 import models.ShoppingCart;
@@ -57,7 +58,7 @@ public class ShopController extends Controller implements Initializable
 	Button btnShopSearch, btnGoToPayment, btnAddToCart;
 
 	@FXML
-	TextField shopSearchbar;
+	TextField shopSearchbar, txtFldQuantity;
 
 	@FXML
 	ImageView currProdImage;
@@ -66,28 +67,16 @@ public class ShopController extends Controller implements Initializable
 	Label currProdName, isPAvaialble, currProdBrand, currProdPrice, currProdQty, currProdQtyAvailable;
 
 	@FXML
-	Label lblQuantity, lblTotToPay;
-
-	@FXML
-	TextField txtFldQuantity;
+	Label userEmail, lblQuantity, lblTotToPay;
 
 	@FXML
 	AnchorPane container;
 
 	@FXML
-	Label email;
+	ScrollPane cartPane, shopPane;
 
 	@FXML
-	ScrollPane shopPane;
-
-	@FXML
-	GridPane shopGridPane;
-
-	@FXML
-	ScrollPane cartPane;
-
-	@FXML
-	GridPane cartGridPane;
+	GridPane cartGridPane, shopGridPane;
 
 	@FXML
 	ComboBox <Ward> wardSelection;
@@ -95,20 +84,26 @@ public class ShopController extends Controller implements Initializable
 	@FXML
 	MenuItem btnLogOut, btnAppInfos;
 
-	public static String selectedColor = "#f23366";
-	public static String hoveringColor = "#688efc";
-	public static String backgroundColor = "#a2b9fa";
+	public static final String selectedColor = "#f23366";
+	public static final String hoveringColor = "#688efc";
+	public static final String backgroundColor = "#a2b9fa";
 
 	public Pane selectedShopProduct;
 	public Pane hoveringShopProduct;
 	public Label selectedCartProduct;
 	public Label hoveringCartProduct;
+
 	Selector clock;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		Platform.runLater(() -> setCloseEvent());
+		Platform.runLater(() ->
+		{
+			setCloseEvent();
+			userEmail.setText(getCurrentUser().getEmail());
+			shoppingCart = new ShoppingCart((Customer) getCurrentUser(), getNextCartID());
+		});
 
 		initEventHandlers();
 		initGridPanes();
@@ -197,6 +192,8 @@ public class ShopController extends Controller implements Initializable
 				((PaymentController) openView("/views/Payment.fxml", "Payment")).setData(shoppingCart,
 						(HashMap <String,Product>) products);
 
+				// TODO
+
 			}
 		});
 
@@ -247,13 +244,23 @@ public class ShopController extends Controller implements Initializable
 
 			Product prodToAddToCart = imageToProduct.get(selectedShopProduct.getChildren().get(0));
 			prodToAddToCart.setQtyAvailable(prodToAddToCart.getQtyAvailable() - qtyToAdd);
-			currProdQtyAvailable.setText("Items available: " + prodToAddToCart.getQtyAvailable());
+
+			// Reload info because availability may be none now
+			loadProductInfo(productToImage.get(prodToAddToCart));
 
 			// Add product to in gui list
-			addItemToCartGrid(prodToAddToCart, qtyToAdd);
+			if ( !shoppingCart.containsProduct(prodToAddToCart) )
+			{
+				shoppingCart.addProduct(prodToAddToCart, qtyToAdd);
+				addItemToCartGrid(prodToAddToCart, qtyToAdd);
+			}
+			else
+			{
+				// Add product to cart obj
+				shoppingCart.addProduct(prodToAddToCart, qtyToAdd);
+				updateItemInCart(prodToAddToCart);
+			}
 
-			// Add product to cart obj
-			shoppingCart.addProduct(prodToAddToCart, qtyToAdd);
 			lblTotToPay.setText("Total: " + shoppingCart.getTotalPrice() + "$");
 		}
 		else
@@ -393,7 +400,7 @@ public class ShopController extends Controller implements Initializable
 				{
 					highlightShopProduct(node, true, true, true);
 
-					loadHoveringProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
+					loadProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
 				}
 				else
 				{
@@ -409,7 +416,7 @@ public class ShopController extends Controller implements Initializable
 						highlightShopProduct(selectedShopProduct, false, false, false);
 						highlightShopProduct(node, true, true, true);
 
-						loadHoveringProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
+						loadProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
 					}
 				}
 			}
@@ -432,7 +439,7 @@ public class ShopController extends Controller implements Initializable
 					highlightShopProduct(node, true, true, false);
 				}
 
-				loadHoveringProductInfo((ImageView) (((Pane) node).getChildren().get(0)));
+				loadProductInfo((ImageView) (((Pane) node).getChildren().get(0)));
 			}
 		});
 
@@ -445,7 +452,7 @@ public class ShopController extends Controller implements Initializable
 				if ( selectedShopProduct != null )
 				{
 					highlightShopProduct(node, false, false, false);
-					loadHoveringProductInfo((ImageView) selectedShopProduct.getChildren().get(0));
+					loadProductInfo((ImageView) selectedShopProduct.getChildren().get(0));
 				}
 				else
 				{
@@ -460,14 +467,14 @@ public class ShopController extends Controller implements Initializable
 						}
 						else
 						{
-							loadHoveringProductInfo((ImageView) productToImage.get(nameToProduct
+							loadProductInfo((ImageView) productToImage.get(nameToProduct
 									.get((selectedCartProduct).getText().toLowerCase().replace(" ", "_"))));
 						}
 					}
 					else if ( GridPane.getRowIndex(node) != GridPane.getRowIndex(selectedCartProduct) )
 					{
 						highlightShopProduct(node, false, false, false);
-						loadHoveringProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
+						loadProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
 					}
 				}
 			}
@@ -486,7 +493,7 @@ public class ShopController extends Controller implements Initializable
 				{
 					highlightCartProduct(node, true, true, true);
 
-					loadHoveringProductInfo((ImageView) productToImage
+					loadProductInfo((ImageView) productToImage
 							.get(nameToProduct.get(selectedCartProduct.getText().toLowerCase().replace(" ", "_"))));
 				}
 				else
@@ -502,7 +509,7 @@ public class ShopController extends Controller implements Initializable
 						highlightCartProduct(selectedCartProduct, false, false, true);
 						highlightCartProduct(node, true, true, true);
 
-						loadHoveringProductInfo((ImageView) productToImage
+						loadProductInfo((ImageView) productToImage
 								.get(nameToProduct.get(selectedCartProduct.getText().toLowerCase().replace(" ", "_"))));
 					}
 				}
@@ -525,7 +532,7 @@ public class ShopController extends Controller implements Initializable
 					highlightCartProduct(node, true, true, false);
 				}
 
-				loadHoveringProductInfo((ImageView) productToImage
+				loadProductInfo((ImageView) productToImage
 						.get(nameToProduct.get((hoveringCartProduct).getText().toLowerCase().replace(" ", "_"))));
 
 			}
@@ -548,13 +555,13 @@ public class ShopController extends Controller implements Initializable
 					}
 					else
 					{
-						loadHoveringProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
+						loadProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
 					}
 				}
 				else if ( GridPane.getRowIndex(node) != GridPane.getRowIndex(selectedCartProduct) )
 				{
 					highlightCartProduct(node, false, false, false);
-					loadHoveringProductInfo((ImageView) productToImage
+					loadProductInfo((ImageView) productToImage
 							.get(nameToProduct.get((selectedCartProduct).getText().toLowerCase().replace(" ", "_"))));
 				}
 
@@ -570,7 +577,7 @@ public class ShopController extends Controller implements Initializable
 		Ward toSearchWard = wardSelection.getSelectionModel().getSelectedItem();
 		String toSearchProduct = shopSearchbar.getText();
 
-		clearShopCart();
+		clearShopGrid();
 		resetProductPanel();
 
 		if ( toSearchWard != Ward.ALL && !toSearchProduct.isEmpty() )
@@ -658,63 +665,60 @@ public class ShopController extends Controller implements Initializable
 
 	public void addItemToCartGrid(Product p, int qtyToAdd)
 	{
-		if ( !shoppingCart.containsProduct(p) )
+		// Product name label
+		Label lblName = new Label(p.getName());
+		lblName.setFont(new Font("Arial", 20));
+		setCartNodeEvents(lblName);
+
+		GridPane.setFillWidth(lblName, true);
+		GridPane.setFillHeight(lblName, true);
+		GridPane.setConstraints(lblName, 0, yCart);
+		cartGridPane.getChildren().add(lblName);
+
+		// Product qty label
+		Label lblQty = new Label("x" + qtyToAdd);
+		lblQty.setFont(new Font("Arial", 20));
+		setCartNodeEvents(lblQty);
+
+		GridPane.setFillWidth(lblQty, true);
+		GridPane.setFillHeight(lblQty, true);
+		GridPane.setConstraints(lblQty, 1, yCart);
+		cartGridPane.getChildren().add(lblQty);
+
+		prodNameToQty.put(lblName, lblQty);
+
+		yCart++;
+	}
+
+	private void updateItemInCart(Product p)
+	{
+		Label lbl;
+		String qty;
+		int qtyLabelRow = -1;
+
+		// Find product's row index
+		for ( Node node : cartGridPane.getChildren() )
 		{
-			// Product name label
-			Label lblName = new Label(p.getName());
-			lblName.setFont(new Font("Arial", 20));
-			setCartNodeEvents(lblName);
-
-			GridPane.setFillWidth(lblName, true);
-			GridPane.setFillHeight(lblName, true);
-			GridPane.setConstraints(lblName, 0, yCart);
-			cartGridPane.getChildren().add(lblName);
-
-			// Product qty label
-			Label lblQty = new Label("x" + qtyToAdd);
-			lblQty.setFont(new Font("Arial", 20));
-			setCartNodeEvents(lblQty);
-
-			GridPane.setFillWidth(lblQty, true);
-			GridPane.setFillHeight(lblQty, true);
-			GridPane.setConstraints(lblQty, 1, yCart);
-			cartGridPane.getChildren().add(lblQty);
-
-			prodNameToQty.put(lblName, lblQty);
-
-			yCart++;
-		}
-		else
-		{// Search the correct nodes and updated them
-
-			Label lbl;
-			String qty;
-			int qtyLabelRow = -1;
-
-			// Find product's row index
-			for ( Node node : cartGridPane.getChildren() )
+			if ( ((Label) node).getText().equals(p.getName()) )
 			{
-				if ( ((Label) node).getText().equals(p.getName()) )
-				{
-					qtyLabelRow = GridPane.getRowIndex(node);
-					break;
-				}
+				qtyLabelRow = GridPane.getRowIndex(node);
+				break;
 			}
+		}
 
-			// Reach qty label and add 1
-			for ( Node node : cartGridPane.getChildren() )
+		// Reach qty label and add 1
+		for ( Node node : cartGridPane.getChildren() )
+		{
+			if ( GridPane.getRowIndex(node) == qtyLabelRow && GridPane.getColumnIndex(node) == 1 )
 			{
-				if ( GridPane.getRowIndex(node) == qtyLabelRow && GridPane.getColumnIndex(node) == 1 )
-				{
-					lbl = (Label) node;
-					qty = lbl.getText();
-					lbl.setText("x" + Integer.toString(Integer.parseInt(qty.substring(1)) + qtyToAdd));
-				}
+				lbl = (Label) node;
+				qty = lbl.getText();
+				lbl.setText("x" + Integer.toString(shoppingCart.getProducts().get(p)));
 			}
 		}
 	}
 
-	private void loadHoveringProductInfo(ImageView imageV)
+	private void loadProductInfo(ImageView imageV)
 	{
 		Product pToLoad = imageToProduct.get(imageV);
 
@@ -760,13 +764,20 @@ public class ShopController extends Controller implements Initializable
 		}
 	}
 
-	private void clearShopCart()
+	private void clearCartGrid()
+	{
+		xCart = 0;
+		yCart = 0;
+
+		cartGridPane.getChildren().removeAll(cartGridPane.getChildren());
+	}
+
+	private void clearShopGrid()
 	{
 		xShop = 0;
 		yShop = 0;
 
 		shopGridPane.getChildren().removeAll(shopGridPane.getChildren());
-		shopGridPane.setGridLinesVisible(true);
 	}
 
 	private int getNextCartID()
@@ -796,21 +807,45 @@ public class ShopController extends Controller implements Initializable
 	}
 
 	@FXML
-	public void openCustomerView()
+	public void goToCustomerView()
 	{
 		((CustomerController) openView("/views/Customer.fxml", "Customer")).setData((Customer) getCurrentUser());
 	}
 
 	public void setData(Customer customer)
 	{
-		email.setText(customer.getEmail());
 		setCurrentUser(customer);
-		shoppingCart = new ShoppingCart((Customer) getCurrentUser(), getNextCartID());
 	}
 
 	public void openShoppingCartView()
 	{
-		((ShoppingCartController) openView("/views/ShoppingCart.fxml", "Shopping Cart")).setData(shoppingCart);
+		((ShoppingCartController) openView("/views/ShoppingCart.fxml", "Shopping Cart")).setData(shoppingCart, this,
+				productToImage.keySet());
+	}
+
+	public void updateProducts()
+	{
+		for ( Product p : shoppingCart.getProducts().keySet() )
+		{
+			updateItemInCart(p);
+		}
+
+		lblTotToPay.setText("Total: " + shoppingCart.getTotalPrice() + "$");
+
+		refreshProductPanel();
+	}
+
+	private void refreshProductPanel()
+	{
+		if ( selectedCartProduct != null )
+		{
+			loadProductInfo((ImageView) productToImage
+					.get(nameToProduct.get(selectedCartProduct.getText().toLowerCase().replace(" ", "_"))));
+		}
+		else if ( selectedShopProduct != null )
+		{
+			loadProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
+		}
 	}
 
 	private void resetProductPanel()
@@ -821,6 +856,9 @@ public class ShopController extends Controller implements Initializable
 		currProdBrand.setText("Brand: -");
 		currProdQty.setText("Quantity per item: -");
 		currProdQtyAvailable.setText("Items available: -");
+
+		isPAvaialble.setText("-");
+		isPAvaialble.setStyle("-fx-text-fill: black;");
 	}
 
 	@FXML
@@ -829,12 +867,50 @@ public class ShopController extends Controller implements Initializable
 		if ( alertPrompt(AlertType.CONFIRMATION, "Logout",
 				"Are you sure you want to logout?\nThe current shopping list will be lost.") )
 		{
-			// TODO
+			cleanUp();
+
+			((Stage) container.getScene().getWindow()).close();
+
+			openView("/views/Login.fxml", "Login");
 		}
+	}
+
+	private void cleanUp()
+	{
+		shoppingCart = null;
+
+		clearShopGrid();
+		clearCartGrid();
+
+		selectedShopProduct = null;
+		hoveringShopProduct = null;
+		selectedCartProduct = null;
+		hoveringCartProduct = null;
+
+		wardSelection.getSelectionModel().select(0);
+
+		setCurrentUser(null);
+
+		clock.quit();
 	}
 
 	public void setCloseEvent()
 	{
-		((Stage) container.getScene().getWindow()).setOnCloseRequest(e -> clock.quit());
+		((Stage) container.getScene().getWindow()).setOnCloseRequest(new EventHandler <WindowEvent>()
+		{
+			@Override
+			public void handle(WindowEvent event)
+			{
+				if ( alertPrompt(AlertType.CONFIRMATION, "Logout",
+						"Are you sure you want to close the application?\nNon saved data will be lost.") )
+				{
+					clock.quit();
+				}
+				else
+				{
+					event.consume();
+				}
+			}
+		});
 	}
 }

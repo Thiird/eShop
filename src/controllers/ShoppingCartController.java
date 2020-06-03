@@ -1,13 +1,15 @@
 package controllers;
 
 import java.net.URL;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
@@ -19,6 +21,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.converter.IntegerStringConverter;
 import models.Brand;
 import models.Product;
@@ -29,17 +33,15 @@ import models.Type;
 public class ShoppingCartController extends Controller implements Initializable
 {
 	@FXML
-	private Pane pane;
+	private Pane container;
 	@FXML
 	private TextField searchBar;
 	@FXML
 	private TableView <ProductProperty> tableView;
 	@FXML
-	private TableColumn <ProductProperty,String> imageColumn;
+	private TableColumn <ProductProperty,String> imageColumn, nameColumn;
 	@FXML
 	private TableColumn <ProductProperty,Integer> quantityColumn;
-	@FXML
-	private TableColumn <ProductProperty,String> nameColumn;
 	@FXML
 	private TableColumn <ProductProperty,Float> priceColumn;
 	@FXML
@@ -51,33 +53,25 @@ public class ShoppingCartController extends Controller implements Initializable
 	@FXML
 	private Button btnRemoveProduct, btnApplyChanges;
 	@FXML
-	private ComboBox <String> cmbType;
-	@FXML
-	private ComboBox <String> cmbBrand;
+	private ComboBox <String> cmbType, cmbBrand;
+
+	private ShopController shopController;
 
 	private ObservableList <ProductProperty> dataList;
 
 	private ShoppingCart shoppingCart;
-	private HashMap <Product,Integer> newProducts;
 
-	public void setData(ShoppingCart shoppingCart)
-	{
-		this.shoppingCart = shoppingCart;
-		for ( Product p : shoppingCart.getProducts().keySet() )
-			dataList.add(new ProductProperty(p, shoppingCart.getProducts().get(p)));
-		newProducts = shoppingCart.getProducts();
-	}
-
-	@FXML
-	public void applyChanges()
-	{
-		System.out.println("Applied changes");
-	}
+	private ArrayList <Product> shopProducts;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		Platform.runLater(() -> pane.requestFocus());
+		Platform.runLater(() ->
+		{
+			container.requestFocus();
+			setCloseEvent();
+		});
+
 		ObservableList <String> types = FXCollections.observableArrayList(Type.valuesAsString());
 		cmbType.setItems(types);
 		/*
@@ -123,6 +117,12 @@ public class ShoppingCartController extends Controller implements Initializable
 		tableView.setItems(sortedDataByType);
 	}
 
+	@FXML
+	public void applyChanges()
+	{
+		Controller.alertWarning(AlertType.INFORMATION, "Information", "Applied changes");
+	}
+
 	private void setImageColumn()
 	{
 		imageColumn.setCellValueFactory(new PropertyValueFactory <>("imageView"));
@@ -151,16 +151,37 @@ public class ShoppingCartController extends Controller implements Initializable
 		{
 			if ( event.getNewValue() == null || event.getNewValue() == Integer.MIN_VALUE || event.getNewValue() <= 0 )
 			{
-				showWarningAlert();
+
+				Controller.alertWarning(AlertType.WARNING, "Warning", "The entered value is not correct !");
+
 				event.getRowValue().setCartQuantity(event.getOldValue());
 				tableView.refresh();
 			}
 			else
 			{
-				event.getRowValue().setCartQuantity(event.getNewValue());
-				Product toModify = event.getRowValue().getProduct();
-				toModify.setQtyPerItem(event.getNewValue());
-				newProducts.replace(toModify, event.getRowValue().getCartQuantity());
+				Product pToModify = event.getRowValue().getProduct();
+
+				if ( (event.getNewValue() - event.getOldValue()) > pToModify.getQtyAvailable() )
+				{
+					Controller.alertWarning(AlertType.WARNING, "Warning",
+							"The desired quantity exceeds availability" + "\nRequested: +"
+									+ (event.getNewValue() - event.getOldValue()) + "\nAvailability: "
+									+ pToModify.getQtyAvailable());
+
+					event.getRowValue().setCartQuantity(event.getOldValue());
+				}
+				else
+				{// Update quantity
+
+					pToModify
+							.setQtyAvailable(pToModify.getQtyAvailable() - (event.getNewValue() - event.getOldValue()));
+					event.getRowValue().setCartQuantity(event.getNewValue());
+					shoppingCart.getProducts().put(pToModify, event.getRowValue().getCartQuantity());
+
+					shopController.updateProducts();
+				}
+
+				tableView.refresh();
 			}
 		});
 	}
@@ -197,14 +218,30 @@ public class ShoppingCartController extends Controller implements Initializable
 		if ( productProperty != null )
 		{
 			dataList.remove(productProperty);
-			newProducts.remove(productProperty.getProduct());
-			shoppingCart.setProducts(newProducts);
+			shoppingCart.getProducts().remove(productProperty.getProduct());
 			tableView.refresh();
 		}
 	}
 
-	private void showWarningAlert()
+	public void setData(ShoppingCart shoppingCart, ShopController shopController, Set <Product> shopProducts)
 	{
-		alertWarning(AlertType.WARNING, "Warning", "The entered value is not correct !");
+		this.shopProducts = new ArrayList <Product>(shopProducts);
+		this.shoppingCart = shoppingCart;
+		this.shopController = shopController;
+
+		for ( Product p : shoppingCart.getProducts().keySet() )
+			dataList.add(new ProductProperty(p, shoppingCart.getProducts().get(p)));
+	}
+
+	public void setCloseEvent()
+	{
+		((Stage) container.getScene().getWindow()).setOnCloseRequest(new EventHandler <WindowEvent>()
+		{
+			@Override
+			public void handle(WindowEvent event)
+			{
+				// shopController.updateProducts();
+			}
+		});
 	}
 }

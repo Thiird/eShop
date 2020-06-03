@@ -32,6 +32,8 @@ public class ShoppingCart implements Serializable
 		{
 			products.put(p, products.get(p) + qtyToAdd);
 		}
+
+		totalPrice += p.getPrice() * qtyToAdd;
 	}
 
 	public void setTotalPrice(int totalPrice)
@@ -74,17 +76,17 @@ public class ShoppingCart implements Serializable
 		return paymentMethod;
 	}
 
-	public void setPaymentMethod ( PaymentMethod paymentMethod)
+	public void setPaymentMethod(PaymentMethod paymentMethod)
 	{
 		this.paymentMethod = paymentMethod;
 	}
-	
+
 	public HashMap <Product,Integer> getProducts()
 	{
 		return products;
 	}
-	
-	public void setProducts ( HashMap <Product,Integer> products )
+
+	public void setProducts(HashMap <Product,Integer> products)
 	{
 		this.products = products;
 	}

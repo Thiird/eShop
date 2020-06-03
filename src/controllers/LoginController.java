@@ -1,41 +1,29 @@
 package controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import models.Customer;
 import models.Employee;
 import models.User;
 
-public class LoginController implements Serializable, Initializable
+public class LoginController extends Controller implements Serializable, Initializable
 {
 	private static final long serialVersionUID = -7176050266479335730L;
 
@@ -49,15 +37,17 @@ public class LoginController implements Serializable, Initializable
 	private PasswordField password;
 
 	@FXML
-	private Button btnLogin;
-
-	@FXML
-	private Button btnSignUp;
+	private Button btnLogin, btnSignUp;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		Platform.runLater(() -> container.requestFocus());
+		Platform.runLater(() ->
+		{
+			container.requestFocus();
+			setCloseEvent();
+		});
+
 		initEventHandlers();
 	}
 
@@ -114,13 +104,13 @@ public class LoginController implements Serializable, Initializable
 	{
 		if ( isAllCompiled() )
 		{
-			User user = getUser();
+			User user = checkUser();
 
 			if ( user == null )
 			{
 				clearFields();
 
-				alert(AlertType.WARNING, "Warning", "Invalid email/password");
+				alertWarning(AlertType.WARNING, "Warning", "Invalid email/password");
 			}
 			else
 			{
@@ -128,8 +118,7 @@ public class LoginController implements Serializable, Initializable
 				{
 					((Stage) container.getScene().getWindow()).close();
 
-					openView("/views/Shop.fxml", "Shop");
-
+					((ShopController) openView("/views/Shop.fxml", "Shop")).setData((Customer) user);
 				}
 				else if ( user instanceof Employee )
 				{
@@ -143,46 +132,11 @@ public class LoginController implements Serializable, Initializable
 		{
 			clearFields();
 
-			alert(AlertType.WARNING, "Warning", "All fields must be completed");
+			alertWarning(AlertType.WARNING, "Warning", "All fields must be completed");
 		}
 	}
 
-	public void openView(String viewPath, String viewTitle)
-	{
-		Parent parent = null;
-
-		try
-		{
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(viewPath));
-			parent = loader.load();
-
-			if ( viewTitle.equalsIgnoreCase("Shop") )
-				sendDataToShoppingCartController(loader, (Customer) getUser());
-		}
-		catch ( IOException e )
-		{
-			System.err.println("switchToView IOException");
-		}
-
-		Scene scene = new Scene(parent);
-
-		Stage stage = new Stage();
-
-		stage.centerOnScreen();
-		stage.setResizable(false);
-		stage.setTitle(viewTitle);
-		stage.setScene(scene);
-		stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/generics/eShop.png")));
-		stage.show();
-	}
-
-	private void sendDataToShoppingCartController(FXMLLoader loader, Customer customer)
-	{
-		ShopController controller = loader.getController();
-		controller.setData(customer);
-	}
-
-	private User getUser()
+	private User checkUser()
 	{
 		User user = null;
 
@@ -197,48 +151,6 @@ public class LoginController implements Serializable, Initializable
 		return (user.getPassword().equalsIgnoreCase(password.getText())) ? user : null;
 	}
 
-	@SuppressWarnings ( "unchecked" )
-	private static final Map <String,User> getUsers()
-	{
-		Map <String,User> users = null;
-
-		URL resource = LoginController.class.getClass().getResource("/databases/users.txt");
-		File file = null;
-		try
-		{
-			file = new File(resource.toURI());
-		}
-		catch ( URISyntaxException e1 )
-		{
-			e1.printStackTrace();
-		}
-
-		try ( FileInputStream fis = new FileInputStream(file); ObjectInputStream ois = new ObjectInputStream(fis); )
-		{
-			users = (HashMap <String,User>) ois.readObject();
-		}
-		catch ( IOException e )
-		{
-			return null;
-		}
-		catch ( ClassNotFoundException e )
-		{
-			System.err.println("ClassNotFoundException !");
-		}
-
-		return users;
-	}
-
-	private static final Optional <ButtonType> alert(AlertType type, String title, String header)
-	{
-		Alert alert = new Alert(type);
-
-		alert.setTitle(title);
-		alert.setHeaderText(header);
-
-		return alert.showAndWait();
-	}
-
 	private boolean isAllCompiled()
 	{
 		return (!email.getText().isEmpty() && !password.getText().isEmpty()) ? true : false;
@@ -248,5 +160,21 @@ public class LoginController implements Serializable, Initializable
 	{
 		email.clear();
 		password.clear();
+	}
+
+	public void setCloseEvent()
+	{
+		((Stage) container.getScene().getWindow()).setOnCloseRequest(new EventHandler <WindowEvent>()
+		{
+			@Override
+			public void handle(WindowEvent event)
+			{
+				if ( !alertPrompt(AlertType.CONFIRMATION, "Logout",
+						"Are you sure you want to close the application?\nNon saved data will be lost.") )
+				{
+					event.consume();
+				}
+			}
+		});
 	}
 }

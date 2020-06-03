@@ -19,18 +19,18 @@
 	<children>
 		<Pane prefHeight="800.0" prefWidth="300.0">
 			<children>
-				<Label fx:id="email" layoutX="117.0" layoutY="40.0" prefHeight="27.0" prefWidth="175.0" text="Mario Rossi" />
+				<Label fx:id="userEmail" layoutX="117.0" layoutY="40.0" prefHeight="27.0" prefWidth="175.0" text="Mario Rossi" />
 				<Label fx:id="lblTotToPay" layoutX="10.0" layoutY="758.0" prefHeight="27.0" prefWidth="147.0" text="Total: 0€">
 					<font>
 						<Font size="18.0" />
 					</font>
 				</Label>
-				<Button fx:id="btnGoToPayment" disable="true" layoutX="168.0" layoutY="757.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="118.0" text="Go to Payment" textAlignment="CENTER">
+				<Button fx:id="btnGoToPayment" disable="true" layoutX="174.0" layoutY="757.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="117.0" text="Go to Payment" textAlignment="CENTER">
 					<font>
 						<Font size="13.0" />
 					</font>
 				</Button>
-				<Button layoutX="116.0" layoutY="82.0" mnemonicParsing="false" onAction="#switchToCustomer" text="User infos" />
+				<Button layoutX="116.0" layoutY="82.0" mnemonicParsing="false" onAction="#goToCustomerView" text="User infos" />
 				<ImageView fitHeight="62.0" fitWidth="94.0" layoutX="41.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
 					<image>
 						<Image url="@../../bin/icons/generics/user.png" />
@@ -50,7 +50,7 @@
 			<children>
 				<ImageView fx:id="currProdImage" fitHeight="136.0" fitWidth="195.0" layoutX="82.0" layoutY="137.0" pickOnBounds="true" preserveRatio="true">
 					<image>
-						<Image url="@../../res/icons/products/noProduct.png" />
+						<Image url="@../../bin/icons/products/noProduct.png" />
 					</image>
 				</ImageView>
 				<Label fx:id="currProdName" alignment="CENTER" layoutX="55.0" layoutY="55.0" prefHeight="35.0" prefWidth="189.0" text="-">
@@ -58,12 +58,12 @@
 						<Font size="24.0" />
 					</font>
 				</Label>
-				<Label fx:id="currProdPrice" layoutX="25.0" layoutY="420.0" prefHeight="13.0" prefWidth="147.0" text="Price:">
+				<Label fx:id="currProdPrice" layoutX="25.0" layoutY="419.0" prefHeight="13.0" prefWidth="147.0" text="Price:">
 					<font>
 						<Font size="15.0" />
 					</font>
 				</Label>
-				<Label fx:id="currProdQty" layoutX="25.0" layoutY="449.0" prefHeight="17.0" prefWidth="195.0" text="Quantity: ">
+				<Label fx:id="currProdQty" layoutX="25.0" layoutY="447.0" prefHeight="17.0" prefWidth="195.0" text="Quantity: ">
 					<font>
 						<Font size="15.0" />
 					</font>
@@ -73,15 +73,15 @@
 						<Font size="15.0" />
 					</font>
 				</Label>
-				<Label fx:id="isPAvaialble" layoutX="98.0" layoutY="286.0" text="Product is available" textFill="#00a46b" />
+				<Label fx:id="isPAvaialble" alignment="CENTER" contentDisplay="CENTER" layoutX="82.0" layoutY="286.0" prefHeight="17.0" prefWidth="136.0" text="-" />
 				<Button fx:id="btnAddToCart" disable="true" layoutX="174.0" layoutY="759.0" mnemonicParsing="false" text="Add to Cart">
 					<font>
 						<Font size="14.0" />
 					</font>
 				</Button>
-				<TextField fx:id="txtFldQuantity" disable="true" layoutX="80.0" layoutY="761.0" prefHeight="25.0" prefWidth="36.0" />
+				<TextField fx:id="txtFldQuantity" disable="true" layoutX="80.0" layoutY="761.0" prefHeight="25.0" prefWidth="41.0" />
 				<Label fx:id="lblQuantity" layoutX="14.0" layoutY="765.0" text="Quantity:" />
-				<Label fx:id="currProdQtyAvailable" layoutX="25.0" layoutY="483.0" prefHeight="17.0" prefWidth="195.0" text="Availability: ">
+				<Label fx:id="currProdQtyAvailable" layoutX="25.0" layoutY="475.0" prefHeight="17.0" prefWidth="195.0" text="Availability: ">
 					<font>
 						<Font size="15.0" />
 					</font>
