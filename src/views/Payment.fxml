@@ -8,33 +8,42 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<Pane prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PaymentController">
+<Pane fx:id="container" prefHeight="349.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PaymentController">
 	<children>
-		<ComboBox layoutX="150.0" layoutY="35.0" prefWidth="200.0" promptText="Select date and time" />
-		<Label layoutX="40.0" layoutY="91.0" text="Select payment method" />
-		<RadioButton layoutX="20.0" layoutY="181.0" mnemonicParsing="false">
+		<ComboBox layoutX="20.0" layoutY="63.0" prefWidth="200.0" promptText="Select date and time" />
+		<Label layoutX="20.0" layoutY="124.0" text="Select payment method">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+		<RadioButton fx:id="rbCreditCard" layoutX="20.0" layoutY="195.0" mnemonicParsing="false">
 			<toggleGroup>
 				<ToggleGroup fx:id="paymentMethods" />
 			</toggleGroup>
 		</RadioButton>
-		<ImageView fitHeight="100.0" fitWidth="100.0" layoutX="50.0" layoutY="140.0" pickOnBounds="true" preserveRatio="true">
+		<ImageView fitHeight="100.0" fitWidth="100.0" layoutX="55.0" layoutY="154.0" pickOnBounds="true" preserveRatio="true">
 			<image>
 				<Image url="@../../res/icons/payment_methods/credit_card.png" />
 			</image>
 		</ImageView>
-		<RadioButton layoutX="180.0" layoutY="181.0" mnemonicParsing="false" toggleGroup="$paymentMethods" />
-		<ImageView fitHeight="100.0" fitWidth="100.0" layoutX="210.0" layoutY="140.0" pickOnBounds="true" preserveRatio="true">
+		<RadioButton fx:id="rbPaypal" layoutX="185.0" layoutY="195.0" mnemonicParsing="false" toggleGroup="$paymentMethods" />
+		<ImageView fitHeight="100.0" fitWidth="100.0" layoutX="215.0" layoutY="154.0" pickOnBounds="true" preserveRatio="true">
 			<image>
 				<Image url="@../../res/icons/payment_methods/paypal.png" />
 			</image>
 		</ImageView>
-		<RadioButton layoutX="340.0" layoutY="181.0" mnemonicParsing="false" toggleGroup="$paymentMethods" />
-		<ImageView fitHeight="100.0" fitWidth="100.0" layoutX="370.0" layoutY="140.0" pickOnBounds="true" preserveRatio="true">
+		<RadioButton fx:id="rbOnDelivery" layoutX="345.0" layoutY="195.0" mnemonicParsing="false" toggleGroup="$paymentMethods" />
+		<ImageView fitHeight="100.0" fitWidth="100.0" layoutX="375.0" layoutY="154.0" pickOnBounds="true" preserveRatio="true">
 			<image>
 				<Image url="@../../res/icons/payment_methods/on_delivery.png" />
 			</image>
 		</ImageView>
-		<Button fx:id="btnPay" alignment="CENTER" defaultButton="true" layoutX="200.0" layoutY="300.0" prefHeight="25.0" prefWidth="100.0" text="Pay" />
+		<Button fx:id="btnPay" alignment="CENTER" defaultButton="true" layoutX="200.0" layoutY="302.0" prefHeight="25.0" prefWidth="100.0" text="Pay" />
+      <Label layoutX="20.0" layoutY="25.0" text="Select delivery date:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
 	</children>
 </Pane>

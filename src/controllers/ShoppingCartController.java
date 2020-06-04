@@ -1,9 +1,7 @@
 package controllers;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.Set;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -60,8 +58,6 @@ public class ShoppingCartController extends Controller implements Initializable
 	private ObservableList <ProductProperty> dataList;
 
 	private ShoppingCart shoppingCart;
-
-	private ArrayList <Product> shopProducts;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -223,9 +219,8 @@ public class ShoppingCartController extends Controller implements Initializable
 		}
 	}
 
-	public void setData(ShoppingCart shoppingCart, ShopController shopController, Set <Product> shopProducts)
+	public void setData(ShoppingCart shoppingCart, ShopController shopController)
 	{
-		this.shopProducts = new ArrayList <Product>(shopProducts);
 		this.shoppingCart = shoppingCart;
 		this.shopController = shopController;
 

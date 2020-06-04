@@ -158,6 +158,6 @@ public class CustomerController extends Controller implements Initializable
 		setCurrentUser(customer);
 
 		if ( customer.getFidelityCard().getEnabled() == false )
-			btnFidelityCard.setVisible(false);
+			btnFidelityCard.setDisable(true);
 	}
 }

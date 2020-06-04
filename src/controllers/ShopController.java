@@ -159,7 +159,9 @@ public class ShopController extends Controller implements Initializable
 			public void handle(KeyEvent event)
 			{
 				if ( event.getCode() == KeyCode.ENTER )
+				{
 					searchInShop();
+				}
 			}
 		});
 
@@ -189,8 +191,7 @@ public class ShopController extends Controller implements Initializable
 			@Override
 			public void handle(Event event)
 			{
-				((PaymentController) openView("/views/Payment.fxml", "Payment")).setData(shoppingCart,
-						(HashMap <String,Product>) products);
+				goToPaymentView();
 
 				// TODO
 
@@ -693,7 +694,6 @@ public class ShopController extends Controller implements Initializable
 	private void updateItemInCart(Product p)
 	{
 		Label lbl;
-		String qty;
 		int qtyLabelRow = -1;
 
 		// Find product's row index
@@ -712,7 +712,6 @@ public class ShopController extends Controller implements Initializable
 			if ( GridPane.getRowIndex(node) == qtyLabelRow && GridPane.getColumnIndex(node) == 1 )
 			{
 				lbl = (Label) node;
-				qty = lbl.getText();
 				lbl.setText("x" + Integer.toString(shoppingCart.getProducts().get(p)));
 			}
 		}
@@ -806,21 +805,9 @@ public class ShopController extends Controller implements Initializable
 		return shoppingCart;
 	}
 
-	@FXML
-	public void goToCustomerView()
-	{
-		((CustomerController) openView("/views/Customer.fxml", "Customer")).setData((Customer) getCurrentUser());
-	}
-
 	public void setData(Customer customer)
 	{
 		setCurrentUser(customer);
-	}
-
-	public void openShoppingCartView()
-	{
-		((ShoppingCartController) openView("/views/ShoppingCart.fxml", "Shopping Cart")).setData(shoppingCart, this,
-				productToImage.keySet());
 	}
 
 	public void updateProducts()
@@ -829,6 +816,8 @@ public class ShopController extends Controller implements Initializable
 		{
 			updateItemInCart(p);
 		}
+
+		shoppingCart.refreshTotalPrice();
 
 		lblTotToPay.setText("Total: " + shoppingCart.getTotalPrice() + "$");
 
@@ -864,10 +853,16 @@ public class ShopController extends Controller implements Initializable
 	@FXML
 	public void showLogOutPrompt()
 	{
-		if ( alertPrompt(AlertType.CONFIRMATION, "Logout",
-				"Are you sure you want to logout?\nThe current shopping list will be lost.") )
+		String msg = "Are you sure you want to logout?";
+
+		if ( !shoppingCart.getProducts().isEmpty() )
 		{
-			cleanUp();
+			msg += "\nThe current shopping list will be lost.";
+		}
+
+		if ( alertPrompt(AlertType.CONFIRMATION, "Logout", msg) )
+		{
+			quitApp();
 
 			((Stage) container.getScene().getWindow()).close();
 
@@ -875,23 +870,36 @@ public class ShopController extends Controller implements Initializable
 		}
 	}
 
-	private void cleanUp()
+	private void quitApp()
 	{
-		shoppingCart = null;
+		clearApp();
 
 		clearShopGrid();
+		setCurrentUser(null);
+		clock.quit();
+	}
+
+	public void clearApp()
+	{
 		clearCartGrid();
+
+		shoppingCart.clear();
+
+		// Reset shop grid
+		wardSelection.getSelectionModel().select(0);
+		shopSearchbar.clear();
+		searchInShop();
 
 		selectedShopProduct = null;
 		hoveringShopProduct = null;
 		selectedCartProduct = null;
 		hoveringCartProduct = null;
 
+		resetProductPanel();
+
+		lblTotToPay.setText("Total: 0$");
+
 		wardSelection.getSelectionModel().select(0);
-
-		setCurrentUser(null);
-
-		clock.quit();
 	}
 
 	public void setCloseEvent()
@@ -901,8 +909,14 @@ public class ShopController extends Controller implements Initializable
 			@Override
 			public void handle(WindowEvent event)
 			{
-				if ( alertPrompt(AlertType.CONFIRMATION, "Logout",
-						"Are you sure you want to close the application?\nNon saved data will be lost.") )
+				String msg = "Are you sure you want to logout?";
+
+				if ( !shoppingCart.getProducts().isEmpty() )
+				{
+					msg += "\nThe current shopping list will be lost.";
+				}
+
+				if ( alertPrompt(AlertType.CONFIRMATION, "Logout", msg) )
 				{
 					clock.quit();
 				}
@@ -912,5 +926,22 @@ public class ShopController extends Controller implements Initializable
 				}
 			}
 		});
+	}
+
+	public void goToShoppingCartView()
+	{
+		((ShoppingCartController) openView("/views/ShoppingCart.fxml", "Shopping Cart")).setData(shoppingCart, this);
+	}
+
+	public void goToPaymentView()
+	{
+		((PaymentController) openView("/views/Payment.fxml", "Payment")).setData((Customer) getCurrentUser(),
+				shoppingCart, (HashMap <String,Product>) products, this);
+	}
+
+	@FXML
+	public void goToCustomerView()
+	{
+		((CustomerController) openView("/views/Customer.fxml", "Customer")).setData((Customer) getCurrentUser());
 	}
 }

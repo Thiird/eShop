@@ -346,13 +346,13 @@ public class Controller
 		return 0;
 	}
 
-	public static Optional <ButtonType> alertWarning(AlertType type, String title, String header)
+	public static Optional <ButtonType> alertWarning(AlertType type, String title, String content)
 	{
 		Alert alert = new Alert(type);
 
 		alert.setTitle(title);
 		alert.setHeaderText("");
-		alert.setHeaderText(header);
+		alert.setContentText(content);
 
 		return alert.showAndWait();
 	}

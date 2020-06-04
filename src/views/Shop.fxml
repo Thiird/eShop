@@ -42,7 +42,7 @@
 					</font>
 				</Label>
 				<ScrollPane fx:id="cartPane" fitToHeight="true" fitToWidth="true" focusTraversable="false" layoutX="10.0" layoutY="188.0" prefHeight="561.0" prefWidth="281.0" />
-            <Button layoutX="150.0" layoutY="137.0" mnemonicParsing="false" onAction="#openShoppingCartView" text="Open cart" />
+            <Button layoutX="150.0" layoutY="137.0" mnemonicParsing="false" onAction="#goToShoppingCartView" text="Open cart" />
 			</children>
 		</Pane>
 		<Separator layoutX="299.0" layoutY="19.0" orientation="VERTICAL" prefHeight="781.0" prefWidth="6.0" />
