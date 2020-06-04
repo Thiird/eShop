@@ -28,6 +28,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
@@ -40,6 +41,8 @@ import models.Ward;
 
 public class EmployeeController extends Controller implements Initializable
 {
+	@FXML
+	private Pane container;
 	@FXML
 	private TabPane tabPane;
 	@FXML
@@ -297,7 +300,8 @@ public class EmployeeController extends Controller implements Initializable
 			public void handle(Event event)
 			{
 				setProducts(newProducts);
-				alertWarning(AlertType.INFORMATION, "Information", "The changes were applied to the database products.txt");
+				alertWarning(AlertType.INFORMATION, "Information",
+						"The changes were applied to the database products.txt");
 			}
 		});
 
@@ -440,5 +444,16 @@ public class EmployeeController extends Controller implements Initializable
 	{
 		((Stage) tabPane.getScene().getWindow()).close();
 		openView("/views/AddProduct.fxml", "Add Product");
+	}
+
+	@FXML
+	public void showLogOutPrompt()
+	{
+		if ( alertPrompt(AlertType.CONFIRMATION, "Logout", "Are you sure you want to logout?") )
+		{
+			((Stage) container.getScene().getWindow()).close();
+
+			openView("/views/Login.fxml", "Login");
+		}
 	}
 }

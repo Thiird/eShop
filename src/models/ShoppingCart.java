@@ -36,7 +36,7 @@ public class ShoppingCart implements Serializable
 		totalPrice += p.getPrice() * qtyToAdd;
 	}
 
-	public void refreshTotalPrice()
+	public void recalculateTotalPrice()
 	{// Recalculates total price, needed after product quantity change in
 		// shoppingCart view
 
@@ -56,6 +56,17 @@ public class ShoppingCart implements Serializable
 	public boolean containsProduct(Product p)
 	{
 		return products.containsKey(p);
+	}
+
+	public boolean removeProduct(Product p)
+	{
+		if ( products.containsKey(p) )
+		{
+			products.remove(p);
+			return true;
+		}
+
+		return false;
 	}
 
 	public void clear()

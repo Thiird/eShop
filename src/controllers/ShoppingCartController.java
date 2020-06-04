@@ -213,10 +213,13 @@ public class ShoppingCartController extends Controller implements Initializable
 
 		if ( productProperty != null )
 		{
+			shopController.removeProductFromCart(productProperty.getProduct());
 			dataList.remove(productProperty);
 			shoppingCart.getProducts().remove(productProperty.getProduct());
 			tableView.refresh();
 		}
+
+		shopController.updateProducts();
 	}
 
 	public void setData(ShoppingCart shoppingCart, ShopController shopController)

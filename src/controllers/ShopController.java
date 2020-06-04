@@ -812,16 +812,26 @@ public class ShopController extends Controller implements Initializable
 
 	public void updateProducts()
 	{
-		for ( Product p : shoppingCart.getProducts().keySet() )
+		clearCartGrid();
+		ArrayList <Product> products = new ArrayList <Product>();
+		products.addAll(shoppingCart.getProducts().keySet());
+
+		for ( Product p : products )
 		{
-			updateItemInCart(p);
+			addItemToCartGrid(p, shoppingCart.getProducts().get(p));
 		}
 
-		shoppingCart.refreshTotalPrice();
+		shoppingCart.recalculateTotalPrice();
 
 		lblTotToPay.setText("Total: " + shoppingCart.getTotalPrice() + "$");
 
 		refreshProductPanel();
+	}
+
+	public void removeProductFromCart(Product p)
+	{
+		p.setQtyAvailable(p.getQtyAvailable() + shoppingCart.getProducts().get(p));
+		shoppingCart.removeProduct(p);
 	}
 
 	private void refreshProductPanel()
