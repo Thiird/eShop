@@ -36,12 +36,6 @@ public class EditProfileController extends Controller implements Initializable
 		Platform.runLater(() -> container.requestFocus());
 	}
 
-	public void setData(Customer customer)
-	{
-		setCurrentUser(customer);
-		setFields(customer);
-	}
-
 	private void setFields(Customer customer)
 	{
 		name.setPromptText(customer.getName());
@@ -97,12 +91,17 @@ public class EditProfileController extends Controller implements Initializable
 				setUsers(users);
 
 				((Stage) container.getScene().getWindow()).close();
-				((ShopController) openView("/views/Shop.fxml", "Shop")).setData((Customer) getCurrentUser());
 			}
 			catch ( NoSuchElementException e )
 			{
 				System.err.println("NoSuchElementException");
 			}
 		}
+	}
+
+	public void setData(Customer customer)
+	{
+		setCurrentUser(customer);
+		setFields(customer);
 	}
 }

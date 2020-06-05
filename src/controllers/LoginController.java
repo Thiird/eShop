@@ -18,7 +18,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import models.Customer;
 import models.Employee;
 import models.User;
@@ -42,11 +41,7 @@ public class LoginController extends Controller implements Serializable, Initial
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		Platform.runLater(() ->
-		{
-			container.requestFocus();
-			setCloseEvent();
-		});
+		Platform.runLater(() -> container.requestFocus());
 
 		initEventHandlers();
 	}
@@ -93,13 +88,6 @@ public class LoginController extends Controller implements Serializable, Initial
 		});
 	}
 
-	public void switchToRegistration()
-	{
-		((Stage) container.getScene().getWindow()).close();
-
-		openView("/views/Registration.fxml", "Registration");
-	}
-
 	public void checkInput()
 	{
 		if ( isAllCompiled() )
@@ -109,8 +97,6 @@ public class LoginController extends Controller implements Serializable, Initial
 			if ( user == null )
 			{
 				clearFields();
-
-				alertWarning(AlertType.WARNING, "Warning", "Invalid email/password");
 			}
 			else
 			{
@@ -119,12 +105,20 @@ public class LoginController extends Controller implements Serializable, Initial
 					((Stage) container.getScene().getWindow()).close();
 
 					((ShopController) openView("/views/Shop.fxml", "Shop")).setData((Customer) user);
+
+					logInOutUser(true);
+
+					ShopController.showStage();
 				}
 				else if ( user instanceof Employee )
 				{
 					((Stage) container.getScene().getWindow()).close();
 
-					openView("/views/Employee.fxml", "Employee");
+					((EmployeeController) openView("/views/Employee.fxml", "Employee")).setData((Employee) user);
+
+					logInOutUser(true);
+
+					EmployeeController.showStage();
 				}
 			}
 		}
@@ -138,17 +132,30 @@ public class LoginController extends Controller implements Serializable, Initial
 
 	private User checkUser()
 	{
-		User user = null;
-
 		Map <String,User> users = getUsers();
 
-		if ( users != null )
-			user = users.get(email.getText());
+		User user = users.get(email.getText());
 
 		if ( user == null )
+		{
+			alertWarning(AlertType.WARNING, "Warning", "Invalid email/password");
 			return null;
+		}
 
-		return (user.getPassword().equalsIgnoreCase(password.getText())) ? user : null;
+		if ( user.getPassword().equals(password.getText()) )
+		{
+			if ( user.getLoggedIn() )
+			{
+				alertWarning(AlertType.WARNING, "Login", "This user is already logged in!");
+				return null;
+			}
+			else
+				return user;
+		}
+		else
+			alertWarning(AlertType.WARNING, "Warning", "Invalid email/password");
+
+		return null;
 	}
 
 	private boolean isAllCompiled()
@@ -162,19 +169,10 @@ public class LoginController extends Controller implements Serializable, Initial
 		password.clear();
 	}
 
-	public void setCloseEvent()
+	public void switchToRegistration()
 	{
-		((Stage) container.getScene().getWindow()).setOnCloseRequest(new EventHandler <WindowEvent>()
-		{
-			@Override
-			public void handle(WindowEvent event)
-			{
-				if ( !alertPrompt(AlertType.CONFIRMATION, "Logout",
-						"Are you sure you want to close the application?\nNon saved data will be lost.") )
-				{
-					event.consume();
-				}
-			}
-		});
+		openView("/views/Registration.fxml", "Registration");
+
+		RegistrationController.showAndWaitStage();
 	}
 }

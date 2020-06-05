@@ -12,7 +12,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,13 +24,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
+import models.Employee;
 import models.PaymentMethod;
 import models.Product;
 import models.ProductProperty;
@@ -51,6 +49,8 @@ public class EmployeeController extends Controller implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
+		Platform.runLater(() -> setCloseEvent());
+
 		initializeModifyProductsTab();
 		tabPane.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener <Number>()
 		{
@@ -87,8 +87,6 @@ public class EmployeeController extends Controller implements Initializable
 	private TableColumn <ProductProperty,Float> priceColumn;
 	@FXML
 	private TableColumn <ProductProperty,Integer> qtyAvailableColumn;
-	@FXML
-	private Button btnApplyChanges;
 	private ObservableList <ProductProperty> dataList;
 
 	private Map <String,Product> newProducts;
@@ -98,7 +96,6 @@ public class EmployeeController extends Controller implements Initializable
 		Platform.runLater(() -> tabPane.requestFocus());
 		newProducts = getProducts();
 		dataList = FXCollections.observableArrayList();
-		initModifyProductsTabEventHandlers();
 
 		setImageColumn();
 		setImagePathColumn();
@@ -206,7 +203,7 @@ public class EmployeeController extends Controller implements Initializable
 		{
 			if ( event.getNewValue() == null || event.getNewValue().isNaN() || event.getNewValue() <= 0 )
 			{
-				showWarningAlert();
+				inputAlert();
 				event.getRowValue().setQtyPerItem(event.getOldValue());
 				tableView.refresh();
 			}
@@ -242,7 +239,7 @@ public class EmployeeController extends Controller implements Initializable
 		{
 			if ( event.getNewValue() == null || event.getNewValue().isNaN() || event.getNewValue() <= 0 )
 			{
-				showWarningAlert();
+				inputAlert();
 				event.getRowValue().setPrice(event.getOldValue());
 				tableView.refresh();
 			}
@@ -278,7 +275,7 @@ public class EmployeeController extends Controller implements Initializable
 		{
 			if ( event.getNewValue() == null || event.getNewValue() == Integer.MIN_VALUE || event.getNewValue() <= 0 )
 			{
-				showWarningAlert();
+				inputAlert();
 				event.getRowValue().setQtyAvailable(event.getOldValue());
 				tableView.refresh();
 			}
@@ -292,35 +289,7 @@ public class EmployeeController extends Controller implements Initializable
 		});
 	}
 
-	private void initModifyProductsTabEventHandlers()
-	{
-		btnApplyChanges.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
-		{
-			@Override
-			public void handle(Event event)
-			{
-				setProducts(newProducts);
-				alertWarning(AlertType.INFORMATION, "Information",
-						"The changes were applied to the database products.txt");
-			}
-		});
-
-		btnApplyChanges.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler <KeyEvent>()
-		{
-			@Override
-			public void handle(KeyEvent event)
-			{
-				if ( event.getCode() == KeyCode.ENTER )
-				{
-					setProducts(newProducts);
-					alertWarning(AlertType.INFORMATION, "Information",
-							"The changes were applied to the database products.txt");
-				}
-			}
-		});
-	}
-
-	private void showWarningAlert()
+	private void inputAlert()
 	{
 		alertWarning(AlertType.WARNING, "Warning", "The entered value is not correct !");
 	}
@@ -345,6 +314,21 @@ public class EmployeeController extends Controller implements Initializable
 
 	private void initializeViewShoppingTab()
 	{
+
+		tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) ->
+		{
+			if ( newSelection != null )
+			{
+				System.out.println("AA");// TODO
+				btnViewProducts.setDisable(false);
+			}
+			else
+			{
+				System.out.println("BB");
+				btnViewProducts.setDisable(true);
+			}
+		});
+
 		shoppingDataList = FXCollections.observableArrayList();
 
 		setIDColumn();
@@ -436,14 +420,17 @@ public class EmployeeController extends Controller implements Initializable
 
 					((ViewProductsController) openView("/views/ViewProducts.fxml", "View Products"))
 							.setData(shoppingCart.getID(), shoppingCart.getCustomer());
+
+				ViewProductsController.showAndWaitStage();
 			}
 		}
 	}
 
 	public void switchToAddProduct()
 	{
-		((Stage) tabPane.getScene().getWindow()).close();
 		openView("/views/AddProduct.fxml", "Add Product");
+
+		AddProductController.showAndWaitStage();
 	}
 
 	@FXML
@@ -453,7 +440,36 @@ public class EmployeeController extends Controller implements Initializable
 		{
 			((Stage) container.getScene().getWindow()).close();
 
+			setProducts(newProducts);
+
+			logInOutUser(false);
+
 			openView("/views/Login.fxml", "Login");
+
+			LoginController.showStage();
 		}
+	}
+
+	public void setData(Employee customer)
+	{
+		setCurrentUser(customer);
+	}
+
+	public void setCloseEvent()
+	{
+		((Stage) container.getScene().getWindow()).setOnCloseRequest(new EventHandler <WindowEvent>()
+		{
+			@Override
+			public void handle(WindowEvent event)
+			{
+				if ( alertPrompt(AlertType.CONFIRMATION, "Quit application", "Are you sure you want to quit?") )
+				{
+					setProducts(newProducts);
+					logInOutUser(false);
+				}
+				else
+					event.consume();
+			}
+		});
 	}
 }

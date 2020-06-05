@@ -56,8 +56,11 @@ public class PaymentController extends Controller implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		Platform.runLater(() -> selectPreferredPaymentMethod());
-		initEventHandlers();
+		Platform.runLater(() ->
+		{
+			selectPreferredPaymentMethod();
+			initEventHandlers();
+		});
 
 		unavailableProds = new HashMap <Product,ArrayList <Integer>>();
 	}
@@ -91,46 +94,72 @@ public class PaymentController extends Controller implements Initializable
 		{
 			public void changed(ObservableValue <? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle)
 			{
-				if ( paymentMethods.getSelectedToggle() != null )
+				try
 				{
-					shoppingCart.setPaymentMethod((PaymentMethod) paymentMethods.getSelectedToggle().getUserData());
+					if ( paymentMethods.getSelectedToggle() != null )
+						shoppingCart.setPaymentMethod((PaymentMethod) paymentMethods.getSelectedToggle().getUserData());
 				}
+				catch ( Exception e )
+				{
+					System.out.println(shoppingCart);
+				}
+
 			}
 		});
 	}
 
 	private void pay()
 	{
-		System.out.println("A");
 		if ( allFieldsFilled() )
 		{
-			Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts(null);
+			if ( checkProductAvailability() )
+			{
+				Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts(null);
 
-			String email = shoppingCart.getCustomer().getEmail();
-			ArrayList <ShoppingCart> carts;
+				String email = shoppingCart.getCustomer().getEmail();
+				ArrayList <ShoppingCart> carts;
 
-			shoppingCart.setExpectedDate(randomDate());
+				shoppingCart.setID(getNextCartID(shoppingCarts));
+				shoppingCart.setExpectedDate(randomDate());
 
-			// Add cart to structure
-			if ( shoppingCarts.containsKey(email) )
-				carts = shoppingCarts.get(email);
+				// Add cart to structure
+				if ( shoppingCarts.containsKey(email) )
+					carts = shoppingCarts.get(email);
+				else
+					carts = new ArrayList <ShoppingCart>();
+
+				carts.add(shoppingCart);
+				shoppingCarts.put(email, carts);
+
+				// Write on file
+				setShoppingCarts(shoppingCarts);
+				setProducts(products);
+
+				shopController.clearApp();
+
+			}
 			else
-				carts = new ArrayList <ShoppingCart>();
-
-			carts.add(shoppingCart);
-			shoppingCarts.put(email, carts);
-
-			// Controllo file aperto
-			checkProductAvailability();
-
-			// Write on file
-			setShoppingCarts(shoppingCarts);
-			setProducts(products);
-
-			shopController.clearApp();
-
-			((Stage) container.getScene().getWindow()).close();
+				((Stage) container.getScene().getWindow()).close();
 		}
+	}
+
+	private int getNextCartID(Map <String,ArrayList <ShoppingCart>> shoppingCarts)
+	{// Loads nextCartID as lastCartID + 1
+
+		int lastID = 0;
+
+		for ( String client : shoppingCarts.keySet() )
+		{
+			for ( ShoppingCart sc : shoppingCarts.get(client) )
+			{
+				if ( sc.getID() > lastID )
+					lastID = sc.getID();
+			}
+		}
+
+		lastID++;
+
+		return lastID;
 	}
 
 	private void selectPreferredPaymentMethod()
@@ -179,37 +208,49 @@ public class PaymentController extends Controller implements Initializable
 		return true;
 	}
 
-	private void checkProductAvailability()
+	private boolean checkProductAvailability()
 	{// Before completing the payment, products are loaded from db to check if in the
 		// meantime other users have rendered unavailable some products present in this
 		// shoppingCart
+		// Returns true if all products are available
 
 		Map <String,Product> products = getProducts();
 
+		// Check for unavailable products
 		for ( Product p : shoppingCart.getProducts().keySet() )
 		{
 			for ( String s : products.keySet() )
 			{
-				if ( products.get(s) == p && products.get(s).getQtyAvailable() < products.get(s).getQtyAvailable() )
-					unavailableProds.put(p, new ArrayList <>(
-							Arrays.asList(products.get(s).getQtyAvailable(), products.get(s).getQtyAvailable())));
+				if ( products.get(s).getName().equals(p.getName()) )
+				{
+					if ( products.get(s).getQtyAvailable() < shoppingCart.getProducts().get(p) )
+					{
+						unavailableProds.put(p, new ArrayList <>(
+								Arrays.asList(shoppingCart.getProducts().get(p), products.get(s).getQtyAvailable())));
+					}
+				}
 			}
 		}
 
+		// Show warning
 		if ( !unavailableProds.isEmpty() )
 		{
 			String msg = "The following cart products are not available anymore in the requested quantity:\n";
 
 			for ( Product p : unavailableProds.keySet() )
 			{
-				msg += p.getName() + ": qty available: " + unavailableProds.get(p).get(0) + ", reqeusted: "
+				msg += p.getName() + ": reqeusted: " + unavailableProds.get(p).get(0) + ", qty available: "
 						+ unavailableProds.get(p).get(1);
 
 				shoppingCart.getProducts().remove(p);
 			}
 
 			alertWarning(AlertType.WARNING, "Unavailable products", msg);
+
+			return false;
 		}
+
+		return true;
 	}
 
 	private Date randomDate()

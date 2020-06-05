@@ -9,6 +9,8 @@ public class Main extends Application
 	public void start(Stage stage) throws Exception
 	{
 		Controller.openView("/views/Login.fxml", "Login");
+
+		LoginController.showStage();
 	}
 
 	public static void main(String[] args)

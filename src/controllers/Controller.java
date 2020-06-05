@@ -22,6 +22,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Customer;
 import models.Product;
@@ -30,7 +31,9 @@ import models.User;
 
 public class Controller
 {
-	private User currentUser;
+	private static final Image eShopIcon = new Image(Controller.class.getResourceAsStream("/icons/generics/eShop.png"));
+	private static Stage stage;
+	private static User currentUser;
 
 	public static Controller openView(String viewPath, String viewTitle)
 	{
@@ -46,28 +49,54 @@ public class Controller
 		{
 			System.err.println("switchToView IOException");
 		}
-
-		Scene scene = new Scene(parent);
 		Stage stage = new Stage();
 
 		stage.centerOnScreen();
 		stage.setResizable(false);
 		stage.setTitle(viewTitle);
-		stage.setScene(scene);
-		stage.getIcons().add(new Image(Controller.class.getResourceAsStream("/icons/generics/eShop.png")));
-		stage.show();
+		stage.setScene(new Scene(parent));
+		stage.getIcons().add(eShopIcon);
+		stage.initModality(Modality.APPLICATION_MODAL);
+
+		setStage(stage);
 
 		return loader.getController();
 	}
 
-	public User getCurrentUser()
+	public static void showStage()
+	{
+		stage.show();
+	}
+
+	public static void showAndWaitStage()
+	{
+		stage.showAndWait();
+	}
+
+	public static void setStage(Stage s)
+	{
+		stage = s;
+	}
+
+	public static final void logInOutUser(boolean flag)
+	{// flag == true -> login user
+		// flag == false -> logout user
+
+		Map <String,User> users = getUsers();
+
+		users.get(getCurrentUser().getEmail()).setLoggedIn(flag);
+
+		setUsers(users);
+	}
+
+	public static User getCurrentUser()
 	{
 		return currentUser;
 	}
 
 	public void setCurrentUser(User user)
 	{
-		this.currentUser = user;
+		currentUser = user;
 	}
 
 	@SuppressWarnings ( "unchecked" )
@@ -135,6 +164,7 @@ public class Controller
 		catch ( IOException e )
 		{
 			System.err.println("getUsers IOException");
+			return new HashMap <String,User>();
 		}
 		catch ( ClassNotFoundException e )
 		{

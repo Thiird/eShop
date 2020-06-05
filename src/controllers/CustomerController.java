@@ -101,6 +101,8 @@ public class CustomerController extends Controller implements Initializable
 	{
 		((FidelityCardController) openView("/views/FidelityCard.fxml", "Fidelity Card"))
 				.setData((Customer) getCurrentUser());
+
+		FidelityCardController.showAndWaitStage();
 	}
 
 	@FXML
@@ -119,6 +121,9 @@ public class CustomerController extends Controller implements Initializable
 				{
 					((ViewProductsController) openView("/views/ViewProducts.fxml", "View Products"))
 							.setData(shoppingCart.getID(), (Customer) getCurrentUser());
+
+					ViewProductsController.showAndWaitStage();
+
 					break;
 				}
 			}
@@ -129,6 +134,8 @@ public class CustomerController extends Controller implements Initializable
 	{
 		((EditProfileController) openView("/views/EditProfile.fxml", "Edit Profile"))
 				.setData((Customer) getCurrentUser());
+
+		EditProfileController.showAndWaitStage();
 	}
 
 	public void switchToShop()
@@ -136,6 +143,8 @@ public class CustomerController extends Controller implements Initializable
 		((Stage) container.getScene().getWindow()).close();
 
 		((ShopController) openView("/views/Shop.fxml", "Shop")).setData((Customer) getCurrentUser());
+
+		ShopController.showAndWaitStage();
 	}
 
 	private void setExpectedDateColumn()

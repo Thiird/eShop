@@ -174,8 +174,6 @@ public class AddProductController extends Controller implements Initializable
 					clearFields();
 
 				((Stage) pane.getScene().getWindow()).close();
-
-				openView("/views/Employee.fxml", "Employee");
 			}
 		}
 		else

@@ -20,12 +20,12 @@
 		<Pane prefHeight="800.0" prefWidth="300.0">
 			<children>
 				<Label fx:id="userEmail" layoutX="117.0" layoutY="40.0" prefHeight="27.0" prefWidth="175.0" text="Mario Rossi" />
-				<Label fx:id="lblTotToPay" layoutX="10.0" layoutY="758.0" prefHeight="27.0" prefWidth="147.0" text="Total: 0€">
+				<Label fx:id="lblTotToPay" layoutX="10.0" layoutY="761.0" prefHeight="27.0" prefWidth="147.0" text="Total: 0€">
 					<font>
 						<Font size="18.0" />
 					</font>
 				</Label>
-				<Button fx:id="btnGoToPayment" disable="true" layoutX="174.0" layoutY="757.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="117.0" text="Go to Payment" textAlignment="CENTER">
+				<Button fx:id="btnGoToPayment" disable="true" layoutX="172.0" layoutY="760.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="117.0" text="Go to Payment" textAlignment="CENTER">
 					<font>
 						<Font size="13.0" />
 					</font>
@@ -42,7 +42,7 @@
 					</font>
 				</Label>
 				<ScrollPane fx:id="cartPane" fitToHeight="true" fitToWidth="true" focusTraversable="false" layoutX="10.0" layoutY="188.0" prefHeight="561.0" prefWidth="281.0" />
-            <Button layoutX="150.0" layoutY="137.0" mnemonicParsing="false" onAction="#goToShoppingCartView" text="Open cart" />
+            <Button fx:id="btnOpenCart" disable="true" layoutX="150.0" layoutY="137.0" mnemonicParsing="false" onAction="#goToShoppingCartView" text="Open cart" />
 			</children>
 		</Pane>
 		<Separator layoutX="299.0" layoutY="19.0" orientation="VERTICAL" prefHeight="781.0" prefWidth="6.0" />
@@ -74,13 +74,13 @@
 					</font>
 				</Label>
 				<Label fx:id="isPAvaialble" alignment="CENTER" contentDisplay="CENTER" layoutX="82.0" layoutY="286.0" prefHeight="17.0" prefWidth="136.0" text="-" />
-				<Button fx:id="btnAddToCart" disable="true" layoutX="174.0" layoutY="759.0" mnemonicParsing="false" text="Add to Cart">
+				<Button fx:id="btnAddToCart" disable="true" layoutX="172.0" layoutY="756.0" mnemonicParsing="false" text="Add to Cart">
 					<font>
 						<Font size="14.0" />
 					</font>
 				</Button>
-				<TextField fx:id="txtFldQuantity" disable="true" layoutX="80.0" layoutY="761.0" prefHeight="25.0" prefWidth="41.0" />
-				<Label fx:id="lblQuantity" layoutX="14.0" layoutY="765.0" text="Quantity:" />
+				<TextField fx:id="txtFldQuantity" disable="true" layoutX="99.0" layoutY="759.0" prefHeight="25.0" prefWidth="41.0" />
+				<Label fx:id="lblQuantity" layoutX="34.0" layoutY="763.0" text="Quantity:" />
 				<Label fx:id="currProdQtyAvailable" layoutX="25.0" layoutY="475.0" prefHeight="17.0" prefWidth="195.0" text="Availability: ">
 					<font>
 						<Font size="15.0" />

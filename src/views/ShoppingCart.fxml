@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="container" prefHeight="700.0" prefWidth="1200.0" stylesheets="@../../bin/styles/Style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ShoppingCartController">
+<Pane fx:id="container" prefHeight="616.0" prefWidth="1200.0" stylesheets="@../../res/styles/Style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ShoppingCartController">
    <children>
       <TableView fx:id="tableView" editable="true" layoutX="50.0" layoutY="80.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
          <columns>
@@ -19,9 +19,9 @@
             <TableColumn fx:id="madeInItalyColumn" editable="false" minWidth="112.0" prefWidth="112.0" resizable="false" sortable="false" text="Made in Italy" />
          </columns>
       </TableView>
-      <Button fx:id="btnApplyChanges" alignment="CENTER" defaultButton="true" layoutX="527.5" layoutY="605.0" onAction="#applyChanges" prefWidth="150.0" text="Apply changes" />
-      <Button fx:id="btnRemoveProduct" alignment="CENTER" defaultButton="true" layoutX="311.0" layoutY="605.0" onAction="#removeProduct" prefWidth="150.0" text="Remove product" />
-      <ComboBox fx:id="cmbType" layoutX="278.0" layoutY="30.0" prefWidth="150.0" promptText="Filter by type" />
-      <ComboBox fx:id="cmbBrand" layoutX="106.0" layoutY="30.0" prefWidth="150.0" promptText="Filter by brand" />
+      <Button fx:id="btnRemoveProduct" alignment="CENTER" defaultButton="true" layoutX="1000.0" layoutY="33.0" onAction="#removeProduct" prefWidth="150.0" text="Remove product" />
+      <Button fx:id="btnResetFilters" alignment="CENTER" defaultButton="true" layoutX="424.0" layoutY="33.0" onAction="#removeProduct" prefWidth="150.0" text="Reset filters" />
+      <ComboBox fx:id="cmbType" layoutX="222.0" layoutY="33.0" prefWidth="150.0" promptText="Filter by type" />
+      <ComboBox fx:id="cmbBrand" layoutX="50.0" layoutY="33.0" prefWidth="150.0" promptText="Filter by brand" />
    </children>
 </Pane>

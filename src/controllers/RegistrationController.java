@@ -72,23 +72,15 @@ public class RegistrationController extends Controller implements Initializable
 			{
 				insertCustomer(customer);
 
-				if ( alertWarning(AlertType.INFORMATION, "Information", "Registration completed").get() == ButtonType.OK )
+				if ( alertWarning(AlertType.INFORMATION, "Information", "Registration completed")
+						.get() == ButtonType.OK )
 				{
 					((Stage) container.getScene().getWindow()).close();
-
-					openView("../views/Login.fxml", "Login");
 				}
 			}
 		}
 		else
 			alertWarning(AlertType.WARNING, "Warning", "All fields must be completed");
-	}
-
-	public void returnToLogin()
-	{
-		((Stage) container.getScene().getWindow()).close();
-
-		openView("../views/Login.fxml", "Login");
 	}
 
 	private boolean isAllCompiled()

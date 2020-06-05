@@ -1,6 +1,7 @@
 package models;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -11,13 +12,13 @@ public class ShoppingCart implements Serializable
 	private Date expectedDate;
 	private HashMap <Product,Integer> products;
 	private final Customer customer;
-	private float totalPrice;
+	private float totalPrice = 0f;
+	DecimalFormat f = new DecimalFormat("##.00"); // Round to two decimal places
 	private PaymentMethod paymentMethod;
 
-	public ShoppingCart( Customer customer, int ID )
+	public ShoppingCart( Customer customer )
 	{
 		this.customer = customer;
-		this.ID = ID;
 
 		products = new HashMap <Product,Integer>();
 	}
@@ -33,7 +34,7 @@ public class ShoppingCart implements Serializable
 			products.put(p, products.get(p) + qtyToAdd);
 		}
 
-		totalPrice += p.getPrice() * qtyToAdd;
+		totalPrice += Float.parseFloat(f.format(p.getPrice() * qtyToAdd).replace(",", "."));
 	}
 
 	public void recalculateTotalPrice()
@@ -44,13 +45,8 @@ public class ShoppingCart implements Serializable
 
 		for ( Product p : products.keySet() )
 		{
-			totalPrice += p.getPrice() * products.get(p);
+			totalPrice += Float.parseFloat(f.format(p.getPrice() * products.get(p)).replace(",", "."));
 		}
-	}
-
-	public void setTotalPrice(int totalPrice)
-	{
-		this.totalPrice = totalPrice;
 	}
 
 	public boolean containsProduct(Product p)
@@ -72,6 +68,11 @@ public class ShoppingCart implements Serializable
 	public void clear()
 	{
 		products.clear();
+	}
+
+	public void setID(int id)
+	{
+		this.ID = id;
 	}
 
 	public int getID()

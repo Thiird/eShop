@@ -2,11 +2,14 @@ package controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,13 +52,15 @@ public class ShoppingCartController extends Controller implements Initializable
 	@FXML
 	private TableColumn <ProductProperty,Boolean> madeInItalyColumn;
 	@FXML
-	private Button btnRemoveProduct, btnApplyChanges;
+	private Button btnResetFilters, btnRemoveProduct;
 	@FXML
-	private ComboBox <String> cmbType, cmbBrand;
+	private ComboBox <Type> cmbType;
+	@FXML
+	private ComboBox <Brand> cmbBrand;
 
 	private ShopController shopController;
 
-	private ObservableList <ProductProperty> dataList;
+	private ObservableList <ProductProperty> dataList;// TODO what is this
 
 	private ShoppingCart shoppingCart;
 
@@ -68,13 +73,6 @@ public class ShoppingCartController extends Controller implements Initializable
 			setCloseEvent();
 		});
 
-		ObservableList <String> types = FXCollections.observableArrayList(Type.valuesAsString());
-		cmbType.setItems(types);
-		/*
-		 * ObservableList <Brand> brands =
-		 * FXCollections.observableArrayList(Brand.values()); cmbBrand.setItems(brands);
-		 */
-		dataList = FXCollections.observableArrayList();
 		setImageColumn();
 		setQuantityColumn();
 		setNameColumn();
@@ -83,40 +81,38 @@ public class ShoppingCartController extends Controller implements Initializable
 		setTypeColumn();
 		setMadeInItalyColumn();
 
-		FilteredList <ProductProperty> filteredDataByType = new FilteredList <>(dataList, b -> true);
+		dataList = FXCollections.observableArrayList();
 
-		cmbType.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) ->
+		// Set ComboBox
+		ObservableList <Type> types = FXCollections.observableArrayList(Type.values());
+		cmbType.setItems(types);
+
+		ObservableList <Brand> brands = FXCollections.observableArrayList(Brand.values());
+		cmbBrand.setItems(brands);
+
+		// Products filters
+		ObjectProperty <Predicate <ProductProperty>> typeFilter = new SimpleObjectProperty <>();
+		ObjectProperty <Predicate <ProductProperty>> brandFilter = new SimpleObjectProperty <>();
+
+		typeFilter.bind(Bindings.createObjectBinding(() -> product -> cmbType.getValue() == null
+				|| cmbType.getValue() == Type.ALL || cmbType.getValue() == product.getType(), cmbType.valueProperty()));
+
+		brandFilter.bind(Bindings.createObjectBinding(() -> product -> cmbBrand.getValue() == null
+				|| cmbBrand.getValue() == Brand.ALL || cmbBrand.getValue() == product.getBrand(),
+				cmbBrand.valueProperty()));
+
+		FilteredList <ProductProperty> filteredProducts = new FilteredList <>(dataList);
+
+		tableView.setItems(filteredProducts);
+		filteredProducts.predicateProperty().bind(
+				Bindings.createObjectBinding(() -> typeFilter.get().and(brandFilter.get()), typeFilter, brandFilter));
+
+		btnResetFilters.setOnAction(e ->
 		{
-			filteredDataByType.setPredicate(product ->
-			{
-				// If filter text is empty, display all products
-				if ( newValue.equalsIgnoreCase("ALL") )
-					return true;
-
-				// Compare ... of every product with filter
-				if ( product.getType().toString().equals(newValue) )
-					// Filter matches type
-					return true;
-				else
-					// Does not match
-					return false;
-			});
+			cmbType.setValue(null);
+			cmbBrand.setValue(null);
+			tableView.refresh();
 		});
-
-		// 3. Wrap the FilteredList in a SortedList
-		SortedList <ProductProperty> sortedDataByType = new SortedList <>(filteredDataByType);
-
-		// 4. Bind the SortedList comparator to the TableView comparator
-		sortedDataByType.comparatorProperty().bind(tableView.comparatorProperty());
-
-		// 5. Add sorted ( and filtered ) data to the table
-		tableView.setItems(sortedDataByType);
-	}
-
-	@FXML
-	public void applyChanges()
-	{
-		Controller.alertWarning(AlertType.INFORMATION, "Information", "Applied changes");
 	}
 
 	private void setImageColumn()
@@ -222,9 +218,9 @@ public class ShoppingCartController extends Controller implements Initializable
 		shopController.updateProducts();
 	}
 
-	public void setData(ShoppingCart shoppingCart, ShopController shopController)
+	public void setData(ShoppingCart sc, ShopController shopController)
 	{
-		this.shoppingCart = shoppingCart;
+		this.shoppingCart = sc;
 		this.shopController = shopController;
 
 		for ( Product p : shoppingCart.getProducts().keySet() )

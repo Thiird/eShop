@@ -55,7 +55,7 @@ public class ShopController extends Controller implements Initializable
 	int yCart = 0;
 
 	@FXML
-	Button btnShopSearch, btnGoToPayment, btnAddToCart;
+	Button btnShopSearch, btnGoToPayment, btnAddToCart, btnOpenCart;
 
 	@FXML
 	TextField shopSearchbar, txtFldQuantity;
@@ -102,7 +102,7 @@ public class ShopController extends Controller implements Initializable
 		{
 			setCloseEvent();
 			userEmail.setText(getCurrentUser().getEmail());
-			shoppingCart = new ShoppingCart((Customer) getCurrentUser(), getNextCartID());
+			shoppingCart = new ShoppingCart((Customer) getCurrentUser());
 		});
 
 		initEventHandlers();
@@ -192,9 +192,6 @@ public class ShopController extends Controller implements Initializable
 			public void handle(Event event)
 			{
 				goToPaymentView();
-
-				// TODO
-
 			}
 		});
 
@@ -242,6 +239,7 @@ public class ShopController extends Controller implements Initializable
 		if ( qtyToAdd <= imageToProduct.get(selectedShopProduct.getChildren().get(0)).getQtyAvailable() )
 		{
 			btnGoToPayment.setDisable(false);
+			btnOpenCart.setDisable(false);
 
 			Product prodToAddToCart = imageToProduct.get(selectedShopProduct.getChildren().get(0));
 			prodToAddToCart.setQtyAvailable(prodToAddToCart.getQtyAvailable() - qtyToAdd);
@@ -614,37 +612,13 @@ public class ShopController extends Controller implements Initializable
 		}
 	}
 
-	private void searchInCart()
-	{// Isolates grid entries that start with the string typed in the search bar
-
-		// CHIAMI LA VISTA RICERCA CARRELLO
-
-		/*
-		 * String toSearchItem = cartSearchbar.getText();
-		 * 
-		 * ArrayList<Node> gridEntries = new ArrayList<Node>();
-		 * 
-		 * for (Node node : cartGridPane.getChildren()) { if (node instanceof Label) {
-		 * Label l = ((Label) node);
-		 * 
-		 * if (l.getText().startsWith(toSearchItem)) gridEntries.add(node); } //else
-		 * .println("Was looking into non-label widget"); }
-		 * 
-		 * if (gridEntries.size() != 0) { //Remove all entries
-		 * cartGridPane.getChildren().removeAll(cartGridPane.getChildren());
-		 * 
-		 * //Add entries that match search request
-		 * cartGridPane.getChildren().addAll(gridEntries); } else cartSearchbar.clear();
-		 */
-	}
-
 	public void addItemToShopGrid(Product p)
 	{// Add item to given pane, in given position
 
 		ImageView b = productToImage.get(p);
 		Pane r = new Pane();
 		r.getChildren().add(b);
-		r.styleProperty().set("-fx-background-color:" + backgroundColor + ";");
+		r.setStyle("-fx-background-color:" + backgroundColor + ";");
 		setShopNodeEvents(r);
 
 		// r.getChildren().add(b);
@@ -669,20 +643,22 @@ public class ShopController extends Controller implements Initializable
 		// Product name label
 		Label lblName = new Label(p.getName());
 		lblName.setFont(new Font("Arial", 20));
+		lblName.setStyle("-fx-background-color:" + backgroundColor + ";");
 		setCartNodeEvents(lblName);
 
-		GridPane.setFillWidth(lblName, true);
-		GridPane.setFillHeight(lblName, true);
+		// GridPane.setFillWidth(lblName, true);
+		// GridPane.setFillHeight(lblName, true);
 		GridPane.setConstraints(lblName, 0, yCart);
 		cartGridPane.getChildren().add(lblName);
 
 		// Product qty label
 		Label lblQty = new Label("x" + qtyToAdd);
 		lblQty.setFont(new Font("Arial", 20));
+		lblQty.setStyle("-fx-background-color:" + backgroundColor + ";");
 		setCartNodeEvents(lblQty);
 
-		GridPane.setFillWidth(lblQty, true);
-		GridPane.setFillHeight(lblQty, true);
+		// GridPane.setFillWidth(lblQty, true);
+		// GridPane.setFillHeight(lblQty, true);
 		GridPane.setConstraints(lblQty, 1, yCart);
 		cartGridPane.getChildren().add(lblQty);
 
@@ -779,27 +755,6 @@ public class ShopController extends Controller implements Initializable
 		shopGridPane.getChildren().removeAll(shopGridPane.getChildren());
 	}
 
-	private int getNextCartID()
-	{// Loads nextCartID as lastCartID + 1
-
-		int lastID = 0;
-
-		Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts(null);
-
-		for ( String client : shoppingCarts.keySet() )
-		{
-			for ( ShoppingCart sc : shoppingCarts.get(client) )
-			{
-				if ( sc.getID() > lastID )
-					lastID = sc.getID();
-			}
-		}
-
-		lastID++;
-
-		return lastID;
-	}
-
 	public ShoppingCart getShoppingCart()
 	{
 		return shoppingCart;
@@ -824,6 +779,9 @@ public class ShopController extends Controller implements Initializable
 		shoppingCart.recalculateTotalPrice();
 
 		lblTotToPay.setText("Total: " + shoppingCart.getTotalPrice() + "$");
+
+		if ( shoppingCart.getProducts().size() == 0 )
+			btnOpenCart.setDisable(true);
 
 		refreshProductPanel();
 	}
@@ -860,32 +818,13 @@ public class ShopController extends Controller implements Initializable
 		isPAvaialble.setStyle("-fx-text-fill: black;");
 	}
 
-	@FXML
-	public void showLogOutPrompt()
-	{
-		String msg = "Are you sure you want to logout?";
-
-		if ( !shoppingCart.getProducts().isEmpty() )
-		{
-			msg += "\nThe current shopping list will be lost.";
-		}
-
-		if ( alertPrompt(AlertType.CONFIRMATION, "Logout", msg) )
-		{
-			quitApp();
-
-			((Stage) container.getScene().getWindow()).close();
-
-			openView("/views/Login.fxml", "Login");
-		}
-	}
-
 	private void quitApp()
 	{
 		clearApp();
-
 		clearShopGrid();
-		setCurrentUser(null);
+
+		logInOutUser(false);
+
 		clock.quit();
 	}
 
@@ -912,6 +851,52 @@ public class ShopController extends Controller implements Initializable
 		wardSelection.getSelectionModel().select(0);
 	}
 
+	public void goToShoppingCartView()
+	{
+		((ShoppingCartController) openView("/views/ShoppingCart.fxml", "Shopping Cart")).setData(shoppingCart, this);
+
+		ShoppingCartController.showAndWaitStage();
+	}
+
+	public void goToPaymentView()
+	{
+		((PaymentController) openView("/views/Payment.fxml", "Payment")).setData((Customer) getCurrentUser(),
+				shoppingCart, (HashMap <String,Product>) products, this);
+
+		PaymentController.showAndWaitStage();
+	}
+
+	@FXML
+	public void goToCustomerView()
+	{
+		((CustomerController) openView("/views/Customer.fxml", "Customer")).setData((Customer) getCurrentUser());
+
+		CustomerController.showAndWaitStage();
+
+	}
+
+	@FXML
+	public void showLogOutPrompt()
+	{
+		String msg = "Are you sure you want to logout?";
+
+		if ( !shoppingCart.getProducts().isEmpty() )
+		{
+			msg += "\nThe current shopping list will be lost.";
+		}
+
+		if ( alertPrompt(AlertType.CONFIRMATION, "Logout", msg) )
+		{
+			quitApp();
+
+			((Stage) container.getScene().getWindow()).close();
+
+			openView("/views/Login.fxml", "Login");
+
+			LoginController.showStage();
+		}
+	}
+
 	public void setCloseEvent()
 	{
 		((Stage) container.getScene().getWindow()).setOnCloseRequest(new EventHandler <WindowEvent>()
@@ -919,16 +904,19 @@ public class ShopController extends Controller implements Initializable
 			@Override
 			public void handle(WindowEvent event)
 			{
-				String msg = "Are you sure you want to logout?";
+				String msg = "Are you sure you want to quit?";
 
 				if ( !shoppingCart.getProducts().isEmpty() )
 				{
 					msg += "\nThe current shopping list will be lost.";
 				}
 
-				if ( alertPrompt(AlertType.CONFIRMATION, "Logout", msg) )
+				if ( alertPrompt(AlertType.CONFIRMATION, "Quit application", msg) )
 				{
+					logInOutUser(false);
 					clock.quit();
+
+					Platform.exit();
 				}
 				else
 				{
@@ -936,22 +924,5 @@ public class ShopController extends Controller implements Initializable
 				}
 			}
 		});
-	}
-
-	public void goToShoppingCartView()
-	{
-		((ShoppingCartController) openView("/views/ShoppingCart.fxml", "Shopping Cart")).setData(shoppingCart, this);
-	}
-
-	public void goToPaymentView()
-	{
-		((PaymentController) openView("/views/Payment.fxml", "Payment")).setData((Customer) getCurrentUser(),
-				shoppingCart, (HashMap <String,Product>) products, this);
-	}
-
-	@FXML
-	public void goToCustomerView()
-	{
-		((CustomerController) openView("/views/Customer.fxml", "Customer")).setData((Customer) getCurrentUser());
 	}
 }
