@@ -113,17 +113,20 @@ public class AddProductController extends Controller implements Initializable
 		// Show open file dialog
 		File file = fileChooser.showOpenDialog(null);
 
-		try
+		if ( file != null )
 		{
-			BufferedImage bufferedImage = ImageIO.read(file);
+			try
+			{
+				BufferedImage bufferedImage = ImageIO.read(file);
 
-			Image imageSelected = SwingFXUtils.toFXImage(bufferedImage, null);
-			imageView.setImage(imageSelected);
-			image = file.getPath();
-		}
-		catch ( IOException e )
-		{
-			System.err.println("Image not found !");
+				Image imageSelected = SwingFXUtils.toFXImage(bufferedImage, null);
+				imageView.setImage(imageSelected);
+				image = file.getPath();
+			}
+			catch ( IOException e )
+			{
+				System.err.println("Image not found !");
+			}
 		}
 	}
 

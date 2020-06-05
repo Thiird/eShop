@@ -417,11 +417,14 @@ public class EmployeeController extends Controller implements Initializable
 			for ( ShoppingCart shoppingCart : customerShoppingCarts )
 			{
 				if ( shoppingCart.getID() == shoppingCartProperty.getID() )
-
+				{
 					((ViewProductsController) openView("/views/ViewProducts.fxml", "View Products"))
 							.setData(shoppingCart.getID(), shoppingCart.getCustomer());
 
-				ViewProductsController.showAndWaitStage();
+					ViewProductsController.showAndWaitStage();
+
+					break;
+				}
 			}
 		}
 	}

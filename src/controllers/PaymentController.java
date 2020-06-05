@@ -1,12 +1,10 @@
 package controllers;
 
 import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
@@ -46,6 +45,9 @@ public class PaymentController extends Controller implements Initializable
 	private Button btnPay;
 
 	@FXML
+	private ComboBox <Date> deliveryDate;
+
+	@FXML
 	private Pane container;
 
 	private Map <String,Product> products;
@@ -58,6 +60,7 @@ public class PaymentController extends Controller implements Initializable
 	{
 		Platform.runLater(() ->
 		{
+			generateDeliveryDates();
 			selectPreferredPaymentMethod();
 			initEventHandlers();
 		});
@@ -81,9 +84,12 @@ public class PaymentController extends Controller implements Initializable
 		rbPaypal.setUserData(PaymentMethod.PAYPAL);
 		rbOnDelivery.setUserData(PaymentMethod.ON_DELIVERY);
 
+		System.out.println(paymentMethods);
 		rbCreditCard.setToggleGroup(paymentMethods);
 		rbPaypal.setToggleGroup(paymentMethods);
 		rbOnDelivery.setToggleGroup(paymentMethods);
+
+		System.out.println(paymentMethods);
 
 		rbCreditCard.setTooltip(new Tooltip("Credit card"));
 		rbPaypal.setTooltip(new Tooltip("Paypal"));
@@ -94,16 +100,8 @@ public class PaymentController extends Controller implements Initializable
 		{
 			public void changed(ObservableValue <? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle)
 			{
-				try
-				{
-					if ( paymentMethods.getSelectedToggle() != null )
-						shoppingCart.setPaymentMethod((PaymentMethod) paymentMethods.getSelectedToggle().getUserData());
-				}
-				catch ( Exception e )
-				{
-					System.out.println(shoppingCart);
-				}
-
+				if ( paymentMethods.getSelectedToggle() != null )
+					shoppingCart.setPaymentMethod((PaymentMethod) paymentMethods.getSelectedToggle().getUserData());
 			}
 		});
 	}
@@ -116,11 +114,13 @@ public class PaymentController extends Controller implements Initializable
 			{
 				Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts(null);
 
+				// Setup cart before saving on file
+				shoppingCart.setPaymentMethod((PaymentMethod) paymentMethods.getSelectedToggle().getUserData());
+				shoppingCart.setID(getNextCartID(shoppingCarts));
+				shoppingCart.setExpectedDate(deliveryDate.getSelectionModel().getSelectedItem());
+
 				String email = shoppingCart.getCustomer().getEmail();
 				ArrayList <ShoppingCart> carts;
-
-				shoppingCart.setID(getNextCartID(shoppingCarts));
-				shoppingCart.setExpectedDate(randomDate());
 
 				// Add cart to structure
 				if ( shoppingCarts.containsKey(email) )
@@ -135,11 +135,12 @@ public class PaymentController extends Controller implements Initializable
 				setShoppingCarts(shoppingCarts);
 				setProducts(products);
 
-				shopController.clearApp();
+				alertWarning(AlertType.INFORMATION, "Payment", "Transaction complete.\nThank you for your purchase!");
 
+				shopController.clearApp();
 			}
-			else
-				((Stage) container.getScene().getWindow()).close();
+
+			((Stage) container.getScene().getWindow()).close();
 		}
 	}
 
@@ -191,17 +192,22 @@ public class PaymentController extends Controller implements Initializable
 
 	private boolean allFieldsFilled()
 	{
-		if ( paymentMethods.getSelectedToggle() == null )
+		String msg = "";
+
+		if ( deliveryDate.getSelectionModel().getSelectedItem() == null )
+			msg += "You must select a delivery date.";
+
+		if ( (paymentMethods.getSelectedToggle()) == null )
 		{
-			alertWarning(AlertType.WARNING, "Payment method", "You must select a payment method to proceeed.");
+			if ( !msg.isEmpty() )
+				msg += "\n";
 
-			// TODO ADD DATE
-			/*
-			 * if ( ((PaymentMethod) paymentMethods.getSelectedToggle().getUserData()) ==
-			 * null ) { alertWarning(AlertType.WARNING, "Payment method",
-			 * "You must select a payment method to proceeed."); }
-			 */
+			msg += "You must select a payment method.";
+		}
 
+		if ( !msg.isEmpty() )
+		{
+			alertWarning(AlertType.WARNING, "Payment configuration", msg);
 			return false;
 		}
 
@@ -253,23 +259,21 @@ public class PaymentController extends Controller implements Initializable
 		return true;
 	}
 
-	private Date randomDate()
+	private void generateDeliveryDates()
 	{
-		Random random = new Random();
+		Random r = new Random();
 
-		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-		int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+		Instant deliveryInstant;
+		Date delvieryDate;
 
-		int minDay = (int) LocalDate.of(currentYear, currentMonth, 5).toEpochDay();
-		int maxDay = (int) LocalDate.of(currentYear, currentMonth, 5 + random.nextInt((10 - 1) + 1) + 1).toEpochDay();
+		// SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy HH:mm:ss");
+		// String formattedDate = formatter.format(myDate);
 
-		long randomDay = minDay + random.nextInt(maxDay - minDay);
-
-		LocalDate randomBirthDate = LocalDate.ofEpochDay(randomDay);
-
-		Instant instant = Instant.from(randomBirthDate.atStartOfDay(ZoneId.of("GMT")));
-		Date date = Date.from(instant);
-
-		return date;
+		for ( int i = 1; i < (r.nextInt((5 - 2) + 1) + 2); i++ )
+		{
+			deliveryInstant = Instant.now().plus(Duration.ofDays(i));
+			delvieryDate = Date.from(deliveryInstant);
+			deliveryDate.getItems().add(delvieryDate);
+		}
 	}
 }

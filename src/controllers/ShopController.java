@@ -745,6 +745,8 @@ public class ShopController extends Controller implements Initializable
 		yCart = 0;
 
 		cartGridPane.getChildren().removeAll(cartGridPane.getChildren());
+
+		btnOpenCart.setDisable(true);
 	}
 
 	private void clearShopGrid()

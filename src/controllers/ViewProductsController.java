@@ -25,7 +25,7 @@ import models.Ward;
 public class ViewProductsController extends Controller implements Initializable
 {
 	@FXML
-	private Pane pane;
+	private Pane container;
 	@FXML
 	private TextField searchBar;
 	@FXML
@@ -66,7 +66,7 @@ public class ViewProductsController extends Controller implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		Platform.runLater(() -> pane.requestFocus());
+		Platform.runLater(() -> container.requestFocus());
 
 		dataList = FXCollections.observableArrayList();
 		setImageColumn();
