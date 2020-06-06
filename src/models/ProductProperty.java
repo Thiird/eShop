@@ -13,53 +13,50 @@ public class ProductProperty
 	private Product product;
 	private ImageView imageView;
 	private SimpleStringProperty imagePath;
-	private SimpleObjectProperty<Ward> ward;
+	private SimpleObjectProperty <Ward> ward;
 	private SimpleStringProperty name;
 	private SimpleObjectProperty <Brand> brand;
 	private SimpleFloatProperty qtyPerItem;
 	private SimpleFloatProperty price;
 	private SimpleObjectProperty <Type> type;
+	private SimpleBooleanProperty bio;
+	private SimpleBooleanProperty glutenFree;
 	private SimpleBooleanProperty madeInItaly;
+	private SimpleBooleanProperty milkFree;
 	private SimpleIntegerProperty qtyAvailable;
 	private SimpleIntegerProperty cartQuantity;
-	
-	public ProductProperty(Product product, Integer cartQuantity)
+
+	public ProductProperty( Product product, Integer cartQuantity )
 	{
 		this.product = product;
 		imageView = new ImageView(new Image(getClass().getResourceAsStream(product.getImage())));
 		imagePath = new SimpleStringProperty(product.getImage());
-		ward = new SimpleObjectProperty<>(product.getWard());
+		ward = new SimpleObjectProperty <>(product.getWard());
 		name = new SimpleStringProperty(product.getName());
-		brand = new SimpleObjectProperty <> (product.getBrand());
+		brand = new SimpleObjectProperty <>(product.getBrand());
 		qtyPerItem = new SimpleFloatProperty(product.getQtyPerItem());
 		price = new SimpleFloatProperty(product.getPrice());
-		qtyAvailable = new SimpleIntegerProperty(product.getQtyAvailable());
 		type = new SimpleObjectProperty <>(product.getType());
+		bio = product.getFeatures().contains(Feature.BIO) ? new SimpleBooleanProperty(Boolean.TRUE)
+				: new SimpleBooleanProperty(Boolean.FALSE);
+		glutenFree = product.getFeatures().contains(Feature.GLUTEN_FREE) ? new SimpleBooleanProperty(Boolean.TRUE)
+				: new SimpleBooleanProperty(Boolean.FALSE);
+		madeInItaly = product.getFeatures().contains(Feature.MADE_IN_ITALY) ? new SimpleBooleanProperty(Boolean.TRUE)
+				: new SimpleBooleanProperty(Boolean.FALSE);
+		milkFree = product.getFeatures().contains(Feature.MILK_FREE) ? new SimpleBooleanProperty(Boolean.TRUE)
+				: new SimpleBooleanProperty(Boolean.FALSE);
+		qtyAvailable = new SimpleIntegerProperty(product.getQtyAvailable());
 		this.cartQuantity = new SimpleIntegerProperty(cartQuantity);
-		if ( product.getFeatures().contains(Feature.MADE_IN_ITALY))
-			madeInItaly = new SimpleBooleanProperty(Boolean.TRUE);
-		else
-			madeInItaly = new SimpleBooleanProperty(Boolean.FALSE);
 	}
 
 	public Product getProduct()
 	{
 		return product;
 	}
-	
-	public void setProduct(Product product)
-	{
-		this.product = product;
-	}
-	
+
 	public ImageView getImageView()
 	{
 		return imageView;
-	}
-
-	public void setImageView(ImageView imageView)
-	{
-		this.imageView = imageView;
 	}
 
 	public String getImagePath()
@@ -67,19 +64,9 @@ public class ProductProperty
 		return imagePath.get();
 	}
 
-	public void setImagePath(String imagePath)
-	{
-		this.imagePath.set(imagePath);
-	}
-
 	public Ward getWard()
 	{
 		return ward.get();
-	}
-
-	public void setWard(Ward ward)
-	{
-		this.ward.set(ward);
 	}
 
 	public String getName()
@@ -91,25 +78,10 @@ public class ProductProperty
 	{
 		this.name.set(name);
 	}
-	
+
 	public Brand getBrand()
 	{
 		return brand.get();
-	}
-
-	public void setBrand(Brand brand)
-	{
-		this.brand.set(brand);
-	}
-	
-	public Type getType()
-	{
-		return type.get();
-	}
-
-	public void setType(Type type)
-	{
-		this.type.set(type);
 	}
 
 	public float getQtyPerItem()
@@ -132,6 +104,31 @@ public class ProductProperty
 		this.price.set(price);
 	}
 
+	public Type getType()
+	{
+		return type.get();
+	}
+
+	public Boolean isBio()
+	{
+		return bio.get();
+	}
+
+	public Boolean isGlutenFree()
+	{
+		return glutenFree.get();
+	}
+
+	public Boolean isMadeInItaly()
+	{
+		return madeInItaly.get();
+	}
+
+	public Boolean isMilkFree()
+	{
+		return milkFree.get();
+	}
+
 	public int getQtyAvailable()
 	{
 		return qtyAvailable.get();
@@ -141,17 +138,7 @@ public class ProductProperty
 	{
 		this.qtyAvailable.set(qtyAvailable);
 	}
-	
-	public Boolean getMadeInItaly()
-	{
-		return madeInItaly.get();
-	}
-	
-	public void setMadeInItaly ( Boolean madeInItaly )
-	{
-		this.madeInItaly.set(madeInItaly);
-	}
-	
+
 	public int getCartQuantity()
 	{
 		return cartQuantity.get();

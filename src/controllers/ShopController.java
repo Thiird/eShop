@@ -40,10 +40,10 @@ public class ShopController extends Controller implements Initializable
 {
 	HashMap <ImageView,Product> imageToProduct = new HashMap <ImageView,Product>();
 	HashMap <Product,ImageView> productToImage = new HashMap <Product,ImageView>();
+
 	Map <String,Product> nameToProduct = new HashMap <String,Product>();
 	HashMap <Label,Label> prodNameToQty = new HashMap <Label,Label>();
 	Map <String,Product> products = new HashMap <String,Product>();
-	HashMap <ImageView,String> imageToProductName;
 
 	private ShoppingCart shoppingCart;
 	Image noProductImage = new Image(getClass().getResourceAsStream("/icons/products/noProduct.png"));
@@ -138,6 +138,22 @@ public class ShopController extends Controller implements Initializable
 			productToImage.put(products.get(s), im);
 
 			nameToProduct.put(s.split("/")[3].split("\\.")[0], products.get(s));
+		}
+	}
+
+	public void reloadProducts()
+	{
+		products = getProducts();
+
+		for ( String s : products.keySet() )
+		{
+			for ( ImageView im : imageToProduct.keySet() )
+			{
+				imageToProduct.put(im, products.get(s));
+				productToImage.put(products.get(s), im);
+
+				nameToProduct.put(s.split("/")[3].split("\\.")[0], products.get(s));
+			}
 		}
 	}
 
@@ -770,6 +786,7 @@ public class ShopController extends Controller implements Initializable
 	public void updateProducts()
 	{
 		clearCartGrid();
+
 		ArrayList <Product> products = new ArrayList <Product>();
 		products.addAll(shoppingCart.getProducts().keySet());
 

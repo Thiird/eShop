@@ -31,6 +31,7 @@ import models.Customer;
 import models.PaymentMethod;
 import models.Product;
 import models.ShoppingCart;
+import models.User;
 
 public class PaymentController extends Controller implements Initializable
 {
@@ -84,12 +85,9 @@ public class PaymentController extends Controller implements Initializable
 		rbPaypal.setUserData(PaymentMethod.PAYPAL);
 		rbOnDelivery.setUserData(PaymentMethod.ON_DELIVERY);
 
-		System.out.println(paymentMethods);
 		rbCreditCard.setToggleGroup(paymentMethods);
 		rbPaypal.setToggleGroup(paymentMethods);
 		rbOnDelivery.setToggleGroup(paymentMethods);
-
-		System.out.println(paymentMethods);
 
 		rbCreditCard.setTooltip(new Tooltip("Credit card"));
 		rbPaypal.setTooltip(new Tooltip("Paypal"));
@@ -119,6 +117,10 @@ public class PaymentController extends Controller implements Initializable
 				shoppingCart.setID(getNextCartID(shoppingCarts));
 				shoppingCart.setExpectedDate(deliveryDate.getSelectionModel().getSelectedItem());
 
+				// Adds points to fidelity card
+				if ( ((Customer) getCurrentUser()).getFidelityCard() != null )
+					((Customer) getCurrentUser()).getFidelityCard().addPoints((int) shoppingCart.getTotalPrice());
+
 				String email = shoppingCart.getCustomer().getEmail();
 				ArrayList <ShoppingCart> carts;
 
@@ -131,9 +133,16 @@ public class PaymentController extends Controller implements Initializable
 				carts.add(shoppingCart);
 				shoppingCarts.put(email, carts);
 
+				updateProducts();
+
 				// Write on file
+				Map <String,User> users = getUsers();
+				users.replace(getCurrentUser().getName(), getCurrentUser());
+				setUsers(users);
 				setShoppingCarts(shoppingCarts);
 				setProducts(products);
+
+				shopController.reloadProducts();
 
 				alertWarning(AlertType.INFORMATION, "Payment", "Transaction complete.\nThank you for your purchase!");
 
@@ -141,6 +150,24 @@ public class PaymentController extends Controller implements Initializable
 			}
 
 			((Stage) container.getScene().getWindow()).close();
+		}
+	}
+
+	private void updateProducts()
+	{
+		products = getProducts();
+
+		// Check for unavailable products
+		for ( Product p : shoppingCart.getProducts().keySet() )
+		{
+			for ( String s : products.keySet() )
+			{
+				if ( products.get(s).getName().equals(p.getName()) )
+				{
+					products.get(s)
+							.setQtyAvailable(products.get(s).getQtyAvailable() - shoppingCart.getProducts().get(p));
+				}
+			}
 		}
 	}
 
@@ -222,6 +249,8 @@ public class PaymentController extends Controller implements Initializable
 
 		Map <String,Product> products = getProducts();
 
+		int qtyRequested, qtyAvailable;
+
 		// Check for unavailable products
 		for ( Product p : shoppingCart.getProducts().keySet() )
 		{
@@ -229,10 +258,19 @@ public class PaymentController extends Controller implements Initializable
 			{
 				if ( products.get(s).getName().equals(p.getName()) )
 				{
-					if ( products.get(s).getQtyAvailable() < shoppingCart.getProducts().get(p) )
+					// Modify product to write to file
+					qtyRequested = shoppingCart.getProducts().get(p);
+					qtyAvailable = products.get(s).getQtyAvailable();
+
+					if ( qtyAvailable < qtyRequested )
 					{
-						unavailableProds.put(p, new ArrayList <>(
-								Arrays.asList(shoppingCart.getProducts().get(p), products.get(s).getQtyAvailable())));
+						unavailableProds.put(p, new ArrayList <>(Arrays.asList(qtyRequested, qtyAvailable)));
+
+						/*
+						 * if ( qtyAvailable == 0 ) shoppingCart.getProducts().remove(p); else {
+						 * shoppingCart.getProducts().replace(p, qtyAvailable);
+						 * products.get(s).setQtyAvailable(0); }
+						 */
 					}
 				}
 			}
@@ -241,14 +279,12 @@ public class PaymentController extends Controller implements Initializable
 		// Show warning
 		if ( !unavailableProds.isEmpty() )
 		{
-			String msg = "The following cart products are not available anymore in the requested quantity:\n";
+			String msg = "The following cart products are not available anymore in the requested quantity, only the available quantity will be bought:\n\n";
 
 			for ( Product p : unavailableProds.keySet() )
 			{
-				msg += p.getName() + ": reqeusted: " + unavailableProds.get(p).get(0) + ", qty available: "
+				msg += p.getName() + ": requested: " + unavailableProds.get(p).get(0) + ", available: "
 						+ unavailableProds.get(p).get(1);
-
-				shoppingCart.getProducts().remove(p);
 			}
 
 			alertWarning(AlertType.WARNING, "Unavailable products", msg);
@@ -272,6 +308,7 @@ public class PaymentController extends Controller implements Initializable
 		for ( int i = 1; i < (r.nextInt((5 - 2) + 1) + 2); i++ )
 		{
 			deliveryInstant = Instant.now().plus(Duration.ofDays(i));
+			// TODO ora giusta solo di giorno
 			delvieryDate = Date.from(deliveryInstant);
 			deliveryDate.getItems().add(delvieryDate);
 		}

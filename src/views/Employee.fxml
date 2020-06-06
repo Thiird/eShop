@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -19,7 +20,7 @@
       			<content>
       				<Pane prefHeight="700.0" prefWidth="1200.0">
       					<children>
-      						<TextField fx:id="searchBar" layoutX="500.0" layoutY="30.0" prefWidth="200.0" promptText="Search" />
+      						<TextField fx:id="searchBar" layoutX="500.0" layoutY="30.0" prefWidth="200.0" promptText="Search by name" />
       						<TableView fx:id="tableView" editable="true" layoutX="50.0" layoutY="80.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
       							<columns>
       								<TableColumn fx:id="imageColumn" editable="false" minWidth="105.0" prefWidth="105.0" resizable="false" sortable="false" text="Image" />
@@ -31,7 +32,7 @@
       								<TableColumn fx:id="qtyAvailableColumn" minWidth="150.0" prefWidth="150.0" resizable="false" text="QtyAvailable" />
       							</columns>
       						</TableView>
-      						<Button fx:id="btnAddProduct" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="602.0" onAction="#switchToAddProduct" prefWidth="150.0" text="Add Product" />
+      						<Button fx:id="btnAddProduct" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="605.0" onAction="#switchToAddProduct" prefWidth="150.0" text="Add Product" />
       					</children>
       				</Pane>
       			</content>
@@ -40,7 +41,7 @@
       			<content>
       				<Pane prefHeight="700.0" prefWidth="1200.0">
       					<children>
-      						<TextField fx:id="searchBar1" layoutX="500.0" layoutY="30.0" prefWidth="200.0" promptText="Search" />
+      						<TextField fx:id="searchBarTab2" layoutX="500.0" layoutY="30.0" prefWidth="200.0" promptText="Search" />
       						<TableView fx:id="shoppingTableView" editable="true" layoutX="50.0" layoutY="80.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
       							<columns>
       								<TableColumn fx:id="IDColumn" editable="false" minWidth="105.0" prefWidth="105.0" resizable="false" sortable="false" text="ID" />
@@ -52,6 +53,7 @@
       							</columns>
       						</TableView>
       						<Button fx:id="btnViewProducts" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="608.0" onAction="#viewProducts" prefWidth="150.0" text="View products" />
+                        <ComboBox fx:id="cmbSearchFilter" layoutX="741.0" layoutY="30.0" prefWidth="150.0" />
       					</children>
       				</Pane>
       			</content>

@@ -10,11 +10,13 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -50,17 +52,24 @@ public class ShoppingCartController extends Controller implements Initializable
 	@FXML
 	private TableColumn <ProductProperty,Type> typeColumn;
 	@FXML
+	private TableColumn <ProductProperty,Boolean> bioColumn;
+	@FXML
+	private TableColumn <ProductProperty,Boolean> glutenFreeColumn;
+	@FXML
 	private TableColumn <ProductProperty,Boolean> madeInItalyColumn;
+	@FXML
+	private TableColumn <ProductProperty,Boolean> milkFreeColumn;
 	@FXML
 	private Button btnResetFilters, btnRemoveProduct;
 	@FXML
 	private ComboBox <Type> cmbType;
 	@FXML
 	private ComboBox <Brand> cmbBrand;
-
+	@FXML
+	private CheckBox chkBio, chkGlutenFree, chkMadeInItaly, chkMilkFree;
 	private ShopController shopController;
 
-	private ObservableList <ProductProperty> dataList;// TODO what is this
+	private ObservableList <ProductProperty> productsList;
 
 	private ShoppingCart shoppingCart;
 
@@ -73,15 +82,20 @@ public class ShoppingCartController extends Controller implements Initializable
 			setCloseEvent();
 		});
 
+		btnRemoveProduct.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
+
+		productsList = FXCollections.observableArrayList();
+
 		setImageColumn();
 		setQuantityColumn();
 		setNameColumn();
 		setPriceColumn();
 		setBrandColumn();
 		setTypeColumn();
+		setBioColumn();
+		setGlutenFreeColumn();
 		setMadeInItalyColumn();
-
-		dataList = FXCollections.observableArrayList();
+		setMilkFreeColumn();
 
 		// Set ComboBox
 		ObservableList <Type> types = FXCollections.observableArrayList(Type.values());
@@ -93,24 +107,66 @@ public class ShoppingCartController extends Controller implements Initializable
 		// Products filters
 		ObjectProperty <Predicate <ProductProperty>> typeFilter = new SimpleObjectProperty <>();
 		ObjectProperty <Predicate <ProductProperty>> brandFilter = new SimpleObjectProperty <>();
+		ObjectProperty <Predicate <ProductProperty>> bioFilter = new SimpleObjectProperty <>();
+		ObjectProperty <Predicate <ProductProperty>> glutenFreeFilter = new SimpleObjectProperty <>();
+		ObjectProperty <Predicate <ProductProperty>> madeInItalyFilter = new SimpleObjectProperty <>();
+		ObjectProperty <Predicate <ProductProperty>> milkFreeFilter = new SimpleObjectProperty <>();
 
-		typeFilter.bind(Bindings.createObjectBinding(() -> product -> cmbType.getValue() == null
-				|| cmbType.getValue() == Type.ALL || cmbType.getValue() == product.getType(), cmbType.valueProperty()));
+		typeFilter.bind(Bindings.createObjectBinding(
+				() -> product -> cmbType.getValue() == null || cmbType.getValue() == product.getType(),
+				cmbType.valueProperty()));
 
-		brandFilter.bind(Bindings.createObjectBinding(() -> product -> cmbBrand.getValue() == null
-				|| cmbBrand.getValue() == Brand.ALL || cmbBrand.getValue() == product.getBrand(),
+		brandFilter.bind(Bindings.createObjectBinding(
+				() -> product -> cmbBrand.getValue() == null || cmbBrand.getValue() == product.getBrand(),
 				cmbBrand.valueProperty()));
 
-		FilteredList <ProductProperty> filteredProducts = new FilteredList <>(dataList);
+		bioFilter.bind(Bindings.createObjectBinding(
+				() -> product -> chkBio.isSelected() == false || chkBio.isSelected() == product.isBio(),
+				chkBio.selectedProperty()));
 
-		tableView.setItems(filteredProducts);
-		filteredProducts.predicateProperty().bind(
-				Bindings.createObjectBinding(() -> typeFilter.get().and(brandFilter.get()), typeFilter, brandFilter));
+		glutenFreeFilter
+				.bind(Bindings.createObjectBinding(
+						() -> product -> chkGlutenFree.isSelected() == false
+								|| chkGlutenFree.isSelected() == product.isGlutenFree(),
+						chkGlutenFree.selectedProperty()));
+
+		madeInItalyFilter
+				.bind(Bindings.createObjectBinding(
+						() -> product -> chkMadeInItaly.isSelected() == false
+								|| chkMadeInItaly.isSelected() == product.isMadeInItaly(),
+						chkMadeInItaly.selectedProperty()));
+
+		milkFreeFilter.bind(Bindings.createObjectBinding(
+				() -> product -> chkMilkFree.isSelected() == false || chkMilkFree.isSelected() == product.isMilkFree(),
+				chkMilkFree.selectedProperty()));
+
+		FilteredList <ProductProperty> filteredProducts = new FilteredList <>(productsList);
+
+		filteredProducts.predicateProperty()
+				.bind(Bindings
+						.createObjectBinding(
+								() -> typeFilter.get()
+										.and(brandFilter.get()
+												.and(bioFilter.get()
+														.and(glutenFreeFilter.get().and(
+																madeInItalyFilter.get().and(milkFreeFilter.get()))))),
+								typeFilter, brandFilter, bioFilter, glutenFreeFilter, madeInItalyFilter,
+								milkFreeFilter));
+
+		SortedList <ProductProperty> sortedProducts = new SortedList <>(filteredProducts);
+
+		sortedProducts.comparatorProperty().bind(tableView.comparatorProperty());
+
+		tableView.setItems(sortedProducts);
 
 		btnResetFilters.setOnAction(e ->
 		{
 			cmbType.setValue(null);
 			cmbBrand.setValue(null);
+			chkBio.setSelected(false);
+			chkGlutenFree.setSelected(false);
+			chkMadeInItaly.setSelected(false);
+			chkMilkFree.setSelected(false);
 			tableView.refresh();
 		});
 	}
@@ -198,9 +254,24 @@ public class ShoppingCartController extends Controller implements Initializable
 		typeColumn.setCellValueFactory(new PropertyValueFactory <>("type"));
 	}
 
+	private void setBioColumn()
+	{
+		bioColumn.setCellValueFactory(new PropertyValueFactory <>("bio"));
+	}
+
+	private void setGlutenFreeColumn()
+	{
+		glutenFreeColumn.setCellValueFactory(new PropertyValueFactory <>("glutenFree"));
+	}
+
 	private void setMadeInItalyColumn()
 	{
 		madeInItalyColumn.setCellValueFactory(new PropertyValueFactory <>("madeInItaly"));
+	}
+
+	private void setMilkFreeColumn()
+	{
+		milkFreeColumn.setCellValueFactory(new PropertyValueFactory <>("milkFree"));
 	}
 
 	public void removeProduct()
@@ -210,7 +281,7 @@ public class ShoppingCartController extends Controller implements Initializable
 		if ( productProperty != null )
 		{
 			shopController.removeProductFromCart(productProperty.getProduct());
-			dataList.remove(productProperty);
+			productsList.remove(productProperty);
 			shoppingCart.getProducts().remove(productProperty.getProduct());
 			tableView.refresh();
 		}
@@ -224,7 +295,7 @@ public class ShoppingCartController extends Controller implements Initializable
 		this.shopController = shopController;
 
 		for ( Product p : shoppingCart.getProducts().keySet() )
-			dataList.add(new ProductProperty(p, shoppingCart.getProducts().get(p)));
+			productsList.add(new ProductProperty(p, shoppingCart.getProducts().get(p)));
 	}
 
 	public void setCloseEvent()

@@ -24,6 +24,11 @@ public class FidelityCard implements Serializable
 			releaseDate = null;
 	}
 
+	public void addPoints(int toAdd)
+	{
+		this.points += toAdd;
+	}
+
 	public int getID()
 	{
 		return ID;

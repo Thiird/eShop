@@ -4,19 +4,27 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<Pane prefHeight="399.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FidelityCardController">
+<Pane prefHeight="350.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FidelityCardController">
 	<children>
-		<ImageView fx:id="fidelityCardFc" fitHeight="240.0" fitWidth="240.0" layoutX="55.0">
+		<ImageView fitHeight="207.0" fitWidth="311.0" layoutX="20.0" layoutY="14.0" preserveRatio="true" smooth="false">
 			<image>
 				<Image url="@../../res/icons/generics/fidelity_card.png" />
 			</image>
 		</ImageView>
-		<Label fx:id="lblID" layoutX="55.0" layoutY="252.0" prefHeight="13.0" prefWidth="85.0" text="ID:" />
-		<Label fx:id="lblExpireDate" layoutX="55.0" layoutY="272.0" prefHeight="17.0" prefWidth="240.0" text="Release date:" />
-		<Label fx:id="lblPoints" layoutX="55.0" layoutY="292.0" prefHeight="17.0" prefWidth="240.0" text="Points:" />
-		<Label fx:id="ID" layoutX="200.0" layoutY="250.0" prefHeight="13.0" prefWidth="85.0" />
-		<Label fx:id="releaseDate" layoutX="200.0" layoutY="280.0" prefHeight="13.0" prefWidth="85.0" />
-		<Label fx:id="points" layoutX="200.0" layoutY="310.0" prefHeight="13.0" prefWidth="85.0" />
+		<Label fx:id="lblID" layoutX="55.0" layoutY="245.0" prefHeight="13.0" prefWidth="85.0" text="ID:">
+         <font>
+            <Font size="16.0" />
+         </font></Label>
+		<Label fx:id="lblReleaseDate" layoutX="55.0" layoutY="276.0" prefHeight="17.0" prefWidth="240.0" text="Release date:">
+         <font>
+            <Font size="16.0" />
+         </font></Label>
+		<Label fx:id="lblPoints" layoutX="55.0" layoutY="306.0" prefHeight="17.0" prefWidth="240.0" text="Points:">
+         <font>
+            <Font size="16.0" />
+         </font></Label>
+      <Label fx:id="lblCustomerName" layoutX="50.0" layoutY="179.0" prefHeight="17.0" prefWidth="110.0" text="Elon Musk" />
 	</children>
 </Pane>

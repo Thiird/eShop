@@ -1,10 +1,6 @@
 package models;
 
-import java.io.Serializable;
-
-public enum PaymentMethod implements Serializable
+public enum PaymentMethod
 {
-	CREDIT_CARD,
-	PAYPAL,
-	ON_DELIVERY
+	CREDIT_CARD, PAYPAL, ON_DELIVERY
 }

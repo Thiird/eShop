@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -17,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -296,6 +298,8 @@ public class EmployeeController extends Controller implements Initializable
 
 	// View shopping Tab
 	@FXML
+	private TextField searchBarTab2;
+	@FXML
 	private TableView <ShoppingCartProperty> shoppingTableView;
 	@FXML
 	private TableColumn <ShoppingCartProperty,Integer> IDColumn;
@@ -310,24 +314,17 @@ public class EmployeeController extends Controller implements Initializable
 	@FXML
 	private Button btnViewProducts;
 
+	@FXML
+	private ComboBox <String> cmbSearchFilter;
+
 	private ObservableList <ShoppingCartProperty> shoppingDataList;
 
 	private void initializeViewShoppingTab()
 	{
+		btnViewProducts.disableProperty()
+				.bind(Bindings.isEmpty(shoppingTableView.getSelectionModel().getSelectedItems()));
 
-		tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) ->
-		{
-			if ( newSelection != null )
-			{
-				System.out.println("AA");// TODO
-				btnViewProducts.setDisable(false);
-			}
-			else
-			{
-				System.out.println("BB");
-				btnViewProducts.setDisable(true);
-			}
-		});
+		cmbSearchFilter.getItems().addAll("Customer email", "ID");
 
 		shoppingDataList = FXCollections.observableArrayList();
 
@@ -358,14 +355,18 @@ public class EmployeeController extends Controller implements Initializable
 				if ( newValue == null || newValue.isEmpty() )
 					return true;
 
-				// Compare ... of every product with filter text
+				if ( cmbSearchFilter.getValue() == null )
+					return true;
+
 				String lowerCaseFilter = newValue.toLowerCase();
 
-				if ( shoppingCart.getCustomerEmail().toLowerCase().indexOf(lowerCaseFilter) != -1 )
-					// Filter matches brand
-					return true;
+				if ( cmbSearchFilter.getValue().equalsIgnoreCase("ID") )
+					return (Integer.toString(shoppingCart.getID()).toLowerCase().indexOf(lowerCaseFilter) != -1) ? true
+							: false;
+				else if ( cmbSearchFilter.getValue().equalsIgnoreCase("Customer email") )
+					return (shoppingCart.getCustomerEmail().toLowerCase().indexOf(lowerCaseFilter) != -1) ? true
+							: false;
 				else
-					// Does not match
 					return false;
 			});
 		});

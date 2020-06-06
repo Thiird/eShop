@@ -1,8 +1,6 @@
 package models;
 
-import java.io.Serializable;
-
-public enum Feature implements Serializable
+public enum Feature
 {
 	GLUTEN_FREE, MILK_FREE, BIO, MADE_IN_ITALY
 }
