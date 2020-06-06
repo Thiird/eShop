@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -297,20 +298,35 @@ public class PaymentController extends Controller implements Initializable
 
 	private void generateDeliveryDates()
 	{
-		Random r = new Random();
-
 		Instant deliveryInstant;
-		Date delvieryDate;
+		String[] data;
+		Calendar calendar;
+		int hour;
+		int half;
 
-		// SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy HH:mm:ss");
-		// String formattedDate = formatter.format(myDate);
-
-		for ( int i = 1; i < (r.nextInt((5 - 2) + 1) + 2); i++ )
+		for ( int i = 0; i < (new Random().nextInt((5 - 2) + 1) + 2); i++ )
 		{
 			deliveryInstant = Instant.now().plus(Duration.ofDays(i));
-			// TODO ora giusta solo di giorno
-			delvieryDate = Date.from(deliveryInstant);
-			deliveryDate.getItems().add(delvieryDate);
+
+			hour = new Random().nextInt((18 - 9) + 1) + 9;
+			half = new Random().nextInt((1 - 0) + 1) + 1;
+
+			// System.out.println(
+			// deliveryInstant.toString().substring(0, 10) + " | " + hour + ":" + (half == 1
+			// ? "30" : "00"));
+
+			data = deliveryInstant.toString().substring(0, 10).split("-");
+
+			calendar = Calendar.getInstance();
+
+			calendar.set(Calendar.YEAR, Integer.parseInt(data[0]));
+			calendar.set(Calendar.MONTH, Integer.parseInt(data[1].replace("0", "")));
+			calendar.set(Calendar.DATE, Integer.parseInt(data[2].replace("0", "")));
+			calendar.set(Calendar.HOUR_OF_DAY, hour);
+			calendar.set(Calendar.MINUTE, Integer.parseInt((half == 1 ? "30" : "00")));
+			calendar.set(Calendar.SECOND, 0);
+
+			deliveryDate.getItems().add(calendar.getTime());
 		}
 	}
 }
