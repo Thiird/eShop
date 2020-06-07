@@ -20,7 +20,7 @@
       			<content>
       				<Pane prefHeight="700.0" prefWidth="1200.0">
       					<children>
-      						<TextField fx:id="searchBar" layoutX="500.0" layoutY="30.0" prefWidth="200.0" promptText="Search by name" />
+      						<TextField fx:id="searchBar" layoutX="507.0" layoutY="30.0" prefWidth="200.0" promptText="Search by name" />
       						<TableView fx:id="tableView" editable="true" layoutX="50.0" layoutY="80.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
       							<columns>
       								<TableColumn fx:id="imageColumn" editable="false" minWidth="105.0" prefWidth="105.0" resizable="false" sortable="false" text="Image" />
@@ -32,7 +32,8 @@
       								<TableColumn fx:id="qtyAvailableColumn" minWidth="150.0" prefWidth="150.0" resizable="false" text="QtyAvailable" />
       							</columns>
       						</TableView>
-      						<Button fx:id="btnAddProduct" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="605.0" onAction="#goToAddProduct" prefWidth="150.0" text="Add Product" />
+      						<Button fx:id="btnAddProduct" alignment="CENTER" defaultButton="true" layoutX="444.0" layoutY="601.0" onAction="#goToAddProduct" prefWidth="150.0" text="Add Product" />
+                        <Button fx:id="btnRemoveProduct" alignment="CENTER" defaultButton="true" layoutX="607.0" layoutY="601.0" onAction="#removeProduct" prefWidth="150.0" text="Remove Product" />
       					</children>
       				</Pane>
       			</content>

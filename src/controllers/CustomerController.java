@@ -6,16 +6,15 @@ import java.util.Date;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -23,13 +22,12 @@ import models.Customer;
 import models.PaymentMethod;
 import models.ShoppingCart;
 import models.ShoppingCartProperty;
+import models.State;
 
 public class CustomerController extends Controller implements Initializable
 {
 	@FXML
 	private Pane container;
-	@FXML
-	private TextField searchBar;
 	@FXML
 	private TableView <ShoppingCartProperty> tableView;
 	@FXML
@@ -39,6 +37,9 @@ public class CustomerController extends Controller implements Initializable
 	@FXML
 	private TableColumn <ShoppingCartProperty,PaymentMethod> paymentMethodColumn;
 	@FXML
+	private TableColumn <ShoppingCartProperty,State> stateColumn;
+
+	@FXML
 	private Button btnViewProducts, btnEditProfile, btnFidelityCard;
 
 	private ObservableList <ShoppingCartProperty> dataList;
@@ -47,12 +48,13 @@ public class CustomerController extends Controller implements Initializable
 	public void initialize(URL location, ResourceBundle resources)
 	{
 		Platform.runLater(() -> container.requestFocus());
-
+		btnViewProducts.disableProperty().bind(Bindings.isEmpty(tableView.getSelectionModel().getSelectedItems()));
 		dataList = FXCollections.observableArrayList();
 
 		setExpectedDateColumn();
 		setTotalPriceColumn();
 		setPaymentMethodColumn();
+		setStateColumn();
 
 		// Add all shoppingCarts to tableView
 		Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts((Customer) getCurrentUser());
@@ -63,37 +65,13 @@ public class CustomerController extends Controller implements Initializable
 				dataList.add(new ShoppingCartProperty(shoppingCart));
 		}
 
-		// 1. Wrap the ObservableList in a FilteredList ( initially display all data )
-		FilteredList <ShoppingCartProperty> shoppingFilteredData = new FilteredList <>(dataList, b -> true);
+		// 1. Wrap the FilteredList in a SortedList
+		SortedList <ShoppingCartProperty> shoppingSortedData = new SortedList <>(dataList);
 
-		// 2. Set the filter Predicate whenever the filter changes
-		searchBar.textProperty().addListener((observable, oldValue, newValue) ->
-		{
-			shoppingFilteredData.setPredicate(shoppingCart ->
-			{
-				// If filter text is empty, display all products
-				if ( newValue == null || newValue.isEmpty() )
-					return true;
-
-				// Compare ... of every product with filter text
-				String lowerCaseFilter = newValue.toLowerCase();
-
-				if ( shoppingCart.getCustomerEmail().toLowerCase().indexOf(lowerCaseFilter) != -1 )
-					// Filter matches brand
-					return true;
-				else
-					// Does not match
-					return false;
-			});
-		});
-
-		// 3. Wrap the FilteredList in a SortedList
-		SortedList <ShoppingCartProperty> shoppingSortedData = new SortedList <>(shoppingFilteredData);
-
-		// 4. Bind the SortedList comparator to the TableView comparator
+		// 2. Bind the SortedList comparator to the TableView comparator
 		shoppingSortedData.comparatorProperty().bind(tableView.comparatorProperty());
 
-		// 5. Add sorted ( and filtered ) data to the table
+		// 3. Add sorted ( and filtered ) data to the table
 		tableView.setItems(shoppingSortedData);
 	}
 
@@ -160,6 +138,11 @@ public class CustomerController extends Controller implements Initializable
 	private void setPaymentMethodColumn()
 	{
 		paymentMethodColumn.setCellValueFactory(new PropertyValueFactory <>("paymentMethod"));
+	}
+
+	private void setStateColumn()
+	{
+		stateColumn.setCellValueFactory(new PropertyValueFactory <>("state"));
 	}
 
 	public void setData(Customer customer)

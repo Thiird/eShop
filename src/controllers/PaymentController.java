@@ -117,6 +117,7 @@ public class PaymentController extends Controller implements Initializable
 				shoppingCart.setPaymentMethod((PaymentMethod) paymentMethods.getSelectedToggle().getUserData());
 				shoppingCart.setID(getNextCartID(shoppingCarts));
 				shoppingCart.setExpectedDate(deliveryDate.getSelectionModel().getSelectedItem());
+				shoppingCart.setPoints();
 
 				// Adds points to fidelity card
 				if ( ((Customer) getCurrentUser()).getFidelityCard() != null )

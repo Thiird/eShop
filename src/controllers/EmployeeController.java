@@ -37,6 +37,7 @@ import models.Product;
 import models.ProductProperty;
 import models.ShoppingCart;
 import models.ShoppingCartProperty;
+import models.State;
 import models.Ward;
 
 public class EmployeeController extends Controller implements Initializable
@@ -46,7 +47,7 @@ public class EmployeeController extends Controller implements Initializable
 	@FXML
 	private TabPane tabPane;
 	@FXML
-	private Button btnAddProduct;
+	private Button btnAddProduct, btnRemoveProduct;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -68,6 +69,8 @@ public class EmployeeController extends Controller implements Initializable
 					initializeViewShoppingTab();
 			}
 		});
+
+		cmbSearchFilter.getItems().addAll("Customer email", "ID");
 	}
 
 	// Modify product Tab
@@ -288,6 +291,19 @@ public class EmployeeController extends Controller implements Initializable
 		});
 	}
 
+	public void removeProduct()
+	{
+		ProductProperty productProperty = tableView.getSelectionModel().getSelectedItem();
+
+		if ( productProperty != null )
+		{
+			dataList.remove(productProperty);
+			newProducts.remove(productProperty.getProduct().getImage());
+			setProducts(newProducts);
+			tableView.refresh();
+		}
+	}
+
 	private void inputAlert()
 	{
 		alertWarning(AlertType.WARNING, "Warning", "The entered value is not correct !");
@@ -307,6 +323,9 @@ public class EmployeeController extends Controller implements Initializable
 	@FXML
 	private TableColumn <ShoppingCartProperty,Float> totalPriceColumn;
 	@FXML
+	private TableColumn <ShoppingCartProperty,State> stateColumn;
+
+	@FXML
 	private TableColumn <ShoppingCartProperty,PaymentMethod> paymentMethodColumn;
 	@FXML
 	private Button btnViewProducts;
@@ -321,8 +340,6 @@ public class EmployeeController extends Controller implements Initializable
 		btnViewProducts.disableProperty()
 				.bind(Bindings.isEmpty(shoppingTableView.getSelectionModel().getSelectedItems()));
 
-		cmbSearchFilter.getItems().addAll("Customer email", "ID");
-
 		shoppingDataList = FXCollections.observableArrayList();
 
 		setIDColumn();
@@ -330,6 +347,7 @@ public class EmployeeController extends Controller implements Initializable
 		setCustomerEmailColumn();
 		setTotalPriceColumn();
 		setPaymentMethodColumn();
+		setStateColumn();
 
 		// Add all shoppingCarts to shoppingTableView
 		Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts(null);
@@ -401,6 +419,11 @@ public class EmployeeController extends Controller implements Initializable
 	private void setPaymentMethodColumn()
 	{
 		paymentMethodColumn.setCellValueFactory(new PropertyValueFactory <>("paymentMethod"));
+	}
+
+	private void setStateColumn()
+	{
+		stateColumn.setCellValueFactory(new PropertyValueFactory <>("state"));
 	}
 
 	public void viewProducts()

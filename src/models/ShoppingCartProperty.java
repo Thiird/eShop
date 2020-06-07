@@ -13,6 +13,8 @@ public class ShoppingCartProperty
 	private SimpleStringProperty customerEmail;
 	private SimpleFloatProperty totalPrice;
 	private SimpleObjectProperty <PaymentMethod> paymentMethod;
+	private SimpleObjectProperty <State> state;
+	private SimpleIntegerProperty points;
 
 	public ShoppingCartProperty( ShoppingCart shoppingCart )
 	{
@@ -21,6 +23,8 @@ public class ShoppingCartProperty
 		customerEmail = new SimpleStringProperty(shoppingCart.getCustomer().getEmail());
 		totalPrice = new SimpleFloatProperty(shoppingCart.getTotalPrice());
 		paymentMethod = new SimpleObjectProperty <PaymentMethod>(shoppingCart.getPaymentMethod());
+		state = new SimpleObjectProperty <State>(findState(shoppingCart.getExpectedDate()));
+		points = new SimpleIntegerProperty(shoppingCart.getPoints());
 	}
 
 	public int getID()
@@ -71,5 +75,37 @@ public class ShoppingCartProperty
 	public void setPaymentMethod(PaymentMethod paymentMethod)
 	{
 		this.paymentMethod.set(paymentMethod);
+	}
+
+	public State getState()
+	{
+		return state.get();
+	}
+
+	public void setState(State state)
+	{
+		this.state.set(state);
+	}
+
+	private State findState(Date expectedDate)
+	{
+		Date now = new Date();
+
+		if ( now.after(expectedDate) )
+			return State.DELIVERED;
+		else
+		{
+			long hoursBetween = (expectedDate.getTime() - now.getTime()) / 3600000;
+
+			if ( hoursBetween <= 24 )
+				return State.PREPARING;
+			else
+				return State.CONFIRMED;
+		}
+	}
+
+	public void setPoints(int points)
+	{
+		this.points.set(points);
 	}
 }

@@ -1,6 +1,7 @@
 package models;
 
 import java.io.Serializable;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,14 +14,17 @@ public class ShoppingCart implements Serializable
 	private HashMap <Product,Integer> products;
 	private final Customer customer;
 	private float totalPrice = 0f;
-	DecimalFormat f = new DecimalFormat("##.00"); // Round to two decimal places
+	DecimalFormat df = new DecimalFormat("##.00"); // Round to two decimal places
 	private PaymentMethod paymentMethod;
+	private int points; // Points gained after checkout
 
 	public ShoppingCart( Customer customer )
 	{
 		this.customer = customer;
 
 		products = new HashMap <Product,Integer>();
+
+		df.setRoundingMode(RoundingMode.DOWN);
 	}
 
 	public void addProduct(Product p, int qtyToAdd)
@@ -34,7 +38,12 @@ public class ShoppingCart implements Serializable
 			products.put(p, products.get(p) + qtyToAdd);
 		}
 
-		totalPrice += Float.parseFloat(f.format(p.getPrice() * qtyToAdd).replace(",", "."));
+		totalPrice = Float
+				.parseFloat(String
+						.format("%.2f",
+								Float.parseFloat(
+										Float.toString(totalPrice + (p.getPrice() * qtyToAdd)).replace(",", ".")))
+						.replace(",", "."));
 	}
 
 	public void recalculateTotalPrice()
@@ -45,8 +54,11 @@ public class ShoppingCart implements Serializable
 
 		for ( Product p : products.keySet() )
 		{
-			totalPrice += Float.parseFloat(f.format(p.getPrice() * products.get(p)).replace(",", "."));
+			totalPrice += Float.parseFloat(df.format(p.getPrice() * products.get(p)).replace(",", "."));
 		}
+
+		totalPrice = Float.parseFloat(String
+				.format("%.2f", Float.parseFloat(Float.toString(totalPrice).replace(",", "."))).replace(",", "."));
 	}
 
 	public boolean containsProduct(Product p)
@@ -78,6 +90,16 @@ public class ShoppingCart implements Serializable
 	public int getID()
 	{
 		return ID;
+	}
+
+	public int getPoints()
+	{
+		return points;
+	}
+
+	public void setPoints()
+	{
+		points = (int) getTotalPrice();
 	}
 
 	public void setExpectedDate(Date expectedDate)
