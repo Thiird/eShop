@@ -38,11 +38,14 @@ import models.Ward;
 
 public class ShopController extends Controller implements Initializable
 {
+	// Used for shop grid
 	HashMap <ImageView,Product> imageToProduct = new HashMap <ImageView,Product>();
 	HashMap <Product,ImageView> productToImage = new HashMap <Product,ImageView>();
 
+	// Used for cart grid
 	Map <String,Product> nameToProduct = new HashMap <String,Product>();
 	HashMap <Label,Label> prodNameToQty = new HashMap <Label,Label>();
+
 	Map <String,Product> products = new HashMap <String,Product>();
 
 	private ShoppingCart shoppingCart;
@@ -143,16 +146,14 @@ public class ShopController extends Controller implements Initializable
 
 	public void reloadProducts()
 	{
-		products = getProducts();
+		Map <String,Product> ps = getProducts();
 
-		for ( String s : products.keySet() )
+		for ( String p1 : ps.keySet() )
 		{
-			for ( ImageView im : imageToProduct.keySet() )
+			for ( String p2 : products.keySet() )
 			{
-				imageToProduct.put(im, products.get(s));
-				productToImage.put(products.get(s), im);
-
-				nameToProduct.put(s.split("/")[3].split("\\.")[0], products.get(s));
+				if ( p1.equals(p2) )
+					products.get(p2).setQtyAvailable(ps.get(p1).getQtyAvailable());
 			}
 		}
 	}
@@ -800,7 +801,10 @@ public class ShopController extends Controller implements Initializable
 		lblTotToPay.setText("Total: " + shoppingCart.getTotalPrice() + "$");
 
 		if ( shoppingCart.getProducts().size() == 0 )
+		{
+			btnGoToPayment.setDisable(true);
 			btnOpenCart.setDisable(true);
+		}
 
 		refreshProductPanel();
 	}
@@ -866,8 +870,9 @@ public class ShopController extends Controller implements Initializable
 		resetProductPanel();
 
 		lblTotToPay.setText("Total: 0$");
-
+		btnGoToPayment.setDisable(true);
 		wardSelection.getSelectionModel().select(0);
+		prodNameToQty.clear();
 	}
 
 	public void goToShoppingCartView()

@@ -90,7 +90,6 @@ public class EmployeeController extends Controller implements Initializable
 	@FXML
 	private TableColumn <ProductProperty,Integer> qtyAvailableColumn;
 	private ObservableList <ProductProperty> dataList;
-
 	private Map <String,Product> newProducts;
 
 	private void initializeModifyProductsTab()
@@ -108,9 +107,7 @@ public class EmployeeController extends Controller implements Initializable
 		setQtyAvailableColumn();
 
 		// Add all products to tableView
-		Map <String,Product> products = getProducts();
-
-		for ( Product p : products.values() )
+		for ( Product p : newProducts.values() )
 			dataList.add(new ProductProperty(p, 0));
 
 		// 1. Wrap the ObservableList in a FilteredList ( initially display all data )
@@ -435,6 +432,8 @@ public class EmployeeController extends Controller implements Initializable
 		openView("/views/AddProduct.fxml", "Add Product");
 
 		AddProductController.showAndWaitStage();
+
+		initializeModifyProductsTab();
 	}
 
 	@FXML

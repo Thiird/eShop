@@ -8,46 +8,25 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="pane" prefHeight="700.0" prefWidth="500.0"
-	xmlns="http://javafx.com/javafx/8.0.171"
-	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="controllers.AddProductController">
+<Pane fx:id="container" prefHeight="680.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddProductController">
 	<children>
-		<ComboBox fx:id="ward" layoutX="150.0" layoutY="30.0"
-			prefWidth="200.0" promptText="Ward" />
-		<TextField fx:id="name" layoutX="150.0" layoutY="80.0"
-			prefWidth="200.0" promptText="Product name" />
-		<ComboBox fx:id="brand" layoutX="150.0" layoutY="130.0"
-			prefWidth="200.0" promptText="Brand" />
-		<TextField fx:id="qtyPerItem" layoutX="150.0"
-			layoutY="180.0" prefHeight="26.0" prefWidth="110.0"
-			promptText="Q.ty per item" />
-		<ComboBox fx:id="measureUnit" layoutX="275.0" layoutY="180.0"
-			prefWidth="75.0" />
-		<TextField fx:id="qtyAvailable" layoutX="150.0"
-			layoutY="230.0" prefWidth="200.0" promptText="Q.ty available" />
-		<TextField fx:id="price" layoutX="150.0" layoutY="280.0"
-			prefWidth="200.0" promptText="Price" />
-		<ComboBox fx:id="type" layoutX="150.0" layoutY="330.0"
-			prefWidth="200.0" promptText="Type" />
-		<CheckBox fx:id="glutenFree" layoutX="150.0" layoutY="380.0"
-			mnemonicParsing="false" text="Gluten free" />
-		<CheckBox fx:id="milkFree" layoutX="260.0" layoutY="380.0"
-			mnemonicParsing="false" text="Milk free" />
-		<CheckBox fx:id="bio" layoutX="150.0" layoutY="420.0"
-			mnemonicParsing="false" text="Bio" />
-		<CheckBox fx:id="madeInItaly" layoutX="260.0" layoutY="420.0"
-			mnemonicParsing="false" text="Made in Italy" />
-		<ImageView fx:id="imageView" fitHeight="100.0"
-			fitWidth="100.0" layoutX="200.0" layoutY="470.0"
-			onMouseClicked="#selectImage" pickOnBounds="true"
-			preserveRatio="true">
+		<ComboBox fx:id="ward" layoutX="75.0" layoutY="33.0" prefWidth="200.0" promptText="Ward" />
+		<TextField fx:id="prodName" disable="true" layoutX="75.0" layoutY="83.0" prefWidth="200.0" promptText="Product name" />
+		<ComboBox fx:id="brand" layoutX="75.0" layoutY="133.0" prefWidth="200.0" promptText="Brand" />
+		<TextField fx:id="qtyPerItem" layoutX="75.0" layoutY="183.0" prefHeight="26.0" prefWidth="110.0" promptText="Q.ty per item" />
+		<ComboBox fx:id="measureUnit" layoutX="200.0" layoutY="183.0" prefWidth="75.0" promptText="Unit" />
+		<TextField fx:id="qtyAvailable" layoutX="75.0" layoutY="233.0" prefWidth="200.0" promptText="Q.ty available" />
+		<TextField fx:id="price" layoutX="75.0" layoutY="283.0" prefWidth="200.0" promptText="Price" />
+		<ComboBox fx:id="type" layoutX="75.0" layoutY="333.0" prefWidth="200.0" promptText="Type" />
+		<CheckBox fx:id="glutenFree" layoutX="75.0" layoutY="383.0" mnemonicParsing="false" text="Gluten free" />
+		<CheckBox fx:id="milkFree" layoutX="185.0" layoutY="383.0" mnemonicParsing="false" text="Milk free" />
+		<CheckBox fx:id="bio" layoutX="75.0" layoutY="423.0" mnemonicParsing="false" text="Bio" />
+		<CheckBox fx:id="madeInItaly" layoutX="185.0" layoutY="423.0" mnemonicParsing="false" text="Made in Italy" />
+		<ImageView fx:id="imageView" fitHeight="100.0" fitWidth="100.0" layoutX="125.0" layoutY="473.0" onMouseClicked="#selectImage" pickOnBounds="true" preserveRatio="true">
 			<image>
 				<Image url="@../../res/icons/generics/select.png" />
 			</image>
 		</ImageView>
-		<Button alignment="CENTER" defaultButton="true" layoutX="200.0"
-			layoutY="620.0" onAction="#addProductToDatabase" prefWidth="100.0"
-			text="Add product" />
+		<Button alignment="CENTER" defaultButton="true" layoutX="125.0" layoutY="623.0" onAction="#addProductToDatabase" prefWidth="100.0" text="Add product" />
 	</children>
 </Pane>

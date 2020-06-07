@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -40,7 +39,7 @@ import models.Ward;
 public class AddProductController extends Controller implements Initializable
 {
 	@FXML
-	private Pane pane;
+	private Pane container;
 	@FXML
 	private ComboBox <Ward> ward;
 	@FXML
@@ -50,7 +49,7 @@ public class AddProductController extends Controller implements Initializable
 	@FXML
 	private ComboBox <MeasureUnit> measureUnit;
 	@FXML
-	private TextField name, qtyPerItem, qtyAvailable, price;
+	private TextField prodName, qtyPerItem, qtyAvailable, price;
 	@FXML
 	private CheckBox glutenFree, milkFree, bio, madeInItaly;
 	@FXML
@@ -61,7 +60,7 @@ public class AddProductController extends Controller implements Initializable
 	public void initialize(URL location, ResourceBundle resources)
 	{
 		clearFields();
-		Platform.runLater(() -> pane.requestFocus());
+		Platform.runLater(() -> container.requestFocus());
 		initEventHandlers();
 
 		ObservableList <Ward> wards = FXCollections.observableArrayList(Ward.values());
@@ -84,7 +83,7 @@ public class AddProductController extends Controller implements Initializable
 			@Override
 			public void handle(MouseEvent e)
 			{
-				Scene scene = pane.getScene();
+				Scene scene = container.getScene();
 				scene.setCursor(Cursor.HAND);
 			}
 		});
@@ -94,7 +93,7 @@ public class AddProductController extends Controller implements Initializable
 			@Override
 			public void handle(MouseEvent e)
 			{
-				Scene scene = pane.getScene();
+				Scene scene = container.getScene();
 				scene.setCursor(Cursor.DEFAULT);
 			}
 		});
@@ -121,7 +120,12 @@ public class AddProductController extends Controller implements Initializable
 
 				Image imageSelected = SwingFXUtils.toFXImage(bufferedImage, null);
 				imageView.setImage(imageSelected);
+
 				image = file.getPath();
+				prodName.setText(image.replace("\\", "/"));
+				prodName.setText(prodName.getText().split("/")[prodName.getText().split("/").length - 1].split("\\.")[0]
+						.replace("_", " ").replace(".png", ""));
+				prodName.setText(prodName.getText().substring(0, 1).toUpperCase() + prodName.getText().substring(1));
 			}
 			catch ( IOException e )
 			{
@@ -153,10 +157,10 @@ public class AddProductController extends Controller implements Initializable
 			if ( madeInItaly.isSelected() )
 				features.add(Feature.MADE_IN_ITALY);
 
-			Product product = new Product(ward.getValue(), name.getText(), brand.getValue(), qtyPerItemAsFloat,
+			Product product = new Product(ward.getValue(), prodName.getText(), brand.getValue(), qtyPerItemAsFloat,
 					measureUnit.getValue(), priceAsFloat, image, type.getValue(), features, qtyAvailableAsInt);
 
-			if ( alreadyExists(product) )
+			if ( productAlreadyExists(product) )
 			{
 				clearFields();
 
@@ -167,68 +171,35 @@ public class AddProductController extends Controller implements Initializable
 				// Insert product into DB
 				Map <String,Product> products = getProducts();
 
-				if ( products == null )
-					products = new HashMap <String,Product>();
-
 				products.put(product.getImage(), product);
 				setProducts(products);
 
 				if ( alertWarning(AlertType.INFORMATION, "Information", "Product added").get() == ButtonType.OK )
 					clearFields();
 
-				((Stage) pane.getScene().getWindow()).close();
+				((Stage) container.getScene().getWindow()).close();
 			}
 		}
 		else
-			alertWarning(AlertType.WARNING, "Warning", "Missing fields");
-
+			alertWarning(AlertType.WARNING, "Warning", "All fields must be filled");
 	}
 
 	private final boolean isAllCompiled()
 	{
-		if ( ward.getValue() == null )
-			return false;
-
-		if ( name.getText().isEmpty() )
-			return false;
-
-		if ( brand.getValue() == null )
-			return false;
-
-		if ( qtyPerItem.getText().isEmpty() )
-			return false;
-
-		if ( measureUnit.getSelectionModel().isEmpty() )
-			return false;
-
-		if ( price.getText().isEmpty() )
-			return false;
-
-		if ( image == null )
-			return false;
-
-		if ( type.getValue() == null )
-			return false;
-
-		if ( qtyAvailable.getText().isEmpty() )
-			return false;
-
-		return true;
+		return (ward.getValue() != null && !prodName.getText().isEmpty() && brand.getValue() != null
+				&& !qtyPerItem.getText().isEmpty() && !measureUnit.getSelectionModel().isEmpty()
+				&& !price.getText().isEmpty() && image != null && type.getValue() != null
+				&& !qtyAvailable.getText().isEmpty());
 	}
 
-	private final boolean alreadyExists(Product product)
+	private final boolean productAlreadyExists(Product product)
 	{
-		Map <String,Product> products = getProducts();
-
-		if ( products != null && products.get(product.getImage()) != null )
-			return true;
-
-		return false;
+		return (getProducts().get(product.getImage()) == null ? false : true);
 	}
 
 	private final void clearFields()
 	{
-		name.clear();
+		prodName.clear();
 		ward.setValue(null);
 		brand.setValue(null);
 		qtyPerItem.clear();

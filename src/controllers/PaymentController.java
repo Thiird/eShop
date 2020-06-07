@@ -304,7 +304,7 @@ public class PaymentController extends Controller implements Initializable
 		int hour;
 		int half;
 
-		for ( int i = 0; i < (new Random().nextInt((5 - 2) + 1) + 2); i++ )
+		for ( int i = 0; i < (new Random().nextInt((5 - 3) + 1) + 3); i++ )
 		{
 			deliveryInstant = Instant.now().plus(Duration.ofDays(i));
 
