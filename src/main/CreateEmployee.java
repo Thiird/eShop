@@ -1,6 +1,7 @@
-package controllers;
+package main;
 
 import java.util.Map;
+import controllers.Controller;
 import models.User;
 
 public class CreateEmployee extends Controller

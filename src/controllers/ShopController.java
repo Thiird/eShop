@@ -31,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import main.Selector;
 import models.Customer;
 import models.Product;
 import models.ShoppingCart;
@@ -188,7 +189,10 @@ public class ShopController extends Controller implements Initializable
 			@Override
 			public void handle(Event event)
 			{
-				addProductToCart();
+				if ( txtFldQuantity.getText().matches("^\\d+$") )
+					addProductToCart();
+				else
+					txtFldQuantity.setText("1");
 			}
 		});
 
@@ -896,7 +900,14 @@ public class ShopController extends Controller implements Initializable
 		((CustomerController) openView("/views/Customer.fxml", "Customer")).setData((Customer) getCurrentUser());
 
 		CustomerController.showAndWaitStage();
+	}
 
+	@FXML
+	public void goToAppInfos()
+	{
+		openView("/views/AppInfos.fxml", "App Infos");
+
+		AppInfosController.showAndWaitStage();
 	}
 
 	@FXML

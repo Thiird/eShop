@@ -146,9 +146,9 @@ public class PaymentController extends Controller implements Initializable
 				shopController.reloadProducts();
 
 				alertWarning(AlertType.INFORMATION, "Payment", "Transaction complete.\nThank you for your purchase!");
-
-				shopController.clearApp();
 			}
+
+			shopController.clearApp();
 
 			((Stage) container.getScene().getWindow()).close();
 		}
@@ -264,15 +264,7 @@ public class PaymentController extends Controller implements Initializable
 					qtyAvailable = products.get(s).getQtyAvailable();
 
 					if ( qtyAvailable < qtyRequested )
-					{
 						unavailableProds.put(p, new ArrayList <>(Arrays.asList(qtyRequested, qtyAvailable)));
-
-						/*
-						 * if ( qtyAvailable == 0 ) shoppingCart.getProducts().remove(p); else {
-						 * shoppingCart.getProducts().replace(p, qtyAvailable);
-						 * products.get(s).setQtyAvailable(0); }
-						 */
-					}
 				}
 			}
 		}
@@ -286,11 +278,21 @@ public class PaymentController extends Controller implements Initializable
 			{
 				msg += p.getName() + ": requested: " + unavailableProds.get(p).get(0) + ", available: "
 						+ unavailableProds.get(p).get(1);
+
+				if ( unavailableProds.get(p).get(1) == 0 )
+					shoppingCart.removeProduct(p);
+				else
+					shoppingCart.getProducts().replace(p, unavailableProds.get(p).get(1));
 			}
 
 			alertWarning(AlertType.WARNING, "Unavailable products", msg);
 
-			return false;
+			if ( shoppingCart.getProducts().size() == 0 )
+			{
+				msg = "After removing the no more available products you shopping cart resulted empty.";
+				alertWarning(AlertType.WARNING, "Unavailable products", msg);
+				return false;
+			}
 		}
 
 		return true;

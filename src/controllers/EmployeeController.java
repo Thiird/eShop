@@ -427,13 +427,21 @@ public class EmployeeController extends Controller implements Initializable
 		}
 	}
 
-	public void switchToAddProduct()
+	public void goToAddProduct()
 	{
 		openView("/views/AddProduct.fxml", "Add Product");
 
 		AddProductController.showAndWaitStage();
 
 		initializeModifyProductsTab();
+	}
+
+	@FXML
+	public void goToAppInfos()
+	{
+		openView("/views/AppInfos.fxml", "App Info");
+
+		AppInfosController.showAndWaitStage();
 	}
 
 	@FXML

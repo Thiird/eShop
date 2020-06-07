@@ -1,7 +1,8 @@
-package controllers;
+package main;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import controllers.ShopController;
 import javafx.scene.Node;
 
 public class Selector implements Runnable

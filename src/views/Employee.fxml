@@ -32,7 +32,7 @@
       								<TableColumn fx:id="qtyAvailableColumn" minWidth="150.0" prefWidth="150.0" resizable="false" text="QtyAvailable" />
       							</columns>
       						</TableView>
-      						<Button fx:id="btnAddProduct" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="605.0" onAction="#switchToAddProduct" prefWidth="150.0" text="Add Product" />
+      						<Button fx:id="btnAddProduct" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="605.0" onAction="#goToAddProduct" prefWidth="150.0" text="Add Product" />
       					</children>
       				</Pane>
       			</content>
@@ -69,7 +69,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
                <items>
-                  <MenuItem fx:id="btnAppInfos" mnemonicParsing="false" text="App Infos" />
+                  <MenuItem fx:id="btnAppInfos" mnemonicParsing="false" onAction="#goToAppInfos" text="App Infos" />
                </items>
             </Menu>
          </menus>

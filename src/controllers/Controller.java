@@ -48,7 +48,9 @@ public class Controller
 		catch ( IOException e )
 		{
 			System.err.println("switchToView IOException");
+			System.exit(-1);
 		}
+
 		Stage stage = new Stage();
 
 		stage.centerOnScreen();
