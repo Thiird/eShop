@@ -6,24 +6,24 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="container" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="349.0" prefWidth="420.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppInfosController">
+<Pane fx:id="container" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="420.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppInfosController">
    <children>
       <ImageView fitHeight="174.0" fitWidth="266.0" layoutX="77.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../res/icons/eShop_logo.png" />
          </image>
       </ImageView>
-      <Label layoutX="92.0" layoutY="228.0" prefHeight="23.0" prefWidth="236.0" text="eShop is written in Java and JavaFx">
+      <Label layoutX="92.0" layoutY="220.0" prefHeight="23.0" prefWidth="236.0" text="eShop is written in Java and JavaFx">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="40.0" layoutY="147.0" prefHeight="64.0" prefWidth="341.0" text="eShop simulates an online-shop interface, both Customer and Employee sides." wrapText="true">
+      <Label layoutX="40.0" layoutY="147.0" prefHeight="64.0" prefWidth="341.0" text="eShop simulates an online-shop interface, both Customer and Employee side." wrapText="true">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="60.0" layoutY="278.0" text="Written by Stefano Nicolis &amp; Alberto Molinari">
+      <Label layoutX="60.0" layoutY="261.0" text="Written by Stefano Nicolis &amp; Alberto Molinari">
          <font>
             <Font size="15.0" />
          </font>

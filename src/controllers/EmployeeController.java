@@ -172,14 +172,6 @@ public class EmployeeController extends Controller implements Initializable
 	private void setNameColumn()
 	{
 		nameColumn.setCellValueFactory(new PropertyValueFactory <>("name"));
-		nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-		nameColumn.setOnEditCommit(event ->
-		{
-			event.getRowValue().setName(event.getNewValue());
-			Product toModify = newProducts.get(event.getRowValue().getImagePath());
-			toModify.setName(event.getNewValue());
-			newProducts.replace(toModify.getImage(), toModify);
-		});
 	}
 
 	private void setQtyPerItemColumn()
@@ -323,10 +315,11 @@ public class EmployeeController extends Controller implements Initializable
 	@FXML
 	private TableColumn <ShoppingCartProperty,Float> totalPriceColumn;
 	@FXML
-	private TableColumn <ShoppingCartProperty,State> stateColumn;
-
-	@FXML
 	private TableColumn <ShoppingCartProperty,PaymentMethod> paymentMethodColumn;
+	@FXML
+	private TableColumn <ShoppingCartProperty,State> stateColumn;
+	@FXML
+	private TableColumn <ShoppingCartProperty,Integer> pointsColumn;
 	@FXML
 	private Button btnViewProducts;
 
@@ -348,6 +341,7 @@ public class EmployeeController extends Controller implements Initializable
 		setTotalPriceColumn();
 		setPaymentMethodColumn();
 		setStateColumn();
+		setPointsColumn();
 
 		// Add all shoppingCarts to shoppingTableView
 		Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts(null);
@@ -424,6 +418,11 @@ public class EmployeeController extends Controller implements Initializable
 	private void setStateColumn()
 	{
 		stateColumn.setCellValueFactory(new PropertyValueFactory <>("state"));
+	}
+
+	private void setPointsColumn()
+	{
+		pointsColumn.setCellValueFactory(new PropertyValueFactory <>("points"));
 	}
 
 	public void viewProducts()

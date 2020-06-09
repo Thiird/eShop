@@ -104,6 +104,11 @@ public class ShoppingCartProperty
 		}
 	}
 
+	public int getPoints()
+	{
+		return points.get();
+	}
+
 	public void setPoints(int points)
 	{
 		this.points.set(points);

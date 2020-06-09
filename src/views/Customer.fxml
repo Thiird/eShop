@@ -3,12 +3,11 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="container" prefHeight="700.0" prefWidth="1200.0" stylesheets="@../../res/styles/Style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CustomerController">
+<Pane fx:id="container" prefHeight="615.0" prefWidth="1185.0" stylesheets="@../../res/styles/Style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CustomerController">
 	<children>
-		<TableView fx:id="tableView" editable="true" layoutX="50.0" layoutY="80.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
+		<TableView fx:id="tableView" editable="true" layoutX="45.0" layoutY="31.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
 			<columns>
 				<TableColumn fx:id="expectedDateColumn" editable="false" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Expected date" />
 				<TableColumn fx:id="totalPriceColumn" minWidth="150.0" prefWidth="150.0" resizable="false" text="Total price" />
@@ -16,8 +15,8 @@
 				<TableColumn fx:id="stateColumn" minWidth="205.0" prefWidth="205.0" resizable="false" text="State" />
 			</columns>
 		</TableView>
-		<Button fx:id="btnViewProducts" alignment="CENTER" defaultButton="true" layoutX="265.0" layoutY="605.0" onAction="#openViewProductsView" prefWidth="150.0" text="View products" />
-		<Button fx:id="btnFidelityCard" alignment="CENTER" defaultButton="true" layoutX="515.0" layoutY="605.0" onAction="#openFidelityCardView" prefWidth="150.0" text="Fidelity card" />
-		<Button fx:id="btnEditProfile" alignment="CENTER" defaultButton="true" layoutX="765.0" layoutY="605.0" onAction="#openEditProfileView" prefWidth="150.0" text="Edit profile" />
+		<Button fx:id="btnViewProducts" alignment="CENTER" defaultButton="true" layoutX="260.0" layoutY="560.0" onAction="#openViewProductsView" prefWidth="150.0" text="View products" />
+		<Button fx:id="btnFidelityCard" alignment="CENTER" defaultButton="true" layoutX="510.0" layoutY="560.0" onAction="#openFidelityCardView" prefWidth="150.0" text="Fidelity card" />
+		<Button fx:id="btnEditProfile" alignment="CENTER" defaultButton="true" layoutX="760.0" layoutY="560.0" onAction="#openEditProfileView" prefWidth="150.0" text="Edit profile" />
 	</children>
 </Pane>

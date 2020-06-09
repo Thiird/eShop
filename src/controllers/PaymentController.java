@@ -55,6 +55,8 @@ public class PaymentController extends Controller implements Initializable
 	private Map <String,Product> products;
 	private ShoppingCart shoppingCart;
 
+	private String prodMsg = ""; // If not empty contains the unavailable products message
+	private boolean cartIsEmpty = false; // True when all the selected products are not available anymore for purchase
 	private Map <Product,ArrayList <Integer>> unavailableProds;
 
 	@Override
@@ -109,7 +111,9 @@ public class PaymentController extends Controller implements Initializable
 	{
 		if ( allFieldsFilled() )
 		{
-			if ( checkProductAvailability() )
+			checkProductAvailability();
+
+			if ( !cartIsEmpty )
 			{
 				Map <String,ArrayList <ShoppingCart>> shoppingCarts = getShoppingCarts(null);
 
@@ -146,8 +150,13 @@ public class PaymentController extends Controller implements Initializable
 
 				shopController.reloadProducts();
 
+				if ( !prodMsg.isEmpty() )
+					alertWarning(AlertType.WARNING, "Unavailable products", prodMsg);
+
 				alertWarning(AlertType.INFORMATION, "Payment", "Transaction complete.\nThank you for your purchase!");
 			}
+			else
+				alertWarning(AlertType.WARNING, "Unavailable products", prodMsg);
 
 			shopController.clearApp();
 
@@ -243,11 +252,14 @@ public class PaymentController extends Controller implements Initializable
 		return true;
 	}
 
-	private boolean checkProductAvailability()
+	private void checkProductAvailability()
 	{// Before completing the payment, products are loaded from db to check if in the
 		// meantime other users have rendered unavailable some products present in this
 		// shoppingCart
 		// Returns true if all products are available
+
+		prodMsg = "";
+		cartIsEmpty = false;
 
 		Map <String,Product> products = getProducts();
 
@@ -273,12 +285,12 @@ public class PaymentController extends Controller implements Initializable
 		// Show warning
 		if ( !unavailableProds.isEmpty() )
 		{
-			String msg = "The following cart products are not available anymore in the requested quantity, only the available quantity will be bought:\n\n";
+			prodMsg = "The cart products were not available anymore in the requested quantity, only the available quantity has been bought:\n\n";
 
 			for ( Product p : unavailableProds.keySet() )
 			{
-				msg += p.getName() + ": requested: " + unavailableProds.get(p).get(0) + ", available: "
-						+ unavailableProds.get(p).get(1);
+				prodMsg += p.getName() + ": requested: " + unavailableProds.get(p).get(0) + ", available: "
+						+ unavailableProds.get(p).get(1) + "\n";
 
 				if ( unavailableProds.get(p).get(1) == 0 )
 					shoppingCart.removeProduct(p);
@@ -286,17 +298,12 @@ public class PaymentController extends Controller implements Initializable
 					shoppingCart.getProducts().replace(p, unavailableProds.get(p).get(1));
 			}
 
-			alertWarning(AlertType.WARNING, "Unavailable products", msg);
-
 			if ( shoppingCart.getProducts().size() == 0 )
 			{
-				msg = "After removing the no more available products you shopping cart resulted empty.";
-				alertWarning(AlertType.WARNING, "Unavailable products", msg);
-				return false;
+				cartIsEmpty = true;
+				prodMsg = "All of your products were not available anymore for purchase: payment cancelled.\nPlease select some new products.";
 			}
 		}
-
-		return true;
 	}
 
 	private void generateDeliveryDates()
