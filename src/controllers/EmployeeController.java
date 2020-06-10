@@ -166,6 +166,7 @@ public class EmployeeController extends Controller implements Initializable
 			Product toModify = newProducts.get(event.getRowValue().getImagePath());
 			toModify.setWard(event.getNewValue());
 			newProducts.replace(toModify.getImage(), toModify);
+			setProducts ( newProducts );
 		});
 	}
 
@@ -207,6 +208,7 @@ public class EmployeeController extends Controller implements Initializable
 				Product toModify = newProducts.get(event.getRowValue().getImagePath());
 				toModify.setQtyPerItem(event.getNewValue());
 				newProducts.replace(toModify.getImage(), toModify);
+				setProducts ( newProducts );
 			}
 		});
 	}
@@ -243,6 +245,7 @@ public class EmployeeController extends Controller implements Initializable
 				Product toModify = newProducts.get(event.getRowValue().getImagePath());
 				toModify.setPrice(event.getNewValue());
 				newProducts.replace(toModify.getImage(), toModify);
+				setProducts ( newProducts );
 			}
 		});
 	}
@@ -279,6 +282,7 @@ public class EmployeeController extends Controller implements Initializable
 				Product toModify = newProducts.get(event.getRowValue().getImagePath());
 				toModify.setQtyAvailable(event.getNewValue());
 				newProducts.replace(toModify.getImage(), toModify);
+				setProducts ( newProducts );
 			}
 		});
 	}
@@ -356,7 +360,7 @@ public class EmployeeController extends Controller implements Initializable
 		FilteredList <ShoppingCartProperty> shoppingFilteredData = new FilteredList <>(shoppingDataList, b -> true);
 
 		// 2. Set the filter Predicate whenever the filter changes
-		searchBar.textProperty().addListener((observable, oldValue, newValue) ->
+		searchBarTab2.textProperty().addListener((observable, oldValue, newValue) ->
 		{
 			shoppingFilteredData.setPredicate(shoppingCart ->
 			{

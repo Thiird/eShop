@@ -14,6 +14,20 @@
 
 <Pane fx:id="container" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EmployeeController">
    <children>
+      <MenuBar layoutY="-4.0" prefWidth="1200.0">
+         <menus>
+            <Menu mnemonicParsing="false" text="User">
+               <items>
+                  <MenuItem fx:id="btnLogOut" mnemonicParsing="false" onAction="#showLogOutPrompt" text="Logout" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem fx:id="btnAppInfos" mnemonicParsing="false" onAction="#goToAppInfos" text="App Infos" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
       <TabPane fx:id="tabPane" layoutY="24.0" prefHeight="676.0" prefWidth="1200.0" stylesheets="@../../res/styles/Style.css" tabClosingPolicy="UNAVAILABLE">
       	<tabs>
       		<Tab text="Modify product">
@@ -32,8 +46,8 @@
       								<TableColumn fx:id="qtyAvailableColumn" minWidth="150.0" prefWidth="150.0" resizable="false" text="QtyAvailable" />
       							</columns>
       						</TableView>
-      						<Button fx:id="btnAddProduct" alignment="CENTER" defaultButton="true" layoutX="444.0" layoutY="601.0" onAction="#goToAddProduct" prefWidth="150.0" text="Add Product" />
-                        <Button fx:id="btnRemoveProduct" alignment="CENTER" defaultButton="true" layoutX="607.0" layoutY="601.0" onAction="#removeProduct" prefWidth="150.0" text="Remove Product" />
+      						<Button fx:id="btnAddProduct" alignment="CENTER" defaultButton="true" layoutX="435.0" layoutY="595.0" onAction="#goToAddProduct" prefWidth="150.0" text="Add Product" />
+                        <Button fx:id="btnRemoveProduct" alignment="CENTER" defaultButton="true" layoutX="630.0" layoutY="595.0" onAction="#removeProduct" prefWidth="150.0" text="Remove Product" />
       					</children>
       				</Pane>
       			</content>
@@ -42,39 +56,25 @@
       			<content>
       				<Pane prefHeight="700.0" prefWidth="1200.0">
       					<children>
-      						<TextField fx:id="searchBarTab2" layoutX="405.0" layoutY="29.0" prefWidth="200.0" promptText="Search" />
+      						<TextField fx:id="searchBarTab2" layoutX="360.0" layoutY="28.0" prefWidth="200.0" promptText="Search" />
+                        <ComboBox fx:id="cmbSearchFilter" layoutX="620.0" layoutY="28.0" prefWidth="175.0" promptText="Choose a filter" />
       						<TableView fx:id="shoppingTableView" editable="true" layoutX="50.0" layoutY="80.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
       							<columns>
-      								<TableColumn fx:id="IDColumn" editable="false" minWidth="105.0" prefWidth="105.0" resizable="false" sortable="false" text="ID" />
-      								<TableColumn fx:id="expectedDateColumn" editable="false" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Expected date" />
-      								<TableColumn fx:id="customerEmailColumn" minWidth="230.0" prefWidth="230.0" resizable="false" text="Customer email" />
-      								<TableColumn fx:id="totalPriceColumn" minWidth="100.0" prefWidth="100.0" resizable="false" text="Total price" />
+      								<TableColumn fx:id="IDColumn" editable="false" minWidth="80.0" resizable="false" sortable="false" text="ID" />
+      								<TableColumn fx:id="expectedDateColumn" editable="false" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" text="Expected date" />
+      								<TableColumn fx:id="customerEmailColumn" minWidth="200.0" prefWidth="200.0" resizable="false" text="Customer email" />
+      								<TableColumn fx:id="totalPriceColumn" minWidth="150.0" prefWidth="150.0" resizable="false" text="Total price" />
       								<TableColumn fx:id="paymentMethodColumn" minWidth="180.0" prefWidth="180.0" resizable="false" text="Payment method" />
-      								<TableColumn fx:id="stateColumn" minWidth="150.0" prefWidth="150.0" resizable="false" text="State" />
-                              <TableColumn fx:id="pointsColumn" minWidth="118.0" prefWidth="118.0" resizable="false" text="Points" />
+      								<TableColumn fx:id="stateColumn" minWidth="130.0" prefWidth="130.0" resizable="false" text="State" />
+                              <TableColumn fx:id="pointsColumn" minWidth="93.0" prefWidth="93.0" resizable="false" text="Points" />
       							</columns>
       						</TableView>
-      						<Button fx:id="btnViewProducts" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="608.0" onAction="#viewProducts" prefWidth="150.0" text="View products" />
-                        <ComboBox fx:id="cmbSearchFilter" layoutX="646.0" layoutY="29.0" prefWidth="150.0" promptText="Choose a filter" />
+      						<Button fx:id="btnViewProducts" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="595.0" onAction="#viewProducts" prefWidth="150.0" text="View products" />
       					</children>
       				</Pane>
       			</content>
       		</Tab>
       	</tabs>
       </TabPane>
-      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1200.0">
-         <menus>
-            <Menu mnemonicParsing="false" text="User">
-               <items>
-                  <MenuItem fx:id="btnLogOut" mnemonicParsing="false" onAction="#showLogOutPrompt" text="Logout" />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-               <items>
-                  <MenuItem fx:id="btnAppInfos" mnemonicParsing="false" onAction="#goToAppInfos" text="App Infos" />
-               </items>
-            </Menu>
-         </menus>
-      </MenuBar>
    </children>
 </Pane>

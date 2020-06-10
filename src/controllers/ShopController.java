@@ -804,10 +804,9 @@ public class ShopController extends Controller implements Initializable
 		lblTotToPay.setText("Total: " + shoppingCart.getTotalPrice() + "$");
 
 		if ( shoppingCart.getProducts().size() == 0 )
-		{
 			btnGoToPayment.setDisable(true);
-			btnOpenCart.setDisable(true);
-		}
+		else
+			btnOpenCart.setDisable(false);
 
 		refreshProductPanel();
 	}
