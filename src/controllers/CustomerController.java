@@ -92,6 +92,9 @@ public class CustomerController extends Controller implements Initializable
 		{
 			ArrayList <ShoppingCart> customerShoppingCarts = getShoppingCarts((Customer) getCurrentUser())
 					.get(shoppingCartProperty.getCustomerEmail());
+			
+			System.out.println(shoppingCartProperty.getCustomerEmail());
+			System.out.println(getShoppingCarts((Customer) getCurrentUser()).keySet());
 
 			for ( ShoppingCart shoppingCart : customerShoppingCarts )
 			{

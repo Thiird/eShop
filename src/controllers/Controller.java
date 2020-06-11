@@ -272,7 +272,7 @@ public class Controller
 	@SuppressWarnings ( "unchecked" )
 	public Map <String,ArrayList <ShoppingCart>> getShoppingCarts(Customer customer)
 	{
-		Map <String,ArrayList <ShoppingCart>> allShoppingCarts = null;
+		Map <String,ArrayList <ShoppingCart>> shoppingCarts = null;
 
 		URL resource = getClass().getResource("/databases/shoppingCarts.txt");
 		File file = null;
@@ -288,7 +288,7 @@ public class Controller
 
 		try ( FileInputStream fis = new FileInputStream(file); ObjectInputStream ois = new ObjectInputStream(fis); )
 		{
-			allShoppingCarts = (HashMap <String,ArrayList <ShoppingCart>>) ois.readObject();
+			shoppingCarts = (HashMap <String,ArrayList <ShoppingCart>>) ois.readObject();
 		}
 		catch ( IOException e )
 		{
@@ -301,26 +301,23 @@ public class Controller
 			System.err.println("getShoppingCarts ClassNotFoundException");
 		}
 
-		if ( allShoppingCarts == null )
+		if ( shoppingCarts == null )
 			return new HashMap <String,ArrayList <ShoppingCart>>();
 
 		if ( customer != null )
 		{
-			Map <String,ArrayList <ShoppingCart>> customerShoppingCarts = new HashMap <>();
-			ArrayList <ShoppingCart> shoppingCarts = new ArrayList <>();
+			Map <String,ArrayList <ShoppingCart>> customerShoppingCarts = new HashMap <String,ArrayList <ShoppingCart>>();
 
-			for ( String s : allShoppingCarts.keySet() )
+			for ( String s : shoppingCarts.keySet() )
 			{
-				for ( ShoppingCart shoppingCart : allShoppingCarts.get(s) )
-					shoppingCarts.add(shoppingCart);
+				if(s.equals(customer.getEmail()))
+						customerShoppingCarts.put(s, shoppingCarts.get(s));
 			}
-
-			customerShoppingCarts.put(customer.getEmail(), shoppingCarts);
 
 			return customerShoppingCarts;
 		}
-
-		return allShoppingCarts;
+		
+		return shoppingCarts;
 	}
 
 	public void setShoppingCarts(Map <String,ArrayList <ShoppingCart>> shoppingCarts)
