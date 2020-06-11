@@ -7,13 +7,14 @@
 
 <Pane fx:id="container" prefHeight="623.0" prefWidth="1200.0" stylesheets="@../../res/styles/Style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewProductsController">
 	<children>
-		<TextField fx:id="searchBar" layoutX="500.0" layoutY="29.0" prefWidth="200.0" promptText="Search" />
+		<TextField fx:id="searchBar" layoutX="500.0" layoutY="29.0" prefWidth="200.0" promptText="Search by name" />
 		<TableView fx:id="tableView" editable="true" layoutX="50.0" layoutY="79.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
 			<columns>
 				<TableColumn fx:id="imageColumn" editable="false" minWidth="105.0" prefWidth="105.0" resizable="false" sortable="false" text="Image" />
 				<TableColumn fx:id="nameColumn" editable="false" minWidth="150.0" prefWidth="150.0" resizable="false" text="Name" />
             <TableColumn fx:id="quantityColumn" editable="false" minWidth="105.0" prefWidth="105.0" resizable="false" sortable="false" text="Quantity" />
 				<TableColumn fx:id="priceColumn" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" text="Price" />
+            <TableColumn fx:id="totalPriceColumn" editable="false" minWidth="100.0" prefWidth="100.0" resizable="false" text="Total price" />
 				<TableColumn fx:id="wardColumn" editable="false" minWidth="230.0" prefWidth="230.0" resizable="false" text="Ward" />
 			</columns>
 		</TableView>
