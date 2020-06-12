@@ -92,9 +92,6 @@ public class CustomerController extends Controller implements Initializable
 		{
 			ArrayList <ShoppingCart> customerShoppingCarts = getShoppingCarts((Customer) getCurrentUser())
 					.get(shoppingCartProperty.getCustomerEmail());
-			
-			System.out.println(shoppingCartProperty.getCustomerEmail());
-			System.out.println(getShoppingCarts((Customer) getCurrentUser()).keySet());
 
 			for ( ShoppingCart shoppingCart : customerShoppingCarts )
 			{
@@ -117,6 +114,9 @@ public class CustomerController extends Controller implements Initializable
 				.setData((Customer) getCurrentUser());
 
 		EditProfileController.showAndWaitStage();
+		
+		if ( ((Customer) getCurrentUser()).getFidelityCard() != null )
+			btnFidelityCard.setDisable(false);
 	}
 
 	public void switchToShop()
@@ -152,7 +152,7 @@ public class CustomerController extends Controller implements Initializable
 	{
 		setCurrentUser(customer);
 
-		if ( customer.getFidelityCard().getEnabled() == false )
+		if ( customer.getFidelityCard() == null)
 			btnFidelityCard.setDisable(true);
 	}
 }

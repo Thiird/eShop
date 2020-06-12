@@ -45,57 +45,47 @@ public class EditProfileController extends Controller implements Initializable
 		city.setPromptText(customer.getCity());
 		phone.setPromptText(customer.getPhone());
 		password.setPromptText(customer.getPassword());
-		fidelityCard.setSelected(customer.getFidelityCard().getEnabled());
+		fidelityCard.setSelected(customer.getFidelityCard() == null ? false : true);
 
-		if ( customer.getFidelityCard().getEnabled() )
+		if ( customer.getFidelityCard() != null )
 			fidelityCard.setVisible(false);
 	}
 
 	@FXML
 	public void updateUser()
 	{
-		Optional <ButtonType> alert = alertWarning(AlertType.INFORMATION, "Information",
-				"Are you sure about the changes ?");
-
-		if ( alert.get() == ButtonType.OK )
+		if (alertPrompt(AlertType.INFORMATION, "Information","Are you sure about the changes ?"))
 		{
-			try
-			{
-				if ( name.getText().length() != 0 )
-					getCurrentUser().setName(name.getText());
+			if ( name.getText().length() != 0 )
+				getCurrentUser().setName(name.getText());
 
-				if ( surname.getText().length() != 0 )
-					getCurrentUser().setSurname(surname.getText());
+			if ( surname.getText().length() != 0 )
+				getCurrentUser().setSurname(surname.getText());
 
-				if ( address.getText().length() != 0 )
-					getCurrentUser().setAddress(address.getText());
+			if ( address.getText().length() != 0 )
+				getCurrentUser().setAddress(address.getText());
 
-				if ( CAP.getText().length() != 0 )
-					getCurrentUser().setCAP(CAP.getText());
+			if ( CAP.getText().length() != 0 )
+				getCurrentUser().setCAP(CAP.getText());
 
-				if ( city.getText().length() != 0 )
-					getCurrentUser().setCity(city.getText());
+			if ( city.getText().length() != 0 )
+				getCurrentUser().setCity(city.getText());
 
-				if ( phone.getText().length() != 0 )
-					getCurrentUser().setPhone(phone.getText());
+			if ( phone.getText().length() != 0 )
+				getCurrentUser().setPhone(phone.getText());
 
-				if ( password.getText().length() != 0 )
-					getCurrentUser().setPassword(password.getText());
+			if ( password.getText().length() != 0 )
+				getCurrentUser().setPassword(password.getText());
 
-				if ( fidelityCard.isSelected() )
-					((Customer) getCurrentUser()).setFidelityCard(new FidelityCard(getNextFidelityCardID(), true));
+			if ( fidelityCard.isSelected() )
+				((Customer) getCurrentUser()).setFidelityCard(new FidelityCard(getNextFidelityCardID()));
 
-				// Update user info on file
-				Map <String,User> users = getUsers();
-				users.replace(getCurrentUser().getEmail(), getCurrentUser());
-				setUsers(users);
+			// Update user info on file
+			Map <String,User> users = getUsers();
+			users.replace(getCurrentUser().getEmail(), getCurrentUser());
+			setUsers(users);
 
-				((Stage) container.getScene().getWindow()).close();
-			}
-			catch ( NoSuchElementException e )
-			{
-				System.err.println("NoSuchElementException");
-			}
+			((Stage) container.getScene().getWindow()).close();	
 		}
 	}
 

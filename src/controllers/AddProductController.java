@@ -174,8 +174,9 @@ public class AddProductController extends Controller implements Initializable
 				products.put(product.getImage(), product);
 				setProducts(products);
 
-				if ( alertWarning(AlertType.INFORMATION, "Information", "Product added").get() == ButtonType.OK )
-					clearFields();
+				alertWarning(AlertType.INFORMATION, "Information", "Product added");
+				
+				clearFields();
 
 				((Stage) container.getScene().getWindow()).close();
 			}

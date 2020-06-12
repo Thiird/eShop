@@ -351,8 +351,23 @@ public class Controller
 			@Override
 			public int compare(Customer u1, Customer u2)
 			{
-				return u1.getFidelityCard().getID() - u2.getFidelityCard().getID();
-			}
+			  if (u1.getFidelityCard() == null && u2.getFidelityCard() == null )
+			  {
+				  return 0;				        
+			  }
+			  
+			  if (u1.getFidelityCard() != null && u2.getFidelityCard() != null )
+			  {
+				  return u1.getFidelityCard().getID() - u2.getFidelityCard().getID();			        
+			  }
+			  
+			  if (u1.getFidelityCard() != null && u2.getFidelityCard() == null )
+			  {
+				  return 1;	        
+			  }
+			  else
+				  return -1;
+			  }
 		};
 	}
 
@@ -364,10 +379,11 @@ public class Controller
 		{
 			Collection <Customer> customersAsCollection = customers.values();
 			List <Customer> customersAsList = new ArrayList <>(customersAsCollection);
-			customersAsList.sort(getComparatorByID());
-
+			
 			if ( customersAsList.size() == 0 )
 				return 0;
+			
+			customersAsList.sort(getComparatorByID());
 
 			return customersAsList.get(customersAsList.size() - 1).getFidelityCard().getID() + 1;
 		}
@@ -382,6 +398,7 @@ public class Controller
 		alert.setTitle(title);
 		alert.setHeaderText("");
 		alert.setContentText(content);
+		
 
 		return alert.showAndWait();
 	}
@@ -392,8 +409,10 @@ public class Controller
 		alert.setTitle(title);
 		alert.setHeaderText("");
 		alert.setContentText(content);
+		
+		Optional <ButtonType> opt = alert.showAndWait();
 
-		if ( alert.showAndWait().get() == ButtonType.OK )// TODO
+		if ( opt.isPresent() && opt.get() == ButtonType.OK )
 			return true;
 		else
 			return false;

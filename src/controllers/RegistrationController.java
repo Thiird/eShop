@@ -55,9 +55,7 @@ public class RegistrationController extends Controller implements Initializable
 			FidelityCard fC = null;
 
 			if ( fidelityCard.isSelected() )
-				fC = new FidelityCard(getNextFidelityCardID(), true);
-			else
-				fC = new FidelityCard(getNextFidelityCardID(), false);
+				fC = new FidelityCard(getNextFidelityCardID());
 
 			Customer customer = new Customer(name.getText(), surname.getText(), address.getText(), CAP.getText(),
 					city.getText(), phone.getText(), email.getText(), password.getText(), fC, paymentMethod.getValue());
@@ -72,11 +70,9 @@ public class RegistrationController extends Controller implements Initializable
 			{
 				insertCustomer(customer);
 
-				if ( alertWarning(AlertType.INFORMATION, "Information", "Registration completed")
-						.get() == ButtonType.OK )
-				{
-					((Stage) container.getScene().getWindow()).close();
-				}
+				alertWarning(AlertType.INFORMATION, "Information", "Registration completed");
+				
+				((Stage) container.getScene().getWindow()).close();
 			}
 		}
 		else

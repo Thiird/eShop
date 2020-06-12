@@ -200,7 +200,7 @@ public class ShoppingCartController extends Controller implements Initializable
 			if ( event.getNewValue() == null || event.getNewValue() == Integer.MIN_VALUE || event.getNewValue() <= 0 )
 			{
 
-				Controller.alertWarning(AlertType.WARNING, "Warning", "The entered value is not correct !");
+				alertWarning(AlertType.WARNING, "Warning", "The entered value is not correct !");
 
 				event.getRowValue().setCartQuantity(event.getOldValue());
 				tableView.refresh();
@@ -211,7 +211,7 @@ public class ShoppingCartController extends Controller implements Initializable
 
 				if ( (event.getNewValue() - event.getOldValue()) > pToModify.getQtyAvailable() )
 				{
-					Controller.alertWarning(AlertType.WARNING, "Warning",
+					alertWarning(AlertType.WARNING, "Warning",
 							"The desired quantity exceeds availability" + "\nRequested: +"
 									+ (event.getNewValue() - event.getOldValue()) + "\nAvailability: "
 									+ pToModify.getQtyAvailable());
