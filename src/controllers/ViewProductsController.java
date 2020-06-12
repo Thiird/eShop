@@ -40,6 +40,8 @@ public class ViewProductsController extends Controller implements Initializable
 	private TableColumn <ProductProperty,Float> priceColumn;
 	@FXML
 	private TableColumn <ProductProperty,Integer> quantityColumn;
+	@FXML
+	private TableColumn <ProductProperty,Float> totalPriceColumn;
 
 	private ObservableList <ProductProperty> dataList;
 	@SuppressWarnings ( "unused" )
@@ -74,6 +76,7 @@ public class ViewProductsController extends Controller implements Initializable
 		setWardColumn();
 		setNameColumn();
 		setPriceColumn();
+		setTotalPriceColumn();
 
 		// 1. Wrap the ObservableList in a FilteredList ( initially display all data )
 		FilteredList <ProductProperty> filteredData = new FilteredList <>(dataList, b -> true);
@@ -132,5 +135,10 @@ public class ViewProductsController extends Controller implements Initializable
 	private void setPriceColumn()
 	{
 		priceColumn.setCellValueFactory(new PropertyValueFactory <>("price"));
+	}
+	
+	private void setTotalPriceColumn()
+	{
+		totalPriceColumn.setCellValueFactory(new PropertyValueFactory <>("totalPrice"));
 	}
 }

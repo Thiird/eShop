@@ -18,7 +18,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -69,8 +68,6 @@ public class EmployeeController extends Controller implements Initializable
 					initializeViewShoppingTab();
 			}
 		});
-
-		cmbSearchFilter.getItems().addAll("Customer email", "ID");
 	}
 
 	// Modify product Tab
@@ -326,10 +323,7 @@ public class EmployeeController extends Controller implements Initializable
 	private TableColumn <ShoppingCartProperty,Integer> pointsColumn;
 	@FXML
 	private Button btnViewProducts;
-
-	@FXML
-	private ComboBox <String> cmbSearchFilter;
-
+	
 	private ObservableList <ShoppingCartProperty> shoppingDataList;
 
 	private void initializeViewShoppingTab()
@@ -368,18 +362,14 @@ public class EmployeeController extends Controller implements Initializable
 				if ( newValue == null || newValue.isEmpty() )
 					return true;
 
-				if ( cmbSearchFilter.getValue() == null )
-					return true;
-
+				// Compare ... of every product with filter text
 				String lowerCaseFilter = newValue.toLowerCase();
 
-				if ( cmbSearchFilter.getValue().equalsIgnoreCase("ID") )
-					return (Integer.toString(shoppingCart.getID()).toLowerCase().indexOf(lowerCaseFilter) != -1) ? true
-							: false;
-				else if ( cmbSearchFilter.getValue().equalsIgnoreCase("Customer email") )
-					return (shoppingCart.getCustomerEmail().toLowerCase().indexOf(lowerCaseFilter) != -1) ? true
-							: false;
+				if ( shoppingCart.getCustomerEmail().toLowerCase().indexOf(lowerCaseFilter) != -1 )
+					// Filter matches brand
+					return true;
 				else
+					// Does not match
 					return false;
 			});
 		});

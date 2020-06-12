@@ -25,6 +25,7 @@ public class ProductProperty
 	private SimpleBooleanProperty milkFree;
 	private SimpleIntegerProperty qtyAvailable;
 	private SimpleIntegerProperty cartQuantity;
+	private SimpleFloatProperty totalPrice;
 
 	public ProductProperty( Product product, Integer cartQuantity )
 	{
@@ -47,6 +48,7 @@ public class ProductProperty
 				: new SimpleBooleanProperty(Boolean.FALSE);
 		qtyAvailable = new SimpleIntegerProperty(product.getQtyAvailable());
 		this.cartQuantity = new SimpleIntegerProperty(cartQuantity);
+		totalPrice = new SimpleFloatProperty (cartQuantity * product.getPrice());
 	}
 
 	public Product getProduct()
@@ -147,5 +149,10 @@ public class ProductProperty
 	public void setCartQuantity(int cartQuantity)
 	{
 		this.cartQuantity.set(cartQuantity);
+	}
+	
+	public float getTotalPrice()
+	{
+		return totalPrice.get();
 	}
 }
