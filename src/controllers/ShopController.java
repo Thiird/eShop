@@ -420,6 +420,8 @@ public class ShopController extends Controller implements Initializable
 					highlightShopProduct(node, true, true, true);
 
 					loadProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
+
+					enableProductPanel(true);
 				}
 				else
 				{
@@ -434,6 +436,8 @@ public class ShopController extends Controller implements Initializable
 
 						highlightShopProduct(selectedShopProduct, false, false, false);
 						highlightShopProduct(node, true, true, true);
+
+						enableProductPanel(true);
 
 						loadProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
 					}
@@ -514,13 +518,13 @@ public class ShopController extends Controller implements Initializable
 
 					loadProductInfo((ImageView) productToImage
 							.get(nameToProduct.get(selectedCartProduct.getText().toLowerCase().replace(" ", "_"))));
+
 				}
 				else
 				{
 					if ( GridPane.getRowIndex(node) == GridPane.getRowIndex(selectedCartProduct) )
 					{
 						Selector.clearSelectionList(true);
-						enableProductPanel(false);
 						selectedCartProduct = null;
 					}
 					else
@@ -532,6 +536,8 @@ public class ShopController extends Controller implements Initializable
 								.get(nameToProduct.get(selectedCartProduct.getText().toLowerCase().replace(" ", "_"))));
 					}
 				}
+
+				enableProductPanel(false);
 			}
 		});
 
@@ -736,8 +742,6 @@ public class ShopController extends Controller implements Initializable
 		{
 			isPAvaialble.setText("Product available");
 			isPAvaialble.setStyle("-fx-text-fill: green;");
-
-			enableProductPanel(true);
 		}
 	}
 

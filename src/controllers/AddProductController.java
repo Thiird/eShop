@@ -19,7 +19,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -175,7 +174,7 @@ public class AddProductController extends Controller implements Initializable
 				setProducts(products);
 
 				alertWarning(AlertType.INFORMATION, "Information", "Product added");
-				
+
 				clearFields();
 
 				((Stage) container.getScene().getWindow()).close();

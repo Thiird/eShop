@@ -2,15 +2,12 @@ package controllers;
 
 import java.net.URL;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -54,7 +51,7 @@ public class EditProfileController extends Controller implements Initializable
 	@FXML
 	public void updateUser()
 	{
-		if (alertPrompt(AlertType.INFORMATION, "Information","Are you sure about the changes ?"))
+		if ( alertPrompt(AlertType.INFORMATION, "Information", "Are you sure about the changes ?") )
 		{
 			if ( name.getText().length() != 0 )
 				getCurrentUser().setName(name.getText());
@@ -85,7 +82,7 @@ public class EditProfileController extends Controller implements Initializable
 			users.replace(getCurrentUser().getEmail(), getCurrentUser());
 			setUsers(users);
 
-			((Stage) container.getScene().getWindow()).close();	
+			((Stage) container.getScene().getWindow()).close();
 		}
 	}
 
