@@ -25,6 +25,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.Customer;
+import models.FidelityCard;
 import models.Product;
 import models.ShoppingCart;
 import models.User;
@@ -154,9 +155,9 @@ public class Controller
 		{
 			file = new File(resource.toURI());
 		}
-		catch ( URISyntaxException e )
+		catch ( URISyntaxException | NullPointerException e )
 		{
-			System.err.println("getUsers URISyntaxException");
+			System.err.println("problems with users.txt");
 		}
 
 		try ( FileInputStream fis = new FileInputStream(file); ObjectInputStream ois = new ObjectInputStream(fis); )
@@ -374,8 +375,9 @@ public class Controller
 	public int getNextFidelityCardID()
 	{
 		Map <String,Customer> customers = getCustomers();
-
-		if ( customers != null )
+		FidelityCard fd = null;
+		
+		if(!customers.isEmpty())
 		{
 			Collection <Customer> customersAsCollection = customers.values();
 			List <Customer> customersAsList = new ArrayList <>(customersAsCollection);
@@ -385,9 +387,12 @@ public class Controller
 			
 			customersAsList.sort(getComparatorByID());
 
-			return customersAsList.get(customersAsList.size() - 1).getFidelityCard().getID() + 1;
+			if(customersAsList.size() == 1)	fd = customersAsList.get(0).getFidelityCard();
+			else fd = customersAsList.get(customersAsList.size() - 1).getFidelityCard();
+			
+			return fd == null ? 0 : fd.getID() + 1;
 		}
-
+		
 		return 0;
 	}
 
