@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_d_0tIIrGEeqmJcsBQxX4kQ" name="User">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_eBaokIrGEeqmJcsBQxX4kQ">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Actor" xmi:id="_nqEk4IrGEeqmJcsBQxX4kQ" name="Customer"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_j8WEAIrIEeqmJcsBQxX4kQ" name="Si registra_">
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_meTqcYrIEeqmJcsBQxX4kQ" name="ExtensionPoint1"/>
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_fPUssYrzEeqOo7saA7OE8g" name="ExtensionPoint3"/>
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_O4qjoKvqEeq2W7wuSMbF8A" name="ExtensionPoint3"/>
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_P4CV8KvqEeq2W7wuSMbF8A" name="ExtensionPoint4"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_rIXl0IrIEeqmJcsBQxX4kQ" memberEnd="_rIYM4orIEeqmJcsBQxX4kQ _rIYM44rIEeqmJcsBQxX4kQ">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_rIYM4IrIEeqmJcsBQxX4kQ" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_rIYM4YrIEeqmJcsBQxX4kQ" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_rIYM4orIEeqmJcsBQxX4kQ" name="registrazione" type="_j8WEAIrIEeqmJcsBQxX4kQ" association="_rIXl0IrIEeqmJcsBQxX4kQ"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_rIYM44rIEeqmJcsBQxX4kQ" name="user" type="_nqEk4IrGEeqmJcsBQxX4kQ" association="_rIXl0IrIEeqmJcsBQxX4kQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_8wzHMIrrEeqOo7saA7OE8g" name="Visualizza il profilo">
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_Ve140IrtEeqOo7saA7OE8g" name="ExtensionPoint2"/>
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_WH1LcIrtEeqOo7saA7OE8g" name="ExtensionPoint3"/>
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_XJn_oIrtEeqOo7saA7OE8g" name="ExtensionPoint4"/>
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_eY0TwIr5EeqOo7saA7OE8g" name="ExtensionPoint5"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_DQLlcIrsEeqOo7saA7OE8g" name="Modifica i dati anagrafici">
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_kUQqYIrsEeqOo7saA7OE8g" name="ExtensionPoint1"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_FV2RcIrsEeqOo7saA7OE8g" name="Visualizza il saldo punti">
+    <generalization xmi:type="uml:Generalization" xmi:id="_GoU6kKvpEeq2W7wuSMbF8A" general="_8wzHMIrrEeqOo7saA7OE8g"/>
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_0yf-cIrsEeqOo7saA7OE8g" name="ExtensionPoint1"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_HjAskIrsEeqOo7saA7OE8g" name="Visualizza le spese effettuate">
+    <generalization xmi:type="uml:Generalization" xmi:id="_W1UfoKyDEeqbn-MtftaRbw" general="_8wzHMIrrEeqOo7saA7OE8g"/>
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_4UVtgYrsEeqOo7saA7OE8g" name="ExtensionPoint1"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_K-6LsIrsEeqOo7saA7OE8g" name="Seleziona data e ora di consegna"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_DsP5kIrwEeqOo7saA7OE8g" name="Effettua la spesa">
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_bkH4MYrxEeqOo7saA7OE8g" name="ExtensionPoint1"/>
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_cSc90IrxEeqOo7saA7OE8g" name="ExtensionPoint2"/>
+    <include xmi:type="uml:Include" xmi:id="_2y0acKvoEeq2W7wuSMbF8A" addition="_K-6LsIrsEeqOo7saA7OE8g"/>
+    <include xmi:type="uml:Include" xmi:id="_3jwIIKvoEeq2W7wuSMbF8A" addition="_TdzlwKvJEeq2hfISMBk5uQ"/>
+    <include xmi:type="uml:Include" xmi:id="_YznmUKvpEeq2W7wuSMbF8A" addition="_gQ8wAKvoEeq2W7wuSMbF8A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_uabFQIrwEeqOo7saA7OE8g" name="Visualizza i prodotti"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_xBfOIIrwEeqOo7saA7OE8g" name="Visualizza per tipo">
+    <generalization xmi:type="uml:Generalization" xmi:id="_3fZFsIrwEeqOo7saA7OE8g" general="_uabFQIrwEeqOo7saA7OE8g"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_40lXAIrwEeqOo7saA7OE8g" name="Visualizza per marca">
+    <generalization xmi:type="uml:Generalization" xmi:id="_EQn8gIrxEeqOo7saA7OE8g" general="_uabFQIrwEeqOo7saA7OE8g"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="__uYgYIrwEeqOo7saA7OE8g" name="Visualizza per caratteristiche">
+    <generalization xmi:type="uml:Generalization" xmi:id="_F7-EAIrxEeqOo7saA7OE8g" general="_uabFQIrwEeqOo7saA7OE8g"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_nkAVIIryEeqOo7saA7OE8g" name="Modifica i prodotti">
+    <extend xmi:type="uml:Extend" xmi:id="_WztuoKvqEeq2W7wuSMbF8A" extendedCase="_gQ8wAKvoEeq2W7wuSMbF8A" extensionLocation="_WzuVsKvqEeq2W7wuSMbF8A"/>
+    <include xmi:type="uml:Include" xmi:id="_iGNLgIr5EeqOo7saA7OE8g" addition="_uabFQIrwEeqOo7saA7OE8g"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_eSjEEKuwEeq2hfISMBk5uQ" memberEnd="_eSkSMauwEeq2hfISMBk5uQ _eSkSMquwEeq2hfISMBk5uQ">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_eSjrIKuwEeq2hfISMBk5uQ" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_eSkSMKuwEeq2hfISMBk5uQ" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_eSkSMauwEeq2hfISMBk5uQ" name="accede al profilo" type="_8wzHMIrrEeqOo7saA7OE8g" association="_eSjEEKuwEeq2hfISMBk5uQ"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_eSkSMquwEeq2hfISMBk5uQ" name="customer" type="_nqEk4IrGEeqmJcsBQxX4kQ" association="_eSjEEKuwEeq2hfISMBk5uQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_e9DZoKuwEeq2hfISMBk5uQ" memberEnd="_e9EnwauwEeq2hfISMBk5uQ _e9FO0KuwEeq2hfISMBk5uQ">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_e9EAsKuwEeq2hfISMBk5uQ" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_e9EnwKuwEeq2hfISMBk5uQ" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_e9EnwauwEeq2hfISMBk5uQ" name="effettua la spesa" type="_DsP5kIrwEeqOo7saA7OE8g" association="_e9DZoKuwEeq2hfISMBk5uQ"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_e9FO0KuwEeq2hfISMBk5uQ" name="customer" type="_nqEk4IrGEeqmJcsBQxX4kQ" association="_e9DZoKuwEeq2hfISMBk5uQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_TdzlwKvJEeq2hfISMBk5uQ" name="Seleziona il metodo di pagamento"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_gQ8wAKvoEeq2W7wuSMbF8A" name="Riempie il carrello">
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_gQ8wAavoEeq2W7wuSMbF8A" name="ExtensionPoint1"/>
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_gQ8wAqvoEeq2W7wuSMbF8A" name="ExtensionPoint3"/>
+    <extensionPoint xmi:type="uml:ExtensionPoint" xmi:id="_WzuVsKvqEeq2W7wuSMbF8A" name="ExtensionPoint4"/>
+    <include xmi:type="uml:Include" xmi:id="_gQ8wA6voEeq2W7wuSMbF8A">
+      <addition xmi:type="uml:UseCase" href="User.uml#_2tRhsIrvEeqOo7saA7OE8g"/>
+    </include>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_lpF5YKvoEeq2W7wuSMbF8A" name="Sottoscrive la tessera fedeltà_">
+    <extend xmi:type="uml:Extend" xmi:id="_O4oucKvqEeq2W7wuSMbF8A" extendedCase="_j8WEAIrIEeqmJcsBQxX4kQ" extensionLocation="_O4qjoKvqEeq2W7wuSMbF8A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_mcIf4KvoEeq2W7wuSMbF8A" name="Specifica un metodo di pagamento preferito_">
+    <extend xmi:type="uml:Extend" xmi:id="_mcIf4avoEeq2W7wuSMbF8A">
+      <extendedCase xmi:type="uml:UseCase" href="User.uml#_j8WEAIrIEeqmJcsBQxX4kQ"/>
+      <extensionLocation xmi:type="uml:ExtensionPoint" href="User.uml#_fPUssYrzEeqOo7saA7OE8g"/>
+    </extend>
+    <extend xmi:type="uml:Extend" xmi:id="_P4Bu4KvqEeq2W7wuSMbF8A" extendedCase="_j8WEAIrIEeqmJcsBQxX4kQ" extensionLocation="_P4CV8KvqEeq2W7wuSMbF8A"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_nQkOQKx8Eeqbn-MtftaRbw" memberEnd="_nQmqgKx8Eeqbn-MtftaRbw _nQmqgax8Eeqbn-MtftaRbw">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_nQlcYKx8Eeqbn-MtftaRbw" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_nQmDcKx8Eeqbn-MtftaRbw" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_nQmqgKx8Eeqbn-MtftaRbw" name="modifica i dati anagrafici" type="_DQLlcIrsEeqOo7saA7OE8g" association="_nQkOQKx8Eeqbn-MtftaRbw"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_nQmqgax8Eeqbn-MtftaRbw" name="customer" type="_nqEk4IrGEeqmJcsBQxX4kQ" association="_nQkOQKx8Eeqbn-MtftaRbw"/>
+  </packagedElement>
+</uml:Model>

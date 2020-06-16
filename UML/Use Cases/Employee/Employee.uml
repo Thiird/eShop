@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_FqMhEIr9EeqOo7saA7OE8g" name="Employee">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_Fq2BUIr9EeqOo7saA7OE8g">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Actor" xmi:id="_JQ5iAIr9EeqOo7saA7OE8g" name="Employee"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_4UZvMIr9EeqOo7saA7OE8g" name="Verifica lo stato delle spese____"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_4kFJ8Ir9EeqOo7saA7OE8g" name="Inserisce informazioni relative ai prodotti____" visibility="protected"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_yhLLcKuuEeq2hfISMBk5uQ" memberEnd="_yhetcKuuEeq2hfISMBk5uQ _yhfUgKuuEeq2hfISMBk5uQ">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_yhc4QKuuEeq2hfISMBk5uQ" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_yhdfUKuuEeq2hfISMBk5uQ" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_yhetcKuuEeq2hfISMBk5uQ" name="verifica lo stato delle spese" type="_4UZvMIr9EeqOo7saA7OE8g" association="_yhLLcKuuEeq2hfISMBk5uQ"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_yhfUgKuuEeq2hfISMBk5uQ" name="employee" type="_JQ5iAIr9EeqOo7saA7OE8g" association="_yhLLcKuuEeq2hfISMBk5uQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_zdzLwKuuEeq2hfISMBk5uQ" memberEnd="_zdzy0quuEeq2hfISMBk5uQ _zd0Z4KuuEeq2hfISMBk5uQ">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_zdzy0KuuEeq2hfISMBk5uQ" source="org.eclipse.papyrus">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_zdzy0auuEeq2hfISMBk5uQ" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_zdzy0quuEeq2hfISMBk5uQ" name="inserisce informazioni relative ai prodotti" type="_4kFJ8Ir9EeqOo7saA7OE8g" association="_zdzLwKuuEeq2hfISMBk5uQ"/>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_zd0Z4KuuEeq2hfISMBk5uQ" name="employee" type="_JQ5iAIr9EeqOo7saA7OE8g" association="_zdzLwKuuEeq2hfISMBk5uQ"/>
+  </packagedElement>
+</uml:Model>

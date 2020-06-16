@@ -7,15 +7,15 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="container" prefHeight="650.0" prefWidth="1200.0" stylesheets="@../../res/styles/Style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ShoppingCartController">
+<Pane fx:id="container" prefHeight="640.0" prefWidth="1200.0" stylesheets="@../../res/styles/Style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ShoppingCartController">
    <children>
-      <ComboBox fx:id="cmbType" layoutX="50.0" layoutY="30.0" prefWidth="150.0" promptText="Filter by type" />
-      <ComboBox fx:id="cmbBrand" layoutX="230.0" layoutY="30.0" prefWidth="150.0" promptText="Filter by brand" />
-      <CheckBox fx:id="chkBio" layoutX="415.0" layoutY="34.0" mnemonicParsing="false" prefWidth="110.0" text="Bio" />
-      <CheckBox fx:id="chkGlutenFree" layoutX="520.0" layoutY="34.0" mnemonicParsing="false" prefWidth="110.0" text="Gluten free" />
-      <CheckBox fx:id="chkMadeInItaly" layoutX="667.0" layoutY="34.0" mnemonicParsing="false" prefWidth="110.0" text="Made in Italy" />
-      <CheckBox fx:id="chkMilkFree" layoutX="839.0" layoutY="34.0" mnemonicParsing="false" prefWidth="110.0" text="Milk free" />
-      <Button fx:id="btnResetFilters" alignment="CENTER" defaultButton="true" layoutX="1000.0" layoutY="30.0" prefWidth="150.0" text="Reset filters" />
+      <ComboBox fx:id="cmbType" layoutX="50.0" layoutY="16.0" prefWidth="150.0" promptText="Filter by type" />
+      <ComboBox fx:id="cmbBrand" layoutX="50.0" layoutY="45.0" prefWidth="150.0" promptText="Filter by brand" />
+      <CheckBox fx:id="chkBio" layoutX="234.0" layoutY="18.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="76.0" text="Bio" />
+      <CheckBox fx:id="chkGlutenFree" layoutX="234.0" layoutY="49.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="98.0" text="Gluten free" />
+      <CheckBox fx:id="chkMadeInItaly" layoutX="336.0" layoutY="18.0" mnemonicParsing="false" prefWidth="110.0" text="Made in Italy" />
+      <CheckBox fx:id="chkMilkFree" layoutX="336.0" layoutY="49.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="89.0" text="Milk free" />
+      <Button fx:id="btnResetFilters" alignment="CENTER" defaultButton="true" layoutX="455.0" layoutY="30.0" prefHeight="25.0" prefWidth="98.0" text="Reset filters" />
       <TableView fx:id="tableView" editable="true" layoutX="50.0" layoutY="80.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
          <columns>
             <TableColumn fx:id="imageColumn" editable="false" minWidth="105.0" prefWidth="105.0" resizable="false" sortable="false" text="Image" />
@@ -30,6 +30,6 @@
             <TableColumn fx:id="milkFreeColumn" editable="false" minWidth="103.0" prefWidth="103.0" resizable="false" sortable="false" text="Milk free" />
          </columns>
       </TableView>
-      <Button fx:id="btnRemoveProduct" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="600.0" onAction="#removeProduct" prefWidth="150.0" text="Remove product" />
+      <Button fx:id="btnRemoveProduct" alignment="CENTER" defaultButton="true" layoutX="540.0" layoutY="603.0" onAction="#removeProduct" prefHeight="25.0" prefWidth="120.0" text="Remove product" />
    </children>
 </Pane>

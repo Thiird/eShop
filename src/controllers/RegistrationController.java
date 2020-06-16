@@ -9,7 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
@@ -71,7 +70,7 @@ public class RegistrationController extends Controller implements Initializable
 				insertCustomer(customer);
 
 				alertWarning(AlertType.INFORMATION, "Information", "Registration completed");
-				
+
 				((Stage) container.getScene().getWindow()).close();
 			}
 		}
@@ -81,28 +80,9 @@ public class RegistrationController extends Controller implements Initializable
 
 	private boolean isAllCompiled()
 	{
-		if ( name.getText().isEmpty() )
-			return false;
-
-		if ( surname.getText().isEmpty() )
-			return false;
-
-		if ( address.getText().isEmpty() )
-			return false;
-
-		if ( CAP.getText().isEmpty() )
-			return false;
-
-		if ( city.getText().isEmpty() )
-			return false;
-
-		if ( phone.getText().isEmpty() )
-			return false;
-
-		if ( email.getText().isEmpty() )
-			return false;
-
-		if ( password.getText().isEmpty() )
+		if ( name.getText().isEmpty() || surname.getText().isEmpty() || address.getText().isEmpty()
+				|| CAP.getText().isEmpty() || city.getText().isEmpty() || phone.getText().isEmpty()
+				|| email.getText().isEmpty() || password.getText().isEmpty() )
 			return false;
 
 		return true;

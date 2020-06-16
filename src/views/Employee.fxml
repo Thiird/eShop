@@ -11,7 +11,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="container" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EmployeeController">
+<Pane fx:id="container" prefHeight="680.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EmployeeController">
    <children>
       <MenuBar layoutY="-4.0" prefWidth="1200.0">
          <menus>
@@ -27,14 +27,14 @@
             </Menu>
          </menus>
       </MenuBar>
-      <TabPane fx:id="tabPane" layoutY="24.0" prefHeight="676.0" prefWidth="1200.0" stylesheets="@../../res/styles/Style.css" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabPane" layoutY="24.0" prefHeight="656.0" prefWidth="1200.0" stylesheets="@../../res/styles/Style.css" tabClosingPolicy="UNAVAILABLE">
       	<tabs>
       		<Tab text="Modify product">
       			<content>
-      				<Pane prefHeight="700.0" prefWidth="1200.0">
+      				<Pane prefHeight="630.0" prefWidth="1200.0">
       					<children>
-      						<TextField fx:id="searchBar" layoutX="507.0" layoutY="28.0" prefWidth="200.0" promptText="Search by name" />
-      						<TableView fx:id="tableView" editable="true" layoutX="50.0" layoutY="80.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
+      						<TextField fx:id="searchBar" layoutX="507.0" layoutY="18.0" prefWidth="200.0" promptText="Search by name" />
+      						<TableView fx:id="tableView" editable="true" layoutX="50.0" layoutY="60.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
       							<columns>
       								<TableColumn fx:id="imageColumn" editable="false" minWidth="105.0" prefWidth="105.0" resizable="false" sortable="false" text="Image" />
       								<TableColumn fx:id="imagePathColumn" editable="false" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" text="Path" />
@@ -45,8 +45,8 @@
       								<TableColumn fx:id="qtyAvailableColumn" minWidth="150.0" prefWidth="150.0" resizable="false" text="QtyAvailable" />
       							</columns>
       						</TableView>
-      						<Button fx:id="btnAddProduct" alignment="CENTER" defaultButton="true" layoutX="435.0" layoutY="595.0" onAction="#goToAddProduct" prefWidth="150.0" text="Add Product" />
-                        <Button fx:id="btnRemoveProduct" alignment="CENTER" defaultButton="true" layoutX="630.0" layoutY="595.0" onAction="#removeProduct" prefWidth="150.0" text="Remove Product" />
+      						<Button fx:id="btnAddProduct" alignment="CENTER" defaultButton="true" layoutX="435.0" layoutY="581.0" onAction="#goToAddProduct" prefWidth="150.0" text="Add Product" />
+                        <Button fx:id="btnRemoveProduct" alignment="CENTER" defaultButton="true" layoutX="630.0" layoutY="581.0" onAction="#removeProduct" prefWidth="150.0" text="Remove Product" />
       					</children>
       				</Pane>
       			</content>
@@ -55,8 +55,8 @@
       			<content>
       				<Pane prefHeight="700.0" prefWidth="1200.0">
       					<children>
-      						<TextField fx:id="searchBarTab2" layoutX="500.0" layoutY="28.0" prefWidth="200.0" promptText="Search by Customer email" />
-      						<TableView fx:id="shoppingTableView" editable="true" layoutX="50.0" layoutY="80.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
+      						<TextField fx:id="searchBarTab2" layoutX="512.0" layoutY="19.0" prefHeight="25.0" prefWidth="177.0" promptText="Search by Customer email" />
+      						<TableView fx:id="shoppingTableView" editable="true" layoutX="50.0" layoutY="60.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
       							<columns>
       								<TableColumn fx:id="IDColumn" editable="false" minWidth="80.0" resizable="false" text="ID" />
       								<TableColumn fx:id="expectedDateColumn" editable="false" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" text="Expected date" />
@@ -67,7 +67,7 @@
                               <TableColumn fx:id="pointsColumn" minWidth="93.0" prefWidth="93.0" resizable="false" text="Points" />
       							</columns>
       						</TableView>
-      						<Button fx:id="btnViewProducts" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="595.0" onAction="#viewProducts" prefWidth="150.0" text="View products" />
+      						<Button fx:id="btnViewProducts" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="580.0" onAction="#viewProducts" prefWidth="150.0" text="View products" />
       					</children>
       				</Pane>
       			</content>

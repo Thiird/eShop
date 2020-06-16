@@ -136,7 +136,7 @@ public class AddProductController extends Controller implements Initializable
 	@FXML
 	public void addProductToDatabase()
 	{
-		if ( isAllCompiled() )
+		if ( isAllCompiledAndWellFormed() )
 		{
 			float qtyPerItemAsFloat = Float.parseFloat(qtyPerItem.getText());
 			float priceAsFloat = Float.parseFloat(price.getText());
@@ -181,15 +181,21 @@ public class AddProductController extends Controller implements Initializable
 			}
 		}
 		else
-			alertWarning(AlertType.WARNING, "Warning", "All fields must be filled");
+			alertWarning(AlertType.WARNING, "Warning", "All fields must be filled with well-formed data");
 	}
 
-	private final boolean isAllCompiled()
+	private final boolean isAllCompiledAndWellFormed()
 	{
-		return (ward.getValue() != null && !prodName.getText().isEmpty() && brand.getValue() != null
+		boolean isAllCompiled = (ward.getValue() != null && !prodName.getText().isEmpty() && brand.getValue() != null
 				&& !qtyPerItem.getText().isEmpty() && !measureUnit.getSelectionModel().isEmpty()
 				&& !price.getText().isEmpty() && image != null && type.getValue() != null
 				&& !qtyAvailable.getText().isEmpty());
+
+		boolean isAllWellFormed = qtyPerItem.getText().matches("[+]?([0-9]*[.])?[0-9]+")
+				&& qtyAvailable.getText().matches("[+]?[1-9][0-9]*")
+				&& price.getText().matches("[+]?([0-9]*[.])?[0-9]+");
+
+		return isAllCompiled && isAllWellFormed;
 	}
 
 	private final boolean productAlreadyExists(Product product)

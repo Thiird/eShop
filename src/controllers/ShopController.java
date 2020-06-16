@@ -288,9 +288,9 @@ public class ShopController extends Controller implements Initializable
 		}
 	}
 
-	private void highlightShopProduct(Node node, boolean highlight, boolean saveRef, boolean selectOrHover)
-	{
-		// Apply actions
+	private void executeActionOnNode(Node node, boolean highlight, boolean saveRef, boolean selectOrHover)
+	{// Executes the required actions on the given node
+
 		if ( selectOrHover )
 		{
 			if ( highlight )
@@ -417,11 +417,9 @@ public class ShopController extends Controller implements Initializable
 			{
 				if ( selectedShopProduct == null )
 				{
-					highlightShopProduct(node, true, true, true);
+					executeActionOnNode(node, true, true, true);
 
 					loadProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
-
-					enableProductPanel(true);
 				}
 				else
 				{
@@ -434,8 +432,8 @@ public class ShopController extends Controller implements Initializable
 					else
 					{
 
-						highlightShopProduct(selectedShopProduct, false, false, false);
-						highlightShopProduct(node, true, true, true);
+						executeActionOnNode(selectedShopProduct, false, false, false);
+						executeActionOnNode(node, true, true, true);
 
 						enableProductPanel(true);
 
@@ -454,12 +452,12 @@ public class ShopController extends Controller implements Initializable
 				if ( selectedShopProduct == null )
 				{// Select current node
 
-					highlightShopProduct(node, true, true, false);
+					executeActionOnNode(node, true, true, false);
 
 				}
 				else if ( selectedShopProduct != ((Pane) node) )
 				{
-					highlightShopProduct(node, true, true, false);
+					executeActionOnNode(node, true, true, false);
 				}
 
 				loadProductInfo((ImageView) (((Pane) node).getChildren().get(0)));
@@ -474,29 +472,31 @@ public class ShopController extends Controller implements Initializable
 			{
 				if ( selectedShopProduct != null )
 				{
-					highlightShopProduct(node, false, false, false);
+					executeActionOnNode(node, false, false, false);
 					loadProductInfo((ImageView) selectedShopProduct.getChildren().get(0));
 				}
 				else
 				{
 					if ( selectedShopProduct == null )
 					{
-						highlightShopProduct(node, false, false, false);
+						executeActionOnNode(node, false, false, false);
 
 						if ( selectedCartProduct == null )
 						{
 							resetProductPanel();
-							enableProductPanel(false);
 						}
 						else
 						{
 							loadProductInfo((ImageView) productToImage.get(nameToProduct
 									.get((selectedCartProduct).getText().toLowerCase().replace(" ", "_"))));
 						}
+
+						enableProductPanel(false);
 					}
 					else if ( GridPane.getRowIndex(node) != GridPane.getRowIndex(selectedCartProduct) )
 					{
-						highlightShopProduct(node, false, false, false);
+						System.out.println("AAA");
+						executeActionOnNode(node, false, false, false);
 						loadProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
 					}
 				}
@@ -559,6 +559,8 @@ public class ShopController extends Controller implements Initializable
 
 				loadProductInfo((ImageView) productToImage
 						.get(nameToProduct.get((hoveringCartProduct).getText().toLowerCase().replace(" ", "_"))));
+
+				enableProductPanel(false);
 
 			}
 		});
@@ -742,6 +744,8 @@ public class ShopController extends Controller implements Initializable
 		{
 			isPAvaialble.setText("Product available");
 			isPAvaialble.setStyle("-fx-text-fill: green;");
+
+			enableProductPanel(true);
 		}
 	}
 
