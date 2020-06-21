@@ -40,7 +40,7 @@
 						<Font size="18.0" />
 					</font>
 				</Label>
-				<ScrollPane fx:id="cartPane" fitToHeight="true" fitToWidth="true" focusTraversable="false" layoutX="10.0" layoutY="165.0" prefHeight="561.0" prefWidth="281.0" />
+				<ScrollPane fx:id="cartScrollPane" fitToHeight="true" fitToWidth="true" focusTraversable="false" layoutX="10.0" layoutY="165.0" prefHeight="561.0" prefWidth="281.0" />
             <Button fx:id="btnOpenCart" disable="true" layoutX="197.0" layoutY="129.0" mnemonicParsing="false" onAction="#goToShoppingCartView" prefHeight="25.0" prefWidth="92.0" text="Open cart" />
 			</children>
 		</Pane>
@@ -94,7 +94,7 @@
 		<ComboBox fx:id="wardSelection" layoutX="330.0" layoutY="57.0" prefHeight="25.0" prefWidth="220.0" />
 		<Separator layoutY="115.0" prefHeight="4.0" prefWidth="1280.0" />
 		<TextField fx:id="shopSearchbar" layoutX="560.0" layoutY="57.0" prefHeight="25.0" prefWidth="300.0" promptText="Search product by name" />
-		<ScrollPane fx:id="shopPane" fitToHeight="true" fitToWidth="true" focusTraversable="false" layoutX="311.0" layoutY="165.0" pannable="true" prefHeight="561.0" prefWidth="671.0" style="-fx-background-color: b5c6f7;" />
+		<ScrollPane fx:id="shopScrollPane" fitToHeight="true" fitToWidth="true" focusTraversable="false" layoutX="311.0" layoutY="165.0" pannable="true" prefHeight="561.0" prefWidth="671.0" style="-fx-background-color: b5c6f7;" />
 		<Button fx:id="btnShopSearch" layoutX="871.0" layoutY="57.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="Search" />
 		<MenuBar layoutY="1.0" prefHeight="4.0" prefWidth="1280.0">
 			<menus>

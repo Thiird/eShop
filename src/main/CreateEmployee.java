@@ -2,7 +2,6 @@ package main;
 
 import java.util.Map;
 import controllers.Controller;
-import models.Employee;
 import models.User;
 
 public class CreateEmployee extends Controller
@@ -11,19 +10,17 @@ public class CreateEmployee extends Controller
 	{
 		Map <String,User> users = getUsers();
 
-		//Create employee account
-		  
-		 Employee employee = new Employee("8", "8", "8", "8", "8", "8", "8", "8", 0, null);
-		 users.put(employee.getEmail(), employee);
-		 
+		// Create employee account
 
-		//Logout all the users
+		// Employee employee = new Employee("8", "8", "8", "8", "8", "8", "8", "8", 0,
+		// null);
+		// users.put(employee.getEmail(), employee);
+
+		// Logout all the users
 		for ( String string : users.keySet() )
 		{
 			users.get(string).setLoggedIn(false);
 		}
-		
-		
 
 		setUsers(users);
 	}

@@ -25,6 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
@@ -76,7 +77,7 @@ public class ShopController extends Controller implements Initializable
 	Pane container;
 
 	@FXML
-	ScrollPane cartPane, shopPane;
+	ScrollPane cartScrollPane, shopScrollPane;
 
 	@FXML
 	GridPane cartGridPane, shopGridPane;
@@ -89,7 +90,7 @@ public class ShopController extends Controller implements Initializable
 
 	public static final String selectedColor = "#f23366";
 	public static final String hoveringColor = "#688efc";
-	public static final String backgroundColor = "#a2b9fa";
+	public static final String backgroundColor = "#cfdbff";
 
 	public Pane selectedShopProduct;
 	public Pane hoveringShopProduct;
@@ -225,30 +226,28 @@ public class ShopController extends Controller implements Initializable
 	{
 		// Initializes the central grid pane
 		shopGridPane = new GridPane();
-		shopGridPane.setGridLinesVisible(true);
 		shopGridPane.setHgap(10); // horizontal gap in pixels
 		shopGridPane.setVgap(10); // vertical gap in pixels
 		shopGridPane.setPadding(new Insets(10, 10, 10, 10));
 		shopGridPane.setFocusTraversable(false);
 
-		shopPane.setContent(shopGridPane);
-		shopPane.setFitToWidth(true);
-		shopPane.setFitToHeight(true);
-		shopPane.setPannable(true);
-		shopPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		shopScrollPane.setContent(shopGridPane);
+		shopScrollPane.setFitToWidth(true);
+		shopScrollPane.setFitToHeight(true);
+		shopScrollPane.setPannable(true);
+		shopScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
 		// Initializes the customer cart grid pane
 		cartGridPane = new GridPane();
-		// cartGridPane.setGridLinesVisible(true);
 		cartGridPane.setHgap(10); // horizontal gap in pixels
 		cartGridPane.setVgap(10); // vertical gap in pixels
 		cartGridPane.setPadding(new Insets(10, 10, 10, 10));
 		cartGridPane.setFocusTraversable(false);
 
-		cartPane.setContent(cartGridPane);
-		cartPane.setFitToWidth(true);
-		cartPane.setFitToHeight(true);
-		cartPane.setPannable(true);
+		cartScrollPane.setContent(cartGridPane);
+		cartScrollPane.setFitToWidth(true);
+		cartScrollPane.setFitToHeight(true);
+		cartScrollPane.setPannable(true);
 	}
 
 	private void addProductToCart()
@@ -644,13 +643,10 @@ public class ShopController extends Controller implements Initializable
 	{// Add item to given pane, in given position
 
 		ImageView b = productToImage.get(p);
-		Pane r = new Pane();
+		AnchorPane r = new AnchorPane();
 		r.getChildren().add(b);
 		r.setStyle("-fx-background-color:" + backgroundColor + ";");
 		setShopNodeEvents(r);
-
-		// r.getChildren().add(b);
-		// BorderPane.setMargin(b, new Insets(10, 10, 10, 10));
 
 		GridPane.setFillWidth(r, true);
 		GridPane.setFillHeight(r, true);

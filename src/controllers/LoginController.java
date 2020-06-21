@@ -153,7 +153,7 @@ public class LoginController extends Controller implements Serializable, Initial
 				return user;
 		}
 		else
-			alertWarning(AlertType.WARNING, "Warning", "Invalid email/password");
+			alertWarning(AlertType.WARNING, "Warning", "Invalid password");
 
 		return null;
 	}

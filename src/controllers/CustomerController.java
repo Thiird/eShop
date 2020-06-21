@@ -114,7 +114,7 @@ public class CustomerController extends Controller implements Initializable
 				.setData((Customer) getCurrentUser());
 
 		EditProfileController.showAndWaitStage();
-		
+
 		if ( ((Customer) getCurrentUser()).getFidelityCard() != null )
 			btnFidelityCard.setDisable(false);
 	}
@@ -152,7 +152,7 @@ public class CustomerController extends Controller implements Initializable
 	{
 		setCurrentUser(customer);
 
-		if ( customer.getFidelityCard() == null)
+		if ( customer.getFidelityCard() == null )
 			btnFidelityCard.setDisable(true);
 	}
 }

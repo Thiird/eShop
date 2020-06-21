@@ -29,11 +29,11 @@
       </MenuBar>
       <TabPane fx:id="tabPane" layoutY="24.0" prefHeight="656.0" prefWidth="1200.0" stylesheets="@../../res/styles/Style.css" tabClosingPolicy="UNAVAILABLE">
       	<tabs>
-      		<Tab text="Modify product">
+      		<Tab text="Modify products">
       			<content>
       				<Pane prefHeight="630.0" prefWidth="1200.0">
       					<children>
-      						<TextField fx:id="searchBar" layoutX="507.0" layoutY="18.0" prefWidth="200.0" promptText="Search by name" />
+      						<TextField fx:id="searchBar" layoutX="500.0" layoutY="21.0" prefWidth="200.0" promptText="Search by name" />
       						<TableView fx:id="tableView" editable="true" layoutX="50.0" layoutY="60.0" prefHeight="500.0" prefWidth="1100.0" tableMenuButtonVisible="true">
       							<columns>
       								<TableColumn fx:id="imageColumn" editable="false" minWidth="105.0" prefWidth="105.0" resizable="false" sortable="false" text="Image" />
@@ -51,7 +51,7 @@
       				</Pane>
       			</content>
       		</Tab>
-      		<Tab text="View shopping">
+      		<Tab text="View shoppings">
       			<content>
       				<Pane prefHeight="700.0" prefWidth="1200.0">
       					<children>
