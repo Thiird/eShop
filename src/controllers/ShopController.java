@@ -59,7 +59,7 @@ public class ShopController extends Controller implements Initializable
 	int yCart = 0;
 
 	@FXML
-	Button btnShopSearch, btnGoToPayment, btnAddToCart, btnOpenCart;
+	Button btnShopSearch, btnGoToPayment, btnAddToCart, btnOpenCart, btnReloadProducts;
 
 	@FXML
 	TextField shopSearchbar, txtFldQuantity;
@@ -128,8 +128,8 @@ public class ShopController extends Controller implements Initializable
 	}
 
 	private void loadProducts()
-	{
-		// Load imageToProdcut and productToImage
+	{// Loads products data structures
+
 		products = getProducts();
 
 		ImageView im;
@@ -146,7 +146,8 @@ public class ShopController extends Controller implements Initializable
 	}
 
 	public void reloadProducts()
-	{
+	{// Loads products from db and updates qty available
+
 		Map <String,Product> ps = getProducts();
 
 		for ( String p1 : ps.keySet() )
@@ -216,6 +217,27 @@ public class ShopController extends Controller implements Initializable
 			}
 		});
 
+		// Reload products from database
+		btnReloadProducts.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
+		{
+			@Override
+			public void handle(Event event)
+			{
+				reloadProducts();
+				refreshProductPanel();
+			}
+		});
+
+		btnReloadProducts.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler <KeyEvent>()
+		{
+			@Override
+			public void handle(KeyEvent event)
+			{
+				reloadProducts();
+				refreshProductPanel();
+			}
+		});
+
 		wardSelection.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) ->
 		{
 			searchInShop();
@@ -224,7 +246,7 @@ public class ShopController extends Controller implements Initializable
 
 	private void initGridPanes()
 	{
-		// Initializes the central grid pane
+		// Shop grid pane
 		shopGridPane = new GridPane();
 		shopGridPane.setHgap(10); // horizontal gap in pixels
 		shopGridPane.setVgap(10); // vertical gap in pixels
@@ -237,7 +259,7 @@ public class ShopController extends Controller implements Initializable
 		shopScrollPane.setPannable(true);
 		shopScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-		// Initializes the customer cart grid pane
+		// Cart grid pane
 		cartGridPane = new GridPane();
 		cartGridPane.setHgap(10); // horizontal gap in pixels
 		cartGridPane.setVgap(10); // vertical gap in pixels

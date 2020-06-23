@@ -96,9 +96,8 @@ public class ViewProductsController extends Controller implements Initializable
 				if ( product.getName().toLowerCase().indexOf(lowerCaseFilter) != -1 )
 					// Filter matches brand
 					return true;
-				else
-					// Does not match
-					return false;
+
+				return false;
 			});
 		});
 
@@ -136,7 +135,7 @@ public class ViewProductsController extends Controller implements Initializable
 	{
 		priceColumn.setCellValueFactory(new PropertyValueFactory <>("price"));
 	}
-	
+
 	private void setTotalPriceColumn()
 	{
 		totalPriceColumn.setCellValueFactory(new PropertyValueFactory <>("totalPrice"));

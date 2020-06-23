@@ -80,6 +80,8 @@ public class ShoppingCart implements Serializable
 	public void clear()
 	{
 		products.clear();
+		totalPrice = 0f;
+		// ID will be reset (set) during payment
 	}
 
 	public void setID(int id)

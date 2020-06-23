@@ -110,5 +110,6 @@
 				</Menu>
 			</menus>
 		</MenuBar>
+      <Button fx:id="btnReloadProducts" layoutX="589.0" layoutY="739.0" mnemonicParsing="false" text="Reload Products" />
 	</children>
 </Pane>
