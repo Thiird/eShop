@@ -1,0 +1,134 @@
+\documentclass[12pt]{article}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{multicol}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{hyperref} %To setup table of content links
+%\usepackage{changepage}
+\usepackage{geometry} %To modify margins
+
+
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\newcommand{\sectionbreak}{\clearpage}%To start a section on a new page
+
+
+\title{Elaborato Assembly}
+\author{Stefano Nicolis - Daniele Pasotto}
+%=========================================
+\begin{document}
+
+
+\tableofcontents
+
+\section{Design pattern}
+
+\subsection{Template pattern (behaviour)}
+Crei una classe astratta con metodi final la quale rappresenta un modo generale di fare una certa cosa (Game)
+poi utilizzando una class generale di dimostrazione (Template Demo), istanzi delle classi concrete che estendono
+la classe astratta generale (Game--> Calcio, Game --> Cricket) e dimostri che funziona
+\subsection{Singleton pattern (creational)}
+\subsection{Proxy (structural)}
+Una classe fa da proxy per accedere ad un altra classe
+(ImageProxy fornisce Image)
+\subsection{Observer(behaviour)}
+Usato quand eiste una relazione 1:m dove m oggetti devono eseguire compiti
+se l'1 ha un cambiamento di qualche tipo.
+Tre classi attore: Subject-Observer-Client.
+Subject ha un metodo per aggiungere e togliere osservatori
+Subject ha un metodo setState(), dentro di esso viene richiamtato il metodo notifyAllObservers()
+\subsection{Iterator()}
+Popolare in Java e .net,usato per accedere in maniera sequenziale agli elementi di
+di una collezzione senza conoscere come tale meccanismo viene realizzato.
+Classe Container e Iteratore, la prima ha come membro una lista di oggetti da iterare
+e il metodo getIterator, la seconda ha un indice che corrisponde l'elemento corrente della lista
+\subsection{Factory (Creational)}
+Classe principale concreta chiamata ObjectFactory che contiene il metodo getObject(informations) dove Object
+è il tipo di oggetto che quella Factory genera e fornisce al chiamante in base alle informazioni date alla getObject
+\subsection{Facade (structural)}
+Una classe nasconde le complessità di altre classi e fornisce un'interfaccia semplice al client
+\subsection{Decorator (strctural)}
+La classe Decorator wraps un'altra classe alla quale aggiunge funzionalità senza alterla
+Es: ShapeDecorator viene implementato da RedShepDecorato il quale qualsiasi shape abbia, la setta rossa prima di draw()
+\subsection{Data Access Object (DAO) Pattern}
+Separa l'accesso ai dati tramite operazioni low level da funzioni di alto livello
+Multiple classi studente, StudentDao fornisce funzioni come getStudent(Student s), getAllStudents()
+etc
+\subsection{Abstract Factory}
+Soggetto del pattern è una super factory che genera altre factory dato un certo oggetto
+
+\section{Diagrammi}
+
+\subsection{Caso d'uso}
+\begin{itemize}
+\item Il diagramma UML dei casi d’uso è un tool per la
+modellazione del comportamento di un sistema.
+\item Descrive gli attori che interagiscono con il sistema, cosa
+fanno, e cosa ottengono dal sistema.
+\item A questo punto non interessa sapere come il sistema
+fornisca il comportamento richiesto.
+\end{itemize}
+
+\subsection{Class diagram}
+\subsection{Sequence diagram}
+È un diagramma di iterazione
+\begin{itemize}
+\item Sono diagrammi di comportamento che modellano le interazioni tra varie entità di un sistema.
+\item Visualizzano lo scambio di messaggitra entità nel tempo.
+\item Il loro scopo è mostrare come un certo comportamento viene realizzato dalla collaborazione delle entità in gioco.
+\item adatto a mostrare la sequenza temporale degli avvenimenti per ogni entità nel diagramma.
+\end{itemize}
+
+\subsection{Activity diagram}
+I diagrammi di attività descrivono un flusso di azioni che
+realizzano un certo comportamento specifico. L’enfasi non
+è sullo scambio di messaggi ma sui blocchi di
+comportamento.
+\\
+Il diagramma di attività modella un comportamento (che
+riguarda una o più entità) come un insieme di azioni
+organizzate secondo un flusso.
+\subsection{Analisi vs Progettazione}
+\begin{itemize}
+\item L’analisi modellai concetti chiave del dominiodel problema.
+\item La progettazione adattail modello di analisi e lo completaaffinché diventi implementabile.
+\item L’analisi è vicina al problema.
+\item La progettazione è vicina alla soluzione.
+\end{itemize}
+
+\section{Vario}
+\subsection{Agile Developement}
+Program specification, design and implementation are inter-leaved
+\\
+The system is developed as a series of versions or increments with stakeholders involved in version specification and evaluation
+\\
+Frequent delivery of new versions for evaluation
+\\
+Minimal documentation – focus on working code
+\\
+The principal responsibility of software project managers is to manage the project so that the software is delivered on time and within the planned budget for the project
+
+\subsection{Plan-driven development}
+A plan-driven approach to software engineering is based around separate development stages with the outputs to be produced at each of these stages planned in advance.
+\\
+Not necessarily waterfall model – plan-driven, incremental development is possible
+
+
+
+
+\end{document}

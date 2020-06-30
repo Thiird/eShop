@@ -30,6 +30,6 @@
             <TableColumn fx:id="milkFreeColumn" editable="false" minWidth="103.0" prefWidth="103.0" resizable="false" sortable="false" text="Milk free" />
          </columns>
       </TableView>
-      <Button fx:id="btnRemoveProduct" alignment="CENTER" defaultButton="true" layoutX="540.0" layoutY="603.0" onAction="#removeProduct" prefHeight="25.0" prefWidth="120.0" text="Remove product" />
+      <Button fx:id="btnRemoveProduct" alignment="CENTER" defaultButton="true" layoutX="525.0" layoutY="601.0" onAction="#removeProduct" prefHeight="25.0" prefWidth="150.0" text="Remove product" />
    </children>
 </Pane>

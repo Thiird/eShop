@@ -48,7 +48,10 @@ public class ProductProperty
 				: new SimpleBooleanProperty(Boolean.FALSE);
 		qtyAvailable = new SimpleIntegerProperty(product.getQtyAvailable());
 		this.cartQuantity = new SimpleIntegerProperty(cartQuantity);
-		totalPrice = new SimpleFloatProperty (cartQuantity * product.getPrice());
+		totalPrice = new SimpleFloatProperty(Float.parseFloat(String
+				.format("%.2f", Float.parseFloat(Float.toString(cartQuantity * product.getPrice()).replace(",", ".")))
+				.replace(",", ".")));
+
 	}
 
 	public Product getProduct()
@@ -150,7 +153,7 @@ public class ProductProperty
 	{
 		this.cartQuantity.set(cartQuantity);
 	}
-	
+
 	public float getTotalPrice()
 	{
 		return totalPrice.get();

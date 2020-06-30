@@ -1,0 +1,25 @@
+\babel@toc {italian}{}
+\babel@toc {italian}{}
+\contentsline {section}{\numberline {1}Introduzione}{2}{section.1}% 
+\contentsline {section}{\numberline {2}Sviluppo e attivit\IeC {\`a} di test}{3}{section.2}% 
+\contentsline {section}{\numberline {3}Descrizione Software e Scelte Progettuali}{4}{section.3}% 
+\contentsline {subsection}{\numberline {3.1}Linguaggio di scelta}{4}{subsection.3.1}% 
+\contentsline {subsection}{\numberline {3.2}Database dei dati}{4}{subsection.3.2}% 
+\contentsline {subsection}{\numberline {3.3}Design Pattern e applicazione}{4}{subsection.3.3}% 
+\contentsline {subsection}{\numberline {3.4}Tipi di utenza}{4}{subsection.3.4}% 
+\contentsline {subsection}{\numberline {3.5}Istanze multiple}{5}{subsection.3.5}% 
+\contentsline {subsection}{\numberline {3.6}Note utili}{5}{subsection.3.6}% 
+\contentsline {section}{\numberline {4}Viste principali}{6}{section.4}% 
+\contentsline {subsection}{\numberline {4.1}Login.fxml}{6}{subsection.4.1}% 
+\contentsline {subsection}{\numberline {4.2}Registration.fxml}{7}{subsection.4.2}% 
+\contentsline {subsection}{\numberline {4.3}Shop.fxml}{8}{subsection.4.3}% 
+\contentsline {subsection}{\numberline {4.4}ShoppingCart.fxml}{9}{subsection.4.4}% 
+\contentsline {subsection}{\numberline {4.5}Customer.fxml}{10}{subsection.4.5}% 
+\contentsline {subsection}{\numberline {4.6}Payment.fxml}{11}{subsection.4.6}% 
+\contentsline {subsection}{\numberline {4.7}Employee.fxml}{12}{subsection.4.7}% 
+\contentsline {section}{\numberline {5}Casi d'uso}{13}{section.5}% 
+\contentsline {subsection}{\numberline {5.1}Casi d'uso relativi al Customer}{13}{subsection.5.1}% 
+\contentsline {subsection}{\numberline {5.2}Casi d'uso relativi all'Employee}{16}{subsection.5.2}% 
+\contentsline {section}{\numberline {6}Sequence diagram per i principali Use Case}{17}{section.6}% 
+\contentsline {section}{\numberline {7}Application Diagrams}{21}{section.7}% 
+\contentsline {subsection}{\numberline {7.1}Class Diagram}{21}{subsection.7.1}% 

@@ -40,64 +40,63 @@ import models.Ward;
 public class ShopController extends Controller implements Initializable
 {
 	// Used for shop grid
-	HashMap <ImageView,Product> imageToProduct = new HashMap <ImageView,Product>();
-	HashMap <Product,ImageView> productToImage = new HashMap <Product,ImageView>();
+	private HashMap <ImageView,Product> imageToProduct = new HashMap <ImageView,Product>();
+	private HashMap <Product,ImageView> productToImage = new HashMap <Product,ImageView>();
 
 	// Used for cart grid
-	Map <String,Product> nameToProduct = new HashMap <String,Product>();
-	HashMap <Label,Label> prodNameToQty = new HashMap <Label,Label>();
+	private Map <String,Product> nameToProduct = new HashMap <String,Product>();
+	private HashMap <Label,Label> prodNameToQty = new HashMap <Label,Label>();
 
-	Map <String,Product> products = new HashMap <String,Product>();
+	private Map <String,Product> products = new HashMap <String,Product>();
 
 	private ShoppingCart shoppingCart;
-	Image noProductImage = new Image(getClass().getResourceAsStream("/icons/products/noProduct.png"));
+	private Image noProductImage = new Image(getClass().getResourceAsStream("/icons/products/noProduct.png"));
 
-	int xShop = 0;
-	int yShop = 0;
-
-	int xCart = 0;
-	int yCart = 0;
+	private int xShop = 0;
+	private int yShop = 0;
+	private int yCart = 0;
 
 	@FXML
-	Button btnShopSearch, btnGoToPayment, btnAddToCart, btnOpenCart, btnReloadProducts;
+	private Button btnShopSearch, btnGoToPayment, btnAddToCart, btnOpenCart, btnReloadProducts;
 
 	@FXML
-	TextField shopSearchbar, txtFldQuantity;
+	private TextField shopSearchbar, txtFldQuantity;
 
 	@FXML
-	ImageView currProdImage;
+	private ImageView currProdImage;
 
 	@FXML
-	Label currProdName, isPAvaialble, currProdBrand, currProdPrice, currProdQty, currProdQtyAvailable;
+	private Label currProdName, isPAvaialble, currProdBrand, currProdPrice, currProdQty, currProdQtyAvailable;
 
 	@FXML
-	Label userEmail, lblQuantity, lblTotToPay;
+	private Label userEmail, lblQuantity, lblTotToPay;
 
 	@FXML
-	Pane container;
+	private Pane container;
 
 	@FXML
-	ScrollPane cartScrollPane, shopScrollPane;
+	private ScrollPane cartScrollPane, shopScrollPane;
 
 	@FXML
-	GridPane cartGridPane, shopGridPane;
+	private GridPane cartGridPane, shopGridPane;
 
 	@FXML
-	ComboBox <Ward> wardSelection;
+	private ComboBox <Ward> wardSelection;
 
 	@FXML
-	MenuItem btnLogOut, btnAppInfos;
+	private MenuItem btnLogOut, btnAppInfos;
 
+	// Highlight colors
 	public static final String selectedColor = "#f23366";
 	public static final String hoveringColor = "#688efc";
 	public static final String backgroundColor = "#cfdbff";
 
-	public Pane selectedShopProduct;
-	public Pane hoveringShopProduct;
-	public Label selectedCartProduct;
-	public Label hoveringCartProduct;
+	public static Pane selectedShopProduct;
+	public static Pane hoveringShopProduct;
+	public static Label selectedCartProduct;
+	public static Label hoveringCartProduct;
 
-	Selector clock;
+	private Selector productSelector;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
@@ -117,47 +116,14 @@ public class ShopController extends Controller implements Initializable
 
 		loadProducts();
 
+		// Init product panel
 		resetProductPanel();
-
 		enableProductPanel(false);
 
-		searchInShop();// To initially fill the shop grid
+		searchInShop(); // To initially fill the shop grid
 
-		clock = new Selector();
-		new Thread(clock).start();
-	}
-
-	private void loadProducts()
-	{// Loads products data structures
-
-		products = getProducts();
-
-		ImageView im;
-
-		for ( String s : products.keySet() )
-		{
-			im = new ImageView(new Image((products.get(s).getImage())));
-
-			imageToProduct.put(im, products.get(s));
-			productToImage.put(products.get(s), im);
-
-			nameToProduct.put(s.split("/")[3].split("\\.")[0], products.get(s));
-		}
-	}
-
-	public void reloadProducts()
-	{// Loads products from db and updates qty available
-
-		Map <String,Product> ps = getProducts();
-
-		for ( String p1 : ps.keySet() )
-		{
-			for ( String p2 : products.keySet() )
-			{
-				if ( p1.equals(p2) )
-					products.get(p2).setQtyAvailable(ps.get(p1).getQtyAvailable());
-			}
-		}
+		productSelector = new Selector();
+		new Thread(productSelector).start();
 	}
 
 	private void initEventHandlers()
@@ -225,6 +191,8 @@ public class ShopController extends Controller implements Initializable
 			{
 				reloadProducts();
 				refreshProductPanel();
+				checkCartAgainstShop();
+				updateProducts();
 			}
 		});
 
@@ -235,6 +203,8 @@ public class ShopController extends Controller implements Initializable
 			{
 				reloadProducts();
 				refreshProductPanel();
+				checkCartAgainstShop();
+				updateProducts();
 			}
 		});
 
@@ -242,6 +212,80 @@ public class ShopController extends Controller implements Initializable
 		{
 			searchInShop();
 		});
+	}
+
+	private void checkCartAgainstShop()
+	{// Checks if products in cart are available in shop
+
+		int qtyAvaiable;
+		String msg = "";
+		// private Map <String,Product> products = new HashMap <String,Product>();
+		HashMap <Product,Integer> oldCartProds = shoppingCart.getProducts();
+		HashMap <Product,Integer> newCartProds = new HashMap <Product,Integer>();
+
+		// For each product in cart, check if still available
+		for ( Product p : oldCartProds.keySet() )
+		{
+			qtyAvaiable = products.get(p.getImage()).getQtyAvailable();
+
+			if ( qtyAvaiable < oldCartProds.get(p) )
+			{// Cart quantity is no longer available
+
+				if ( qtyAvaiable == 0 )
+				{
+					msg += p.getName() + ": No longer available\n";
+				}
+				else
+				{
+					newCartProds.put(p, qtyAvaiable);
+					msg += p.getName() + ": only " + qtyAvaiable + " available\n";
+				}
+			}
+			else
+				newCartProds.put(p, oldCartProds.get(p));
+		}
+
+		shoppingCart.setProducts(newCartProds);
+
+		if ( msg.length() != 0 )
+		{
+			alertWarning(AlertType.WARNING, "Unavailable products",
+					"Some products you had put in the cart are not avaiable\nin the requested quantity anymore. See details below:\n"
+							+ msg);
+		}
+	}
+
+	private void loadProducts()
+	{// Loads products data structures
+
+		products = getProducts();
+
+		ImageView im;
+
+		for ( String s : products.keySet() )
+		{
+			im = new ImageView(new Image((products.get(s).getImage())));
+
+			imageToProduct.put(im, products.get(s));
+			productToImage.put(products.get(s), im);
+
+			nameToProduct.put(s.split("/")[3].split("\\.")[0], products.get(s));
+		}
+	}
+
+	public void reloadProducts()
+	{// Loads products from db and updates qty available
+
+		Map <String,Product> ps = getProducts();
+
+		for ( String p1 : ps.keySet() )
+		{
+			for ( String p2 : products.keySet() )
+			{
+				if ( p1.equals(p2) )
+					products.get(p2).setQtyAvailable(ps.get(p1).getQtyAvailable());
+			}
+		}
 	}
 
 	private void initGridPanes()
@@ -288,7 +332,7 @@ public class ShopController extends Controller implements Initializable
 			// Reload info because availability may be none now
 			loadProductInfo(productToImage.get(prodToAddToCart));
 
-			// Add product to in gui list
+			// Add/Update product to in gui list
 			if ( !shoppingCart.containsProduct(prodToAddToCart) )
 			{
 				shoppingCart.addProduct(prodToAddToCart, qtyToAdd);
@@ -296,7 +340,6 @@ public class ShopController extends Controller implements Initializable
 			}
 			else
 			{
-				// Add product to cart obj
 				shoppingCart.addProduct(prodToAddToCart, qtyToAdd);
 				updateItemInCart(prodToAddToCart);
 			}
@@ -322,10 +365,7 @@ public class ShopController extends Controller implements Initializable
 				node.setStyle("-fx-background-color:" + ShopController.selectedColor + ";");
 			}
 			else
-			{
 				node.setStyle("-fx-background-color:" + ShopController.backgroundColor + ";");
-
-			}
 
 			if ( saveRef )
 			{
@@ -431,6 +471,7 @@ public class ShopController extends Controller implements Initializable
 
 	private void setShopNodeEvents(Node node)
 	{
+		// Clicking on node
 		node.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler <Event>()
 		{
 			@Override
@@ -470,14 +511,8 @@ public class ShopController extends Controller implements Initializable
 			@Override
 			public void handle(Event event)
 			{
-				if ( selectedShopProduct == null )
+				if ( selectedShopProduct == null || selectedShopProduct != ((Pane) node) )
 				{// Select current node
-
-					executeActionOnNode(node, true, true, false);
-
-				}
-				else if ( selectedShopProduct != ((Pane) node) )
-				{
 					executeActionOnNode(node, true, true, false);
 				}
 
@@ -516,7 +551,6 @@ public class ShopController extends Controller implements Initializable
 					}
 					else if ( GridPane.getRowIndex(node) != GridPane.getRowIndex(selectedCartProduct) )
 					{
-						System.out.println("AAA");
 						executeActionOnNode(node, false, false, false);
 						loadProductInfo((ImageView) (selectedShopProduct.getChildren().get(0)));
 					}
@@ -661,7 +695,7 @@ public class ShopController extends Controller implements Initializable
 		}
 	}
 
-	public void addItemToShopGrid(Product p)
+	private void addItemToShopGrid(Product p)
 	{// Add item to given pane, in given position
 
 		ImageView b = productToImage.get(p);
@@ -684,7 +718,7 @@ public class ShopController extends Controller implements Initializable
 		}
 	}
 
-	public void addItemToCartGrid(Product p, int qtyToAdd)
+	private void addItemToCartGrid(Product p, int qtyToAdd)
 	{
 		// Product name label
 		Label lblName = new Label(p.getName());
@@ -787,7 +821,6 @@ public class ShopController extends Controller implements Initializable
 
 	private void clearCartGrid()
 	{
-		xCart = 0;
 		yCart = 0;
 
 		cartGridPane.getChildren().removeAll(cartGridPane.getChildren());
@@ -803,18 +836,14 @@ public class ShopController extends Controller implements Initializable
 		shopGridPane.getChildren().removeAll(shopGridPane.getChildren());
 	}
 
-	public ShoppingCart getShoppingCart()
-	{
-		return shoppingCart;
-	}
-
 	public void setData(Customer customer)
 	{
 		setCurrentUser(customer);
 	}
 
 	public void updateProducts()
-	{
+	{// Called in remove product
+
 		clearCartGrid();
 
 		ArrayList <Product> products = new ArrayList <Product>();
@@ -876,7 +905,7 @@ public class ShopController extends Controller implements Initializable
 
 		logInOutUser(false);
 
-		clock.quit();
+		productSelector.quit();
 	}
 
 	public void clearApp()
@@ -973,7 +1002,7 @@ public class ShopController extends Controller implements Initializable
 				if ( alertPrompt(AlertType.CONFIRMATION, "Quit application", msg) )
 				{
 					logInOutUser(false);
-					clock.quit();
+					productSelector.quit();
 
 					Platform.exit();
 				}

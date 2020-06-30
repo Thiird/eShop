@@ -1,0 +1,23 @@
+\BOOKMARK [1][-]{section.1}{Introduzione}{}% 1
+\BOOKMARK [1][-]{section.2}{Sviluppo e attivit\340 di test}{}% 2
+\BOOKMARK [1][-]{section.3}{Descrizione Software e Scelte Progettuali}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Linguaggio di scelta}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Database dei dati}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Design Pattern e applicazione}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.4}{Tipi di utenza}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.5}{Istanze multiple}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.6}{Note utili}{section.3}% 9
+\BOOKMARK [1][-]{section.4}{Viste principali}{}% 10
+\BOOKMARK [2][-]{subsection.4.1}{Login.fxml}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.2}{Registration.fxml}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.3}{Shop.fxml}{section.4}% 13
+\BOOKMARK [2][-]{subsection.4.4}{ShoppingCart.fxml}{section.4}% 14
+\BOOKMARK [2][-]{subsection.4.5}{Customer.fxml}{section.4}% 15
+\BOOKMARK [2][-]{subsection.4.6}{Payment.fxml}{section.4}% 16
+\BOOKMARK [2][-]{subsection.4.7}{Employee.fxml}{section.4}% 17
+\BOOKMARK [1][-]{section.5}{Casi d'uso}{}% 18
+\BOOKMARK [2][-]{subsection.5.1}{Casi d'uso relativi al Customer}{section.5}% 19
+\BOOKMARK [2][-]{subsection.5.2}{Casi d'uso relativi all'Employee}{section.5}% 20
+\BOOKMARK [1][-]{section.6}{Sequence diagram per i principali Use Case}{}% 21
+\BOOKMARK [1][-]{section.7}{Application Diagrams}{}% 22
+\BOOKMARK [2][-]{subsection.7.1}{Class Diagram}{section.7}% 23

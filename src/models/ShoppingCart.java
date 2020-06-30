@@ -14,7 +14,7 @@ public class ShoppingCart implements Serializable
 	private HashMap <Product,Integer> products;
 	private final Customer customer;
 	private float totalPrice = 0f;
-	DecimalFormat df = new DecimalFormat("##.00"); // Round to two decimal places
+	private DecimalFormat df = new DecimalFormat("##.00"); // Round to two decimal places
 	private PaymentMethod paymentMethod;
 	private int points; // Points gained after checkout
 
